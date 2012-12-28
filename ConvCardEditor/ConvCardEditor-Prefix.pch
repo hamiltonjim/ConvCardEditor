@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'ConvCardEditor' target in the 'ConvCardEditor' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
