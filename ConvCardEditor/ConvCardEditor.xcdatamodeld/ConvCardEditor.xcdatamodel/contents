@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="untitled.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="CardType" representedClassName="CCECardType" syncable="YES">
+        <attribute name="artwork" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="cardName" attributeType="String" syncable="YES"/>
+        <attribute name="extension" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="height" attributeType="Double" minValueString="0" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="scale" transient="YES" attributeType="Double" defaultValueString="1" syncable="YES"/>
+        <attribute name="width" attributeType="Double" minValueString="0" syncable="YES"/>
+        <relationship name="cards" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ConventionCard" inverseName="cardType" inverseEntity="ConventionCard" syncable="YES"/>
+        <relationship name="settings" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Control" inverseName="cardType" inverseEntity="Control" syncable="YES"/>
+    </entity>
+    <entity name="Checkbox" isAbstract="YES" parentEntity="Control" syncable="YES">
+        <attribute name="boxDimX" attributeType="Double" syncable="YES"/>
+        <attribute name="boxDimY" attributeType="Double" syncable="YES"/>
+    </entity>
+    <entity name="Control" isAbstract="YES" syncable="YES">
+        <attribute name="colorAlpha" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="colorBlue" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="colorCode" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="2" defaultValueString="0" syncable="YES"/>
+        <attribute name="colorGreen" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="colorRed" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="cardType" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CardType" inverseName="settings" inverseEntity="CardType" syncable="YES"/>
+        <relationship name="values" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Setting" inverseName="controls" inverseEntity="Setting" syncable="YES"/>
+    </entity>
+    <entity name="ConventionCard" syncable="YES">
+        <attribute name="partnershipName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="cardType" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CardType" inverseName="cards" inverseEntity="CardType" syncable="YES"/>
+        <relationship name="values" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Setting" inverseName="card" inverseEntity="Setting" syncable="YES"/>
+    </entity>
+    <entity name="Location" syncable="YES">
+        <attribute name="height" attributeType="Double" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="locX" attributeType="Double" syncable="YES"/>
+        <attribute name="locY" attributeType="Double" syncable="YES"/>
+        <attribute name="width" attributeType="Double" syncable="YES"/>
+        <relationship name="checkControl" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SingleCheck" inverseName="location" inverseEntity="SingleCheck" syncable="YES"/>
+        <relationship name="multiCheckControl" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="MultiCheck" inverseName="locations" inverseEntity="MultiCheck" syncable="YES"/>
+        <relationship name="textControl" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Text" inverseName="location" inverseEntity="Text" syncable="YES"/>
+    </entity>
+    <entity name="MultiCheck" parentEntity="Checkbox" syncable="YES">
+        <relationship name="locations" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="multiCheckControl" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <entity name="Setting" syncable="YES">
+        <attribute name="value" attributeType="String" syncable="YES"/>
+        <relationship name="card" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ConventionCard" inverseName="values" inverseEntity="ConventionCard" syncable="YES"/>
+        <relationship name="controls" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Control" inverseName="values" inverseEntity="Control" syncable="YES"/>
+    </entity>
+    <entity name="SingleCheck" parentEntity="Checkbox" syncable="YES">
+        <relationship name="location" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="checkControl" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <entity name="Text" parentEntity="Control" syncable="YES">
+        <attribute name="lines" attributeType="Integer 16" minValueString="1" syncable="YES"/>
+        <relationship name="location" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="textControl" inverseEntity="Location" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Checkbox" positionX="-6750" positionY="-11340" width="128" height="73"/>
+        <element name="Control" positionX="-6768" positionY="-11214" width="128" height="163"/>
+        <element name="ConventionCard" positionX="-6806" positionY="-10987" width="128" height="88"/>
+        <element name="Location" positionX="-6336" positionY="-11349" width="128" height="163"/>
+        <element name="MultiCheck" positionX="-6579" positionY="-11268" width="128" height="58"/>
+        <element name="SingleCheck" positionX="-6581" positionY="-11412" width="128" height="58"/>
+        <element name="Text" positionX="-6579" positionY="-11106" width="128" height="73"/>
+        <element name="CardType" positionX="-6975" positionY="-11223" width="128" height="193"/>
+        <element name="Setting" positionX="-6590" positionY="-10978" width="128" height="88"/>
+    </elements>
 </model>

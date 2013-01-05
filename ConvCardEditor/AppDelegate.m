@@ -7,6 +7,51 @@
 //
 
 #import "AppDelegate.h"
+#import "CommonStrings.h"
+#import "CCCheckboxCell.h"
+
+@interface AppDelegate (CCAppDelegate_private)
+
+- (void) flushColors;
+- (void) flushFonts;
+
++ (NSColor *) stdAlertColor;
++ (NSColor *) stdAnnounceColor;
++ (NSColor *) stdNormalColor;
+
+@end
+
+@implementation AppDelegate (CCAppDelegate_private)
+
+- (void) flushColors {
+    self.alertColor = nil;
+    self.announceColor = nil;
+    self.normalColor = nil;
+}
+
+- (void) flushFonts {
+    self.cardFont = nil;
+}
+
++ (NSColor *) stdAlertColor {
+    return [NSColor colorWithCalibratedRed:ALERT_COLOR_R
+                                     green:ALERT_COLOR_G
+                                      blue:ALERT_COLOR_B
+                                     alpha:1.0];
+}
+
++ (NSColor *) stdAnnounceColor {
+    return [NSColor colorWithCalibratedRed:ANNOUNCE_COLOR_R
+                                     green:ANNOUNCE_COLOR_G
+                                      blue:ANNOUNCE_COLOR_B
+                                     alpha:1.0];
+}
+
++ (NSColor *) stdNormalColor {
+    return [NSColor blackColor];
+}
+
+@end
 
 @implementation AppDelegate
 
@@ -14,9 +59,30 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
++ (void) initialize {
+    if (self != [AppDelegate class]) return;
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *regDef = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSArchiver archivedDataWithRootObject:
+                             [NSFont fontWithName:@"Helvetica" size:8]], ccDefaultFont,
+                            [NSArchiver archivedDataWithRootObject:
+                             [NSFont fontWithName:@"Helvetica" size:10]], ccDefaultNamesFont,
+                            [NSNumber numberWithDouble:1.25 * SCALE_MULT], ccDefaultScale,
+                            [NSArchiver archivedDataWithRootObject:[self stdAlertColor]], ccAlertColor,
+                            [NSArchiver archivedDataWithRootObject:[self stdAnnounceColor]], ccAnnounceColor,
+                            [NSArchiver archivedDataWithRootObject:[self stdNormalColor]], ccNormalColor,
+                            [NSNumber numberWithInteger:CCCheckboxStyleSolid], ccCheckboxDrawStyle,
+                            [NSNumber numberWithDouble:1.0], ccLeadCircleStrokeWidth,
+                            [NSArchiver archivedDataWithRootObject:[self stdNormalColor]], ccLeadCircleColorKey,
+                            nil];
+    [ud registerDefaults:regDef];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    [self.prefCtl windowDidLoad];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.shokwave.ConvCardEditor" in the user's Application Support directory.
@@ -68,7 +134,7 @@
             return nil;
         }
     } else {
-        if (![properties[NSURLIsDirectoryKey] boolValue]) {
+        if (![[properties valueForKey:NSURLIsDirectoryKey] boolValue]) {
             // Customize and localize this error.
             NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).", [applicationFilesDirectory path]];
             
@@ -178,6 +244,22 @@
     }
 
     return NSTerminateNow;
+}
+
+- (IBAction)newPartnership:(id)sender {
+    NSLog(@"newPartnership not implemented yet");
+}
+
+- (IBAction)newCardType:(id)sender {
+    NSLog(@"newCardType not implemented yet");
+}
+
+- (IBAction)openPartnership:(id)sender {
+    NSLog(@"openPartnership not implemented yet");
+}
+
+- (IBAction)editCard:(id)sender {
+    NSLog(@"editCard not implemented yet");
 }
 
 @end
