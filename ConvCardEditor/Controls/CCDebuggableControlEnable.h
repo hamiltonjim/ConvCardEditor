@@ -7,9 +7,7 @@
 //
 //  $Id: CCDebuggableControlEnable.h,v 1.1 2010/12/21 05:13:27 jimh Exp $
 
-@interface CCDebuggableControlEnable : NSObject {
-    
-}
+@interface CCDebuggableControlEnable : NSObject
 
 + (void) setEnabled:(BOOL)enabled;
 + (void) toggleEnabled;

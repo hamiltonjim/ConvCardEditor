@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "CommonStrings.h"
 #import "CCCheckboxCell.h"
+#import "CCEFileOps.h"
+#import "CCEUnitNameTransformer.h"
+#import "CCEUnitTransformer.h"
 
 @interface AppDelegate (CCAppDelegate_private)
 
@@ -55,34 +58,116 @@
 
 @implementation AppDelegate
 
+@synthesize prefCtl;
+@synthesize typeEditorCtl;
+
+@synthesize window;
+
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
+
+@synthesize alertColor;
+@synthesize announceColor;
+@synthesize normalColor;
+
+@synthesize cardFont;
 
 + (void) initialize {
     if (self != [AppDelegate class]) return;
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSDictionary *regDef = [NSDictionary dictionaryWithObjectsAndKeys:
-                            [NSArchiver archivedDataWithRootObject:
-                             [NSFont fontWithName:@"Helvetica" size:8]], ccDefaultFont,
-                            [NSArchiver archivedDataWithRootObject:
-                             [NSFont fontWithName:@"Helvetica" size:10]], ccDefaultNamesFont,
-                            [NSNumber numberWithDouble:1.25 * SCALE_MULT], ccDefaultScale,
+                            @"Helvetica", ccDefaultFontName,
+                            [NSNumber numberWithInteger:8], ccDefaultFontSize,
+                            [NSNumber numberWithDouble:SCALE_MULT], ccDefaultScale,
                             [NSArchiver archivedDataWithRootObject:[self stdAlertColor]], ccAlertColor,
                             [NSArchiver archivedDataWithRootObject:[self stdAnnounceColor]], ccAnnounceColor,
                             [NSArchiver archivedDataWithRootObject:[self stdNormalColor]], ccNormalColor,
                             [NSNumber numberWithInteger:CCCheckboxStyleSolid], ccCheckboxDrawStyle,
                             [NSNumber numberWithDouble:1.0], ccLeadCircleStrokeWidth,
                             [NSArchiver archivedDataWithRootObject:[self stdNormalColor]], ccLeadCircleColorKey,
+                            [NSNumber numberWithBool:YES], ccChecksAreSquare,
+                            [NSNumber numberWithDouble:6.0], ccCheckboxWidth, // points, both sides when square
+                            [NSNumber numberWithDouble:6.0], ccCheckboxHeight,
+                            [NSNumber numberWithBool:NO], ccCirclesAreRound,
+                            [NSNumber numberWithDouble:6.0], ccCircleWidth,  // points, diameter when round
+                            [NSNumber numberWithDouble:8.0], ccCircleHeight,
+                            [NSNumber numberWithBool:YES], cceGridState,
                             nil];
     [ud registerDefaults:regDef];
+    [ud setBool:YES forKey:@"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
+}
+
++ (AppDelegate *)instance
+{
+    AppDelegate *it = (AppDelegate *)[NSApp delegate];
+    return it;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
-    [self.prefCtl windowDidLoad];
+    [prefCtl windowDidLoad];
+    [typeEditorCtl windowDidLoad];
+    
+    CCEFileOps *fileOps = [CCEFileOps instance];
+    [fileOps setAppSupportURL:[self applicationFilesDirectory]];
+    [fileOps checkFileTypes:[NSImage imageFileTypes]];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    alertColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAlertColor]];
+    announceColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAnnounceColor]];
+    normalColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccNormalColor]];
+}
+
+- (NSString *)colorKeyForCode:(NSInteger)code
+{
+    NSString *color;
+    switch (code) {
+        case kAlertColor:
+            color = ccAlertColor;
+            break;
+            
+        case kAnnounceColor:
+            color = ccAnnounceColor;
+            break;
+            
+        case kNormalColor:
+            color = ccNormalColor;
+            break;
+            
+        default:
+            color = nil;
+            break;
+    }
+    
+    return color;
+}
+
+- (NSColor *)colorForCode:(NSInteger)code
+{
+    NSColor *color;
+    
+    switch (code) {
+        case kAlertColor:
+            color = alertColor;
+            break;
+            
+        case kAnnounceColor:
+            color = announceColor;
+            break;
+            
+        case kNormalColor:
+            color = normalColor;
+            break;
+            
+        default:
+            color = nil;
+            break;
+    }
+    
+    return color;
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.shokwave.ConvCardEditor" in the user's Application Support directory.
@@ -174,7 +259,7 @@
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
+    _managedObjectContext = [NSManagedObjectContext new];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
 
     return _managedObjectContext;
@@ -197,6 +282,7 @@
     
     if (![[self managedObjectContext] save:&error]) {
         [[NSApplication sharedApplication] presentError:error];
+        NSLog(@"Detailed errors: %@", [[error userInfo] objectForKey:@"NSDetailedErrors"]);
     }
 }
 
@@ -221,6 +307,7 @@
     if (![[self managedObjectContext] save:&error]) {
 
         // Customize this code block to include application-specific recovery steps.              
+        NSLog(@"Detailed errors: %@", [[error userInfo] objectForKey:@"NSDetailedErrors"]);
         BOOL result = [sender presentError:error];
         if (result) {
             return NSTerminateCancel;
@@ -230,7 +317,7 @@
         NSString *info = NSLocalizedString(@"Quitting now will lose any changes you have made since the last successful save", @"Quit without saves error question info");
         NSString *quitButton = NSLocalizedString(@"Quit anyway", @"Quit anyway button title");
         NSString *cancelButton = NSLocalizedString(@"Cancel", @"Cancel button title");
-        NSAlert *alert = [[NSAlert alloc] init];
+        NSAlert *alert = [NSAlert new];
         [alert setMessageText:question];
         [alert setInformativeText:info];
         [alert addButtonWithTitle:quitButton];
@@ -251,7 +338,7 @@
 }
 
 - (IBAction)newCardType:(id)sender {
-    NSLog(@"newCardType not implemented yet");
+    [self.typeEditorCtl showWindow:sender];
 }
 
 - (IBAction)openPartnership:(id)sender {
@@ -259,7 +346,19 @@
 }
 
 - (IBAction)editCard:(id)sender {
+    [typeEditorCtl editCardType:sender];
     NSLog(@"editCard not implemented yet");
+}
+
+#pragma mark DEBUGGING
+- (IBAction)registeredObjects:(id)sender
+{
+    NSLog(@"Registered objects: %@", [[self managedObjectContext] registeredObjects]);
+}
+
+- (IBAction)updatedObjects:(id)sender
+{
+    NSLog(@"Updated objects: %@", [[self managedObjectContext] updatedObjects]);
 }
 
 @end

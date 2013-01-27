@@ -10,6 +10,8 @@
 #import <Cocoa/Cocoa.h>
 #import "CCDebuggableControlEnable.h"
 
+@class CCEModelledControl;
+
     // Protocol to allow a globally enabled, debuggable control.  It's
     // up to the conforming control cell how to draw debug mode; the
     // main thing is, debug mode can be turned on individually, then
@@ -17,12 +19,23 @@
     // CCDebuggableControlEnable.m; set the value to NO to turn off
     // debug mode everywhere.
 
+enum EDebugState {
+    kOff,
+    kShowUnselected,
+    kShowSelected
+    };
+
 @protocol CCDebuggableControl
 
 @required
-- (void) setDebugMode:(BOOL)newDebugMode;
+- (void) setDebugMode:(int)newDebugMode;
 
 @optional
-- (BOOL) debugMode;
+- (int) debugMode;
+
+    // modelledControl should be implemented as a property of a
+    // subtype of CCEModelledControl
+- (void)setModelledControl:(CCEModelledControl *)model;
+- (CCEModelledControl *)modelledControl;
 
 @end

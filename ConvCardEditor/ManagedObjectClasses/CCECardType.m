@@ -15,24 +15,4 @@
     [self setValue:@"new card" forKey:@"cardName"];
 }
 
-- (double)scale:(NSView *)view {
-    if (view == nil) {
-        [NSException raise:@"CCECardTypeNoView" format:@"CCECardType: no view"];
-    }
-    
-    if (view != scaleCalculatedForView) {
-        NSRect frame = [view frame];
-        NSSize size = frame.size;
-        
-        double wscale = size.width / [[self valueForKey:@"width"] doubleValue];
-        double hscale = size.height / [[self valueForKey:@"height"] doubleValue];
-        
-        double optimumScale = fmax(wscale, hscale);
-        scale = optimumScale;
-        scaleCalculatedForView = view;
-    }
-    
-    return scale;
-}
-
 @end

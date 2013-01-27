@@ -14,7 +14,6 @@
 		BB0E5F6416965E56003F4C3E /* CCCheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F6216965E56003F4C3E /* CCCheckboxCell.m */; };
 		BB0E5F67169662AF003F4C3E /* CommonStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F66169662AF003F4C3E /* CommonStrings.m */; };
 		BB0E5F6C169664C0003F4C3E /* CCDebuggableControlEnable.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F6B169664C0003F4C3E /* CCDebuggableControlEnable.m */; };
-		BB41CEB71696076A0055076D /* CCECardType.m in Sources */ = {isa = PBXBuildFile; fileRef = BB41CEB61696076A0055076D /* CCECardType.m */; };
 		BB4EF8C0168E46AF006C7819 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB4EF8BF168E46AF006C7819 /* Cocoa.framework */; };
 		BB4EF8CA168E46AF006C7819 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */; };
 		BB4EF8CC168E46AF006C7819 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8CB168E46AF006C7819 /* main.m */; };
@@ -27,6 +26,39 @@
 		BB4EF8EA168E46AF006C7819 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8E8168E46AF006C7819 /* InfoPlist.strings */; };
 		BB4EF8ED168E46AF006C7819 /* ConvCardEditorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8EC168E46AF006C7819 /* ConvCardEditorTests.m */; };
 		BB4EF8F8168E706B006C7819 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8F7168E706B006C7819 /* Info.plist */; };
+		BB7ADC9D1698AB1E002AAB32 /* TextTool.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7ADC9C1698AB1E002AAB32 /* TextTool.gif */; };
+		BB7ADCA21698AFF2002AAB32 /* ChoiceCircles.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7ADC9F1698AFF2002AAB32 /* ChoiceCircles.gif */; };
+		BB7ADCA31698AFF2002AAB32 /* MultiCheckbox.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7ADCA01698AFF2002AAB32 /* MultiCheckbox.gif */; };
+		BB7ADCA41698AFF2002AAB32 /* SingleCheckbox.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7ADCA11698AFF2002AAB32 /* SingleCheckbox.gif */; };
+		BB7ADCA7169CEEB4002AAB32 /* SelectionCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCA6169CEEB4002AAB32 /* SelectionCounters.m */; };
+		BB7ADCAB169DCF99002AAB32 /* NSView+ScaleUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCAA169DCF99002AAB32 /* NSView+ScaleUtilities.m */; };
+		BB7ADCAD169F7ACE002AAB32 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB7ADCAC169F7ACE002AAB32 /* Quartz.framework */; };
+		BB7ADCB2169F8C8E002AAB32 /* CCEFileOps.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */; };
+		BB7ADCBB16A2817E002AAB32 /* FixedNSImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCBA16A2817E002AAB32 /* FixedNSImageView.m */; };
+		BB7ADCC016A4D03B002AAB32 /* Arrow.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7ADCBF16A4D03B002AAB32 /* Arrow.gif */; };
+		BB7ADCCD16A5E8E4002AAB32 /* CCEColorBindableButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCCC16A5E8E4002AAB32 /* CCEColorBindableButtonCell.m */; };
+		BB7ADCD016A62369002AAB32 /* CCEModelledControl.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCCF16A62369002AAB32 /* CCEModelledControl.m */; };
+		BB7ADCDB16A63532002AAB32 /* CCBoxMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD216A6352E002AAB32 /* CCBoxMatrix.m */; };
+		BB7ADCDC16A63532002AAB32 /* CCLeadChoice.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD416A6352E002AAB32 /* CCLeadChoice.m */; };
+		BB7ADCDD16A63532002AAB32 /* CCLeadChoiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD616A63530002AAB32 /* CCLeadChoiceCell.m */; };
+		BB7ADCDE16A63532002AAB32 /* CCLeadChoiceMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */; };
+		BB7ADCDF16A63532002AAB32 /* CCMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCDA16A63532002AAB32 /* CCMatrix.m */; };
+		BBB7695216B58E3F0049662A /* Grid.gif in Resources */ = {isa = PBXBuildFile; fileRef = BBB7695116B58E3F0049662A /* Grid.gif */; };
+		BBDC594316A92A81004A56B2 /* CCELocation.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC594216A92A81004A56B2 /* CCELocation.m */; };
+		BBDC594F16A9DAEF004A56B2 /* CCEEntityFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC594E16A9DAEF004A56B2 /* CCEEntityFetcher.m */; };
+		BBDC595316A9FC4E004A56B2 /* CCESingleCheckModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC595216A9FC4E004A56B2 /* CCESingleCheckModel.m */; };
+		BBDC595616A9FC6B004A56B2 /* CCEMultiCheckModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC595516A9FC6A004A56B2 /* CCEMultiCheckModel.m */; };
+		BBDC595916A9FC99004A56B2 /* CCETextModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC595816A9FC99004A56B2 /* CCETextModel.m */; };
+		BBDC596916AF0573004A56B2 /* CCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC596816AF0572004A56B2 /* CCTextField.m */; };
+		BBFACF8016B047C100987A7F /* CCEControlsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF7F16B047C100987A7F /* CCEControlsViewController.m */; };
+		BBFACF8316B0560400987A7F /* CCEControlsSuperView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF8216B0560400987A7F /* CCEControlsSuperView.m */; };
+		BBFACF8616B05C3E00987A7F /* CCEUnitNameTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF8516B05C3E00987A7F /* CCEUnitNameTransformer.m */; };
+		BBFACF8916B0606B00987A7F /* CCEUnitTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */; };
+		BBFACF9616B1A88400987A7F /* CCESizableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF9516B1A88400987A7F /* CCESizableTextField.m */; };
+		BBFACF9816B1A96100987A7F /* loremipsum.text in Resources */ = {isa = PBXBuildFile; fileRef = BBFACF9716B1A96100987A7F /* loremipsum.text */; };
+		BBFACF9B16B1ACFF00987A7F /* CCESizableTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF9A16B1ACFF00987A7F /* CCESizableTextFieldCell.m */; };
+		BBFACF9E16B3723800987A7F /* CCEToolPaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACF9D16B3723800987A7F /* CCEToolPaletteController.m */; };
+		BBFACFA116B4D6F900987A7F /* CCEGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBFACFA016B4D6F900987A7F /* CCEGradientView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +73,7 @@
 
 /* Begin PBXFileReference section */
 		BB0E5F5216965630003F4C3E /* CCECardTypeEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCECardTypeEditorController.h; path = Controllers/CCECardTypeEditorController.h; sourceTree = "<group>"; };
-		BB0E5F5316965630003F4C3E /* CCECardTypeEditorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCECardTypeEditorController.m; path = Controllers/CCECardTypeEditorController.m; sourceTree = "<group>"; };
+		BB0E5F5316965630003F4C3E /* CCECardTypeEditorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CCECardTypeEditorController.m; path = Controllers/CCECardTypeEditorController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BB0E5F5816965728003F4C3E /* CCBoxView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBoxView.h; sourceTree = "<group>"; };
 		BB0E5F5916965728003F4C3E /* CCBoxView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBoxView.m; sourceTree = "<group>"; };
 		BB0E5F5B16965C58003F4C3E /* CCEPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEPrefsController.h; path = Controllers/CCEPrefsController.h; sourceTree = "<group>"; };
@@ -50,14 +82,12 @@
 		BB0E5F6016965E56003F4C3E /* CCCheckbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCheckbox.m; sourceTree = "<group>"; };
 		BB0E5F6116965E56003F4C3E /* CCCheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCheckboxCell.h; sourceTree = "<group>"; };
 		BB0E5F6216965E56003F4C3E /* CCCheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCheckboxCell.m; sourceTree = "<group>"; };
-		BB0E5F65169662AF003F4C3E /* CommonStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonStrings.h; sourceTree = "<group>"; };
-		BB0E5F66169662AF003F4C3E /* CommonStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonStrings.m; sourceTree = "<group>"; };
+		BB0E5F65169662AF003F4C3E /* CommonStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CommonStrings.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		BB0E5F66169662AF003F4C3E /* CommonStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CommonStrings.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BB0E5F68169664C0003F4C3E /* CCctrlParent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCctrlParent.h; sourceTree = "<group>"; };
 		BB0E5F69169664C0003F4C3E /* CCDebuggableControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDebuggableControl.h; sourceTree = "<group>"; };
 		BB0E5F6A169664C0003F4C3E /* CCDebuggableControlEnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDebuggableControlEnable.h; sourceTree = "<group>"; };
 		BB0E5F6B169664C0003F4C3E /* CCDebuggableControlEnable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDebuggableControlEnable.m; sourceTree = "<group>"; };
-		BB41CEB51696076A0055076D /* CCECardType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCECardType.h; path = ManagedObjectClasses/CCECardType.h; sourceTree = "<group>"; };
-		BB41CEB61696076A0055076D /* CCECardType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCECardType.m; path = ManagedObjectClasses/CCECardType.m; sourceTree = "<group>"; };
 		BB4EF8BB168E46AF006C7819 /* ConvCardEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConvCardEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4EF8BF168E46AF006C7819 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		BB4EF8C2168E46AF006C7819 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -69,7 +99,7 @@
 		BB4EF8CD168E46AF006C7819 /* ConvCardEditor-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ConvCardEditor-Prefix.pch"; sourceTree = "<group>"; };
 		BB4EF8CF168E46AF006C7819 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		BB4EF8D1168E46AF006C7819 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		BB4EF8D2168E46AF006C7819 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BB4EF8D2168E46AF006C7819 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BB4EF8D5168E46AF006C7819 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		BB4EF8D8168E46AF006C7819 /* ConvCardEditor.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ConvCardEditor.xcdatamodel; sourceTree = "<group>"; };
 		BB4EF8DF168E46AF006C7819 /* ConvCardEditorTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConvCardEditorTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +109,66 @@
 		BB4EF8EB168E46AF006C7819 /* ConvCardEditorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConvCardEditorTests.h; sourceTree = "<group>"; };
 		BB4EF8EC168E46AF006C7819 /* ConvCardEditorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConvCardEditorTests.m; sourceTree = "<group>"; };
 		BB4EF8F7168E706B006C7819 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB7ADC9C1698AB1E002AAB32 /* TextTool.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = TextTool.gif; sourceTree = "<group>"; };
+		BB7ADC9F1698AFF2002AAB32 /* ChoiceCircles.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = ChoiceCircles.gif; sourceTree = "<group>"; };
+		BB7ADCA01698AFF2002AAB32 /* MultiCheckbox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = MultiCheckbox.gif; sourceTree = "<group>"; };
+		BB7ADCA11698AFF2002AAB32 /* SingleCheckbox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SingleCheckbox.gif; sourceTree = "<group>"; };
+		BB7ADCA5169CEEB3002AAB32 /* SelectionCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCounters.h; sourceTree = "<group>"; };
+		BB7ADCA6169CEEB4002AAB32 /* SelectionCounters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCounters.m; sourceTree = "<group>"; };
+		BB7ADCA8169CF791002AAB32 /* CCEManagedObjectModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEManagedObjectModels.h; sourceTree = "<group>"; };
+		BB7ADCA9169DCF99002AAB32 /* NSView+ScaleUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+ScaleUtilities.h"; sourceTree = "<group>"; };
+		BB7ADCAA169DCF99002AAB32 /* NSView+ScaleUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+ScaleUtilities.m"; sourceTree = "<group>"; };
+		BB7ADCAC169F7ACE002AAB32 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		BB7ADCAE169F7AFE002AAB32 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BB7ADCB0169F8C8D002AAB32 /* CCEFileOps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEFileOps.h; sourceTree = "<group>"; };
+		BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEFileOps.m; sourceTree = "<group>"; };
+		BB7ADCB916A2817E002AAB32 /* FixedNSImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FixedNSImageView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		BB7ADCBA16A2817E002AAB32 /* FixedNSImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FixedNSImageView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		BB7ADCBF16A4D03B002AAB32 /* Arrow.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Arrow.gif; sourceTree = "<group>"; };
+		BB7ADCCB16A5E8E4002AAB32 /* CCEColorBindableButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEColorBindableButtonCell.h; sourceTree = "<group>"; };
+		BB7ADCCC16A5E8E4002AAB32 /* CCEColorBindableButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEColorBindableButtonCell.m; sourceTree = "<group>"; };
+		BB7ADCCE16A62369002AAB32 /* CCEModelledControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEModelledControl.h; path = ManagedObjectClasses/CCEModelledControl.h; sourceTree = "<group>"; };
+		BB7ADCCF16A62369002AAB32 /* CCEModelledControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEModelledControl.m; path = ManagedObjectClasses/CCEModelledControl.m; sourceTree = "<group>"; };
+		BB7ADCD116A6352D002AAB32 /* CCBoxMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBoxMatrix.h; sourceTree = "<group>"; };
+		BB7ADCD216A6352E002AAB32 /* CCBoxMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBoxMatrix.m; sourceTree = "<group>"; };
+		BB7ADCD316A6352E002AAB32 /* CCLeadChoice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLeadChoice.h; sourceTree = "<group>"; };
+		BB7ADCD416A6352E002AAB32 /* CCLeadChoice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLeadChoice.m; sourceTree = "<group>"; };
+		BB7ADCD516A6352F002AAB32 /* CCLeadChoiceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLeadChoiceCell.h; sourceTree = "<group>"; };
+		BB7ADCD616A63530002AAB32 /* CCLeadChoiceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLeadChoiceCell.m; sourceTree = "<group>"; };
+		BB7ADCD716A63530002AAB32 /* CCLeadChoiceMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLeadChoiceMatrix.h; sourceTree = "<group>"; };
+		BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLeadChoiceMatrix.m; sourceTree = "<group>"; };
+		BB7ADCD916A63531002AAB32 /* CCMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMatrix.h; sourceTree = "<group>"; };
+		BB7ADCDA16A63532002AAB32 /* CCMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CCMatrix.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		BBB7695116B58E3F0049662A /* Grid.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Grid.gif; sourceTree = "<group>"; };
+		BBDC594116A92A81004A56B2 /* CCELocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCELocation.h; path = ManagedObjectClasses/CCELocation.h; sourceTree = "<group>"; };
+		BBDC594216A92A81004A56B2 /* CCELocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CCELocation.m; path = ManagedObjectClasses/CCELocation.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		BBDC594D16A9DAEF004A56B2 /* CCEEntityFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEEntityFetcher.h; path = ManagedObjectClasses/CCEEntityFetcher.h; sourceTree = "<group>"; };
+		BBDC594E16A9DAEF004A56B2 /* CCEEntityFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEEntityFetcher.m; path = ManagedObjectClasses/CCEEntityFetcher.m; sourceTree = "<group>"; };
+		BBDC595116A9FC4E004A56B2 /* CCESingleCheckModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCESingleCheckModel.h; path = ManagedObjectClasses/CCESingleCheckModel.h; sourceTree = "<group>"; };
+		BBDC595216A9FC4E004A56B2 /* CCESingleCheckModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCESingleCheckModel.m; path = ManagedObjectClasses/CCESingleCheckModel.m; sourceTree = "<group>"; };
+		BBDC595416A9FC6A004A56B2 /* CCEMultiCheckModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEMultiCheckModel.h; path = ManagedObjectClasses/CCEMultiCheckModel.h; sourceTree = "<group>"; };
+		BBDC595516A9FC6A004A56B2 /* CCEMultiCheckModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEMultiCheckModel.m; path = ManagedObjectClasses/CCEMultiCheckModel.m; sourceTree = "<group>"; };
+		BBDC595716A9FC99004A56B2 /* CCETextModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCETextModel.h; path = ManagedObjectClasses/CCETextModel.h; sourceTree = "<group>"; };
+		BBDC595816A9FC99004A56B2 /* CCETextModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCETextModel.m; path = ManagedObjectClasses/CCETextModel.m; sourceTree = "<group>"; };
+		BBDC596716AF0571004A56B2 /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
+		BBDC596816AF0572004A56B2 /* CCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTextField.m; sourceTree = "<group>"; };
+		BBFACF7E16B047C100987A7F /* CCEControlsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEControlsViewController.h; path = Controllers/CCEControlsViewController.h; sourceTree = "<group>"; };
+		BBFACF7F16B047C100987A7F /* CCEControlsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEControlsViewController.m; path = Controllers/CCEControlsViewController.m; sourceTree = "<group>"; };
+		BBFACF8116B0560400987A7F /* CCEControlsSuperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEControlsSuperView.h; sourceTree = "<group>"; };
+		BBFACF8216B0560400987A7F /* CCEControlsSuperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEControlsSuperView.m; sourceTree = "<group>"; };
+		BBFACF8416B05C3E00987A7F /* CCEUnitNameTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEUnitNameTransformer.h; sourceTree = "<group>"; };
+		BBFACF8516B05C3E00987A7F /* CCEUnitNameTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEUnitNameTransformer.m; sourceTree = "<group>"; };
+		BBFACF8716B0606B00987A7F /* CCEUnitTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEUnitTransformer.h; sourceTree = "<group>"; };
+		BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEUnitTransformer.m; sourceTree = "<group>"; };
+		BBFACF9416B1A88400987A7F /* CCESizableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCESizableTextField.h; sourceTree = "<group>"; };
+		BBFACF9516B1A88400987A7F /* CCESizableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCESizableTextField.m; sourceTree = "<group>"; };
+		BBFACF9716B1A96100987A7F /* loremipsum.text */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = loremipsum.text; path = OtherResources/loremipsum.text; sourceTree = "<group>"; };
+		BBFACF9916B1ACFF00987A7F /* CCESizableTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCESizableTextFieldCell.h; sourceTree = "<group>"; };
+		BBFACF9A16B1ACFF00987A7F /* CCESizableTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCESizableTextFieldCell.m; sourceTree = "<group>"; };
+		BBFACF9C16B3723800987A7F /* CCEToolPaletteController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEToolPaletteController.h; path = Controllers/CCEToolPaletteController.h; sourceTree = "<group>"; };
+		BBFACF9D16B3723800987A7F /* CCEToolPaletteController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEToolPaletteController.m; path = Controllers/CCEToolPaletteController.m; sourceTree = "<group>"; };
+		BBFACF9F16B4D6F900987A7F /* CCEGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEGradientView.h; sourceTree = "<group>"; };
+		BBFACFA016B4D6F900987A7F /* CCEGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEGradientView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB7ADCAD169F7ACE002AAB32 /* Quartz.framework in Frameworks */,
 				BB4EF8C0168E46AF006C7819 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,8 +198,12 @@
 			children = (
 				BB0E5F5216965630003F4C3E /* CCECardTypeEditorController.h */,
 				BB0E5F5316965630003F4C3E /* CCECardTypeEditorController.m */,
+				BBFACF7E16B047C100987A7F /* CCEControlsViewController.h */,
+				BBFACF7F16B047C100987A7F /* CCEControlsViewController.m */,
 				BB0E5F5B16965C58003F4C3E /* CCEPrefsController.h */,
 				BB0E5F5C16965C58003F4C3E /* CCEPrefsController.m */,
+				BBFACF9C16B3723800987A7F /* CCEToolPaletteController.h */,
+				BBFACF9D16B3723800987A7F /* CCEToolPaletteController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -118,6 +213,14 @@
 			children = (
 				BB0E5F5816965728003F4C3E /* CCBoxView.h */,
 				BB0E5F5916965728003F4C3E /* CCBoxView.m */,
+				BB7ADCA9169DCF99002AAB32 /* NSView+ScaleUtilities.h */,
+				BB7ADCAA169DCF99002AAB32 /* NSView+ScaleUtilities.m */,
+				BB7ADCB916A2817E002AAB32 /* FixedNSImageView.h */,
+				BB7ADCBA16A2817E002AAB32 /* FixedNSImageView.m */,
+				BBFACF8116B0560400987A7F /* CCEControlsSuperView.h */,
+				BBFACF8216B0560400987A7F /* CCEControlsSuperView.m */,
+				BBFACF9F16B4D6F900987A7F /* CCEGradientView.h */,
+				BBFACFA016B4D6F900987A7F /* CCEGradientView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -125,6 +228,8 @@
 		BB0E5F5E16965E56003F4C3E /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				BB7ADCD116A6352D002AAB32 /* CCBoxMatrix.h */,
+				BB7ADCD216A6352E002AAB32 /* CCBoxMatrix.m */,
 				BB0E5F68169664C0003F4C3E /* CCctrlParent.h */,
 				BB0E5F69169664C0003F4C3E /* CCDebuggableControl.h */,
 				BB0E5F6A169664C0003F4C3E /* CCDebuggableControlEnable.h */,
@@ -133,6 +238,22 @@
 				BB0E5F6016965E56003F4C3E /* CCCheckbox.m */,
 				BB0E5F6116965E56003F4C3E /* CCCheckboxCell.h */,
 				BB0E5F6216965E56003F4C3E /* CCCheckboxCell.m */,
+				BB7ADCCB16A5E8E4002AAB32 /* CCEColorBindableButtonCell.h */,
+				BB7ADCCC16A5E8E4002AAB32 /* CCEColorBindableButtonCell.m */,
+				BB7ADCD316A6352E002AAB32 /* CCLeadChoice.h */,
+				BB7ADCD416A6352E002AAB32 /* CCLeadChoice.m */,
+				BB7ADCD516A6352F002AAB32 /* CCLeadChoiceCell.h */,
+				BB7ADCD616A63530002AAB32 /* CCLeadChoiceCell.m */,
+				BB7ADCD716A63530002AAB32 /* CCLeadChoiceMatrix.h */,
+				BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */,
+				BB7ADCD916A63531002AAB32 /* CCMatrix.h */,
+				BB7ADCDA16A63532002AAB32 /* CCMatrix.m */,
+				BBDC596716AF0571004A56B2 /* CCTextField.h */,
+				BBDC596816AF0572004A56B2 /* CCTextField.m */,
+				BBFACF9416B1A88400987A7F /* CCESizableTextField.h */,
+				BBFACF9516B1A88400987A7F /* CCESizableTextField.m */,
+				BBFACF9916B1ACFF00987A7F /* CCESizableTextFieldCell.h */,
+				BBFACF9A16B1ACFF00987A7F /* CCESizableTextFieldCell.m */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -140,8 +261,19 @@
 		BB41CEB9169607720055076D /* ManagedObjects */ = {
 			isa = PBXGroup;
 			children = (
-				BB41CEB51696076A0055076D /* CCECardType.h */,
-				BB41CEB61696076A0055076D /* CCECardType.m */,
+				BB7ADCA8169CF791002AAB32 /* CCEManagedObjectModels.h */,
+				BB7ADCCE16A62369002AAB32 /* CCEModelledControl.h */,
+				BB7ADCCF16A62369002AAB32 /* CCEModelledControl.m */,
+				BBDC594116A92A81004A56B2 /* CCELocation.h */,
+				BBDC594216A92A81004A56B2 /* CCELocation.m */,
+				BBDC594D16A9DAEF004A56B2 /* CCEEntityFetcher.h */,
+				BBDC594E16A9DAEF004A56B2 /* CCEEntityFetcher.m */,
+				BBDC595116A9FC4E004A56B2 /* CCESingleCheckModel.h */,
+				BBDC595216A9FC4E004A56B2 /* CCESingleCheckModel.m */,
+				BBDC595416A9FC6A004A56B2 /* CCEMultiCheckModel.h */,
+				BBDC595516A9FC6A004A56B2 /* CCEMultiCheckModel.m */,
+				BBDC595716A9FC99004A56B2 /* CCETextModel.h */,
+				BBDC595816A9FC99004A56B2 /* CCETextModel.m */,
 			);
 			name = ManagedObjects;
 			sourceTree = "<group>";
@@ -169,6 +301,8 @@
 			isa = PBXGroup;
 			children = (
 				BB4EF8BF168E46AF006C7819 /* Cocoa.framework */,
+				BB7ADCAE169F7AFE002AAB32 /* QuartzCore.framework */,
+				BB7ADCAC169F7ACE002AAB32 /* Quartz.framework */,
 				BB4EF8E0168E46AF006C7819 /* SenTestingKit.framework */,
 				BB4EF8C1168E46AF006C7819 /* Other Frameworks */,
 			);
@@ -195,6 +329,14 @@
 				BB4EF8D2168E46AF006C7819 /* AppDelegate.m */,
 				BB4EF8D4168E46AF006C7819 /* MainMenu.xib */,
 				BB4EF8D7168E46AF006C7819 /* ConvCardEditor.xcdatamodeld */,
+				BB7ADCA5169CEEB3002AAB32 /* SelectionCounters.h */,
+				BB7ADCA6169CEEB4002AAB32 /* SelectionCounters.m */,
+				BBFACF8416B05C3E00987A7F /* CCEUnitNameTransformer.h */,
+				BBFACF8516B05C3E00987A7F /* CCEUnitNameTransformer.m */,
+				BBFACF8716B0606B00987A7F /* CCEUnitTransformer.h */,
+				BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */,
+				BB7ADCB0169F8C8D002AAB32 /* CCEFileOps.h */,
+				BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */,
 				BB0E5F5716965728003F4C3E /* Views */,
 				BB0E5F5616965640003F4C3E /* Controllers */,
 				BB0E5F5E16965E56003F4C3E /* Controls */,
@@ -207,11 +349,13 @@
 		BB4EF8C6168E46AF006C7819 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BB7ADC9B1698AB1E002AAB32 /* Graphics */,
 				BB4EF8C7168E46AF006C7819 /* ConvCardEditor-Info.plist */,
 				BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */,
 				BB4EF8CB168E46AF006C7819 /* main.m */,
 				BB4EF8CD168E46AF006C7819 /* ConvCardEditor-Prefix.pch */,
 				BB4EF8CE168E46AF006C7819 /* Credits.rtf */,
+				BBFACF9716B1A96100987A7F /* loremipsum.text */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -233,6 +377,19 @@
 				BB4EF8E8168E46AF006C7819 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BB7ADC9B1698AB1E002AAB32 /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				BBB7695116B58E3F0049662A /* Grid.gif */,
+				BB7ADCBF16A4D03B002AAB32 /* Arrow.gif */,
+				BB7ADC9F1698AFF2002AAB32 /* ChoiceCircles.gif */,
+				BB7ADCA01698AFF2002AAB32 /* MultiCheckbox.gif */,
+				BB7ADCA11698AFF2002AAB32 /* SingleCheckbox.gif */,
+				BB7ADC9C1698AB1E002AAB32 /* TextTool.gif */,
+			);
+			path = Graphics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,6 +467,13 @@
 				BB4EF8D0168E46AF006C7819 /* Credits.rtf in Resources */,
 				BB4EF8D6168E46AF006C7819 /* MainMenu.xib in Resources */,
 				BB4EF8F8168E706B006C7819 /* Info.plist in Resources */,
+				BB7ADC9D1698AB1E002AAB32 /* TextTool.gif in Resources */,
+				BB7ADCA21698AFF2002AAB32 /* ChoiceCircles.gif in Resources */,
+				BB7ADCA31698AFF2002AAB32 /* MultiCheckbox.gif in Resources */,
+				BB7ADCA41698AFF2002AAB32 /* SingleCheckbox.gif in Resources */,
+				BB7ADCC016A4D03B002AAB32 /* Arrow.gif in Resources */,
+				BBFACF9816B1A96100987A7F /* loremipsum.text in Resources */,
+				BBB7695216B58E3F0049662A /* Grid.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,7 +511,6 @@
 				BB4EF8CC168E46AF006C7819 /* main.m in Sources */,
 				BB4EF8D3168E46AF006C7819 /* AppDelegate.m in Sources */,
 				BB4EF8D9168E46AF006C7819 /* ConvCardEditor.xcdatamodeld in Sources */,
-				BB41CEB71696076A0055076D /* CCECardType.m in Sources */,
 				BB0E5F5416965630003F4C3E /* CCECardTypeEditorController.m in Sources */,
 				BB0E5F5A16965728003F4C3E /* CCBoxView.m in Sources */,
 				BB0E5F5D16965C58003F4C3E /* CCEPrefsController.m in Sources */,
@@ -355,6 +518,31 @@
 				BB0E5F6416965E56003F4C3E /* CCCheckboxCell.m in Sources */,
 				BB0E5F67169662AF003F4C3E /* CommonStrings.m in Sources */,
 				BB0E5F6C169664C0003F4C3E /* CCDebuggableControlEnable.m in Sources */,
+				BB7ADCA7169CEEB4002AAB32 /* SelectionCounters.m in Sources */,
+				BB7ADCAB169DCF99002AAB32 /* NSView+ScaleUtilities.m in Sources */,
+				BB7ADCB2169F8C8E002AAB32 /* CCEFileOps.m in Sources */,
+				BB7ADCBB16A2817E002AAB32 /* FixedNSImageView.m in Sources */,
+				BB7ADCCD16A5E8E4002AAB32 /* CCEColorBindableButtonCell.m in Sources */,
+				BB7ADCD016A62369002AAB32 /* CCEModelledControl.m in Sources */,
+				BB7ADCDB16A63532002AAB32 /* CCBoxMatrix.m in Sources */,
+				BB7ADCDC16A63532002AAB32 /* CCLeadChoice.m in Sources */,
+				BB7ADCDD16A63532002AAB32 /* CCLeadChoiceCell.m in Sources */,
+				BB7ADCDE16A63532002AAB32 /* CCLeadChoiceMatrix.m in Sources */,
+				BB7ADCDF16A63532002AAB32 /* CCMatrix.m in Sources */,
+				BBDC594316A92A81004A56B2 /* CCELocation.m in Sources */,
+				BBDC594F16A9DAEF004A56B2 /* CCEEntityFetcher.m in Sources */,
+				BBDC595316A9FC4E004A56B2 /* CCESingleCheckModel.m in Sources */,
+				BBDC595616A9FC6B004A56B2 /* CCEMultiCheckModel.m in Sources */,
+				BBDC595916A9FC99004A56B2 /* CCETextModel.m in Sources */,
+				BBDC596916AF0573004A56B2 /* CCTextField.m in Sources */,
+				BBFACF8016B047C100987A7F /* CCEControlsViewController.m in Sources */,
+				BBFACF8316B0560400987A7F /* CCEControlsSuperView.m in Sources */,
+				BBFACF8616B05C3E00987A7F /* CCEUnitNameTransformer.m in Sources */,
+				BBFACF8916B0606B00987A7F /* CCEUnitTransformer.m in Sources */,
+				BBFACF9616B1A88400987A7F /* CCESizableTextField.m in Sources */,
+				BBFACF9B16B1ACFF00987A7F /* CCESizableTextFieldCell.m in Sources */,
+				BBFACF9E16B3723800987A7F /* CCEToolPaletteController.m in Sources */,
+				BBFACFA116B4D6F900987A7F /* CCEGradientView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

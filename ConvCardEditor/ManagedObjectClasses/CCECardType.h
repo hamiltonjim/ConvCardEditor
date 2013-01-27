@@ -8,11 +8,6 @@
 
 #import <CoreData/CoreData.h>
 
-@interface CCECardType : NSManagedObject {
-    NSView *scaleCalculatedForView;
-    double scale;
-}
-
-- (double)scale:(NSView *)view;
+@interface CCECardType : NSManagedObject
 
 @end

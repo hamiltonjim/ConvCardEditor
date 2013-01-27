@@ -8,22 +8,31 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CCEPrefsController.h"
+#import "Controllers/CCECardTypeEditorController.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet CCEPrefsController *prefCtl;
+@property IBOutlet CCEPrefsController *prefCtl;
+@property IBOutlet CCECardTypeEditorController *typeEditorCtl;
 
-@property (assign) IBOutlet NSWindow *window;
+@property IBOutlet NSWindow *window;
 
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (readonly, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-@property (assign) NSColor *alertColor;
-@property (assign) NSColor *announceColor;
-@property (assign) NSColor *normalColor;
+@property NSColor *alertColor;
+@property NSColor *announceColor;
+@property NSColor *normalColor;
 
-@property (assign) NSFont *cardFont;
+@property NSFont *cardFont;
+
++ (AppDelegate *)instance;
+
+- (NSColor *)colorForCode:(NSInteger)code;
+- (NSString *)colorKeyForCode:(NSInteger)code;
+
+- (NSURL *)applicationFilesDirectory;
 
 - (IBAction)saveAction:(id)sender;
 
@@ -33,5 +42,9 @@
 - (IBAction)openPartnership:(id)sender;
 
 - (IBAction)editCard:(id)sender;
+
+#pragma mark DEBUGGING
+- (IBAction)registeredObjects:(id)sender;
+- (IBAction)updatedObjects:(id)sender;
 
 @end

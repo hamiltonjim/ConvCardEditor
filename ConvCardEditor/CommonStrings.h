@@ -17,25 +17,101 @@
 #define ANNOUNCE_COLOR_G    0.580392156862745
 #define ANNOUNCE_COLOR_B    0.945098039215686
 
+/*  LAYOUT colors */
+#define UNSELECTED_COLOR_R  0.0
+#define UNSELECTED_COLOR_G  0.25
+#define UNSELECTED_COLOR_B  1.0
+#define UNSELECTED_COLOR_A  0.3
 
-extern NSString *ccDefaultFont;
-extern NSString *ccDefaultNamesFont;
+#define SELECTED_COLOR_R    1.0
+#define SELECTED_COLOR_G    0.5
+#define SELECTED_COLOR_B    0.0
+#define SELECTED_COLOR_A    0.7
+
+enum kAlertingColor {
+    kStandardColorsLowerBound,
+    
+    kNormalColor = kStandardColorsLowerBound,
+    kAlertColor,
+    kAnnounceColor,
+    
+        // final entry: number of "real" entries
+    kNumberStandardColors
+    };
+
+extern NSString *ccDefaultFontSize;
+extern NSString *ccDefaultFontName;
 extern NSString *ccDefaultScale;
 
 extern NSString *ccAlertColor;
 extern NSString *ccAnnounceColor;
 extern NSString *ccNormalColor;
 
+    // dimensions
+extern NSString *ccDimensionUnit;
+
+enum kDimensionUnits {
+    kPointsDimension = 0,
+    kInchesDimension,
+    kCentimetersDimension
+    };
+extern NSString *ccUnitPoints;
+extern NSString *ccUnitInches;
+extern NSString *ccUnitCentimeters;
+
+
+extern const double kInchDivisor;
+extern const double kInchesToCentimeters;
+extern const double kCentimeterDivisor;
+
 extern NSString *ccCheckboxDrawStyle;
 extern NSString *ccLeadCircleStrokeWidth;
 extern NSString *ccLeadCircleColorKey;
 
-extern NSString *ccTypeMagicFractionsKey;
 extern NSString *ccTypeMagicSuitSymbolsKey;
 extern NSString *ccMagicSuitSymbolCodeKey;
 
+extern NSString *ccChecksAreSquare;
+extern NSString *ccCheckboxWidth;
+extern NSString *ccCheckboxHeight;  // not used when AreSquare
+
+extern NSString *ccCirclesAreRound;
+extern NSString *ccCircleWidth;
+extern NSString *ccCircleHeight;    // not used when AreRound
+
+    // managed object entities
+extern NSString *ccSingleCheck;
+extern NSString *ccMultiCheck;
+extern NSString *ccText;
+
+    // control types chooser
+enum EControlType {
+    kPointerControl = 0,
+    kTextControl = 100,
+    kSingleCheckboxControl = 200,
+    kMultiCheckboxControl = 300,
+    kCircleChoiceControl = 400
+};
+
+extern NSString *ccLocation;
+extern NSString *ccCardType;
+extern NSString *ccSetting;
+
+extern NSString *ccModelLocation;
+extern NSString *ccModelMultiLocations;
+
 extern const double SCALE_MULT;
 
+extern NSString *kControlLocationX;
+extern NSString *kControlLocationY;
+extern NSString *kControlWidth;
+extern NSString *kControlHeight;
+
+extern NSString *cceGridState;
+
 @interface CommonStrings : NSObject
+
++ (NSString *)standardColorKey:(int)colorCode;
++ (NSArray *)dimensionKeys;
 
 @end

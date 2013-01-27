@@ -10,8 +10,6 @@
 #import "CCCheckboxCell.h"
 #import "AppDelegate.h"
 
-static NSInteger checkboxStyle;
-
 static AppDelegate *appDel() {
     static AppDelegate *del = nil;
     if (nil == del)
@@ -19,16 +17,65 @@ static AppDelegate *appDel() {
     return del;
 }
 
-static BOOL sDebugNames = NO;
-
-@interface CCCheckboxCell(private_additions)
+@interface CCCheckboxCell()
 
 - (void) watchColor:(NSString *)aColorKey;
 - (void) unwatchColor;
 
 @end
 
-@implementation CCCheckboxCell(private_additions)
+@implementation CCCheckboxCell
+
+@synthesize color;
+@synthesize colorKey;
+@synthesize debugMode;
+@synthesize forceMode;
+
+static NSInteger checkboxStyle;
+
+static NSColor *showColor;
+static NSColor *selectedColor;
+
++ (void)initialize
+{
+    if (self != [CCCheckboxCell class]) {
+        return;
+    }
+    
+    showColor = [NSColor colorWithCalibratedRed:UNSELECTED_COLOR_R
+                                          green:UNSELECTED_COLOR_G
+                                           blue:UNSELECTED_COLOR_B
+                                          alpha:UNSELECTED_COLOR_A];
+    selectedColor = [NSColor colorWithCalibratedRed:SELECTED_COLOR_R
+                                              green:SELECTED_COLOR_G
+                                               blue:SELECTED_COLOR_B
+                                              alpha:SELECTED_COLOR_A];
+    
+    [self setCheckboxStyle:[[NSUserDefaults standardUserDefaults]
+                            integerForKey:ccCheckboxDrawStyle]];
+}
+
++ (void) setCheckboxStyle:(NSInteger)newStyle {
+    checkboxStyle = newStyle;
+}
+
+- (void) dealloc {
+    [self unwatchColor];
+    
+    [appDel() removeObserver:self forKeyPath:ccCheckboxDrawStyle];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    CCCheckboxCell *cpy = [[CCCheckboxCell allocWithZone:zone] initCCCheckboxCellWithColor:color];
+    [cpy setColorKey:colorKey];
+    return cpy;
+}
+
+- (void)setDebugMode:(int)mode
+{
+    debugMode = mode;
+    [[self controlView] setNeedsDisplay:YES];
+}
 
 - (void) watchColor:(NSString *)aColorKey {
     [self unwatchColor];
@@ -61,51 +108,10 @@ static BOOL sDebugNames = NO;
     observingSet = YES;    
 }
 
-@end
-
-@implementation CCCheckboxCell
-
-@synthesize color;
-@synthesize colorKey;
-@synthesize debugMode;
-@synthesize dName;
-@synthesize forceMode;
-
-+ (void) setCheckboxStyle:(NSInteger)newStyle {
-    checkboxStyle = newStyle;
-}
-
-+ (void) setDebugNames:(BOOL)mode {
-    sDebugNames = mode;
-}
-
-+ (void) initialize {
-    if (self == [CCCheckboxCell class]) {
-        [self setCheckboxStyle:[[NSUserDefaults standardUserDefaults]
-                                integerForKey:ccCheckboxDrawStyle]];
-    }
-}
-
-- (void) dealloc {
-    [self unwatchColor];
-    
-    [appDel() removeObserver:self forKeyPath:ccCheckboxDrawStyle];
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    CCCheckboxCell *cpy = [[CCCheckboxCell allocWithZone:zone] initCCCheckboxCellWithColor:color name:dName];
-    [cpy setColorKey:colorKey];
-    return cpy;
-}
-
 - (id) initCCCheckboxCellWithColor:(NSColor *)col {
-    return [self initCCCheckboxCellWithColor:col name:nil];
-}
-- (id) initCCCheckboxCellWithColor:(NSColor *)col name:(NSString *)aName {
-    if ((self = [self initTextCell:aName])) {
+    if ((self = [self initTextCell:nil])) {
         self.color = col;
-        self.debugMode = NO;
-        self.dName = aName;
+        self.debugMode = kOff;
         
         [self setButtonType:NSOnOffButton];
         [self observeCheckboxStyle];
@@ -121,7 +127,7 @@ static BOOL sDebugNames = NO;
 }
 
 - (void) drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    if (NSOnState == [self state]){
+    if (forceMode || NSOnState == [self state]){
         [self observeCheckboxStyle];
         NSBezierPath *rpath;
         double width = cellFrame.size.width;
@@ -173,10 +179,22 @@ static BOOL sDebugNames = NO;
         }
     }
     
-    if ([CCDebuggableControlEnable enabled] || debugMode) {
-        NSColor *dcolor = [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:0.5];
+    if (!forceMode && [CCDebuggableControlEnable enabled]) {
+        NSColor *dColor;
+        switch (debugMode) {
+            case kOff:
+                return;
+                
+            case kShowUnselected:
+                dColor = showColor;
+                break;
+                
+            case kShowSelected:
+                dColor = selectedColor;
+                break;
+        }
         NSBezierPath *dpath = [NSBezierPath bezierPathWithRect:cellFrame];
-        [dcolor set];
+        [dColor set];
         [dpath fill];
     }
 }
@@ -190,8 +208,6 @@ static BOOL sDebugNames = NO;
     
     if ([keyPath isEqualToString:colorKey]) {
         [self setColor:[appDel() valueForKey:colorKey]];
-        if (sDebugNames && dName)
-            NSLog(@"Set cell named %@ to color %@", dName, colorKey);
     } else if ([keyPath isEqualToString:ccCheckboxDrawStyle]) {
         [[self controlView] setNeedsDisplay:YES];
     }

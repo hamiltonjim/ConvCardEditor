@@ -23,24 +23,20 @@ enum CCCheckboxStyle {
     
     BOOL observingSet;
     
-    BOOL debugMode;
-    NSString *dName;
+    int debugMode;
     
     NSNumber *forceMode;
 }
 
-@property (copy) NSColor *color;
-@property (retain) NSString *colorKey;
+@property NSColor *color;
+@property NSString *colorKey;
 
-@property BOOL debugMode;
-@property (retain) NSString *dName;
+@property (nonatomic) int debugMode;
 
-@property (retain) NSNumber *forceMode;
+@property NSNumber *forceMode;
 
 - (id) initCCCheckboxCellWithColor:(NSColor *)col;
-- (id) initCCCheckboxCellWithColor:(NSColor *)col name:(NSString *)name;
 
 + (void) setCheckboxStyle:(NSInteger)newStyle;
-+ (void) setDebugNames:(BOOL)mode;
 
 @end

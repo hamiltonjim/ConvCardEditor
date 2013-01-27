@@ -10,30 +10,27 @@
 #import "CCCheckbox.h"
 #import "CCCheckboxCell.h"
 
-@interface CCEPrefsController ()
-
-@end
-
 @implementation CCEPrefsController
 
 
 - (void)windowDidLoad
 {
-    CCCheckbox *cbox = [[CCCheckbox alloc] initWithFrameUnscaled:[fillBox bounds]];
+    CCCheckbox *cbox;
+    cbox = [[CCCheckbox alloc] initWithFrame:[fillBox bounds] color:[NSColor blackColor]];
     CCCheckboxCell *cell = (CCCheckboxCell *)[cbox cell];
     [cell setForceMode:[NSNumber numberWithInteger:CCCheckboxStyleSolid]];
     [fillBox addSubview:cbox];
     [cbox setIntegerValue:1];
     [cbox setEnabled:NO];
     
-    cbox = [[CCCheckbox alloc] initWithFrameUnscaled:[checkBox bounds]];
+    cbox = [[CCCheckbox alloc] initWithFrame:[checkBox bounds] color:[NSColor blackColor]];
     cell = (CCCheckboxCell *)[cbox cell];
     [cell setForceMode:[NSNumber numberWithInteger:CCCheckboxStyleCheck]];
     [checkBox addSubview:cbox];
     [cbox setIntegerValue:1];
     [cbox setEnabled:NO];
     
-    cbox = [[CCCheckbox alloc] initWithFrameUnscaled:[xBox bounds]];
+    cbox = [[CCCheckbox alloc] initWithFrame:[xBox bounds] color:[NSColor blackColor]];
     cell = (CCCheckboxCell *)[cbox cell];
     [cell setForceMode:[NSNumber numberWithInteger:CCCheckboxStyleCross]];
     [xBox addSubview:cbox];

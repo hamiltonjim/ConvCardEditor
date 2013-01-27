@@ -12,26 +12,25 @@
 #import "CCctrlParent.h"
 #import "CCDebuggableControl.h"
 
-@interface CCCheckbox : NSButton <CCDebuggableControl> {
-    NSRect frame;
-    NSColor *color;
-    NSObject <CCctrlParent> *parent;
-    
-    BOOL unscaled;
-}
+@class CCESingleCheckModel;
+@class CCELocation;
 
-@property (retain) id <CCctrlParent> parent;
+@interface CCCheckbox : NSButton <CCDebuggableControl>
 
-- (id) initWithFrameUnscaled:(NSRect)frameRect;
+@property id <CCctrlParent> parent;
+@property (nonatomic) CCESingleCheckModel *modelledControl;
+@property (nonatomic) CCELocation *modelLocation;
+@property (nonatomic) NSColor *color;
 
-- (id) initWithFrame:(NSRect)frameRect color:(NSColor *)aColor;
-- (id) initWithFrame:(NSRect)frameRect colorKey:(NSString *)aColorKey;
+@property NSRect frameRect;
 
-- (NSColor *) getColor;
-- (void) setColor:(NSColor *) color;
++ (id)checkboxWithCheckModel:(CCESingleCheckModel *)model;
+
+- (id)initWithModel:(CCESingleCheckModel *)model;
+
+- (id) initWithFrame:(NSRect)frameR color:(NSColor *)aColor;
+- (id) initWithFrame:(NSRect)frameR colorKey:(NSString *)aColorKey;
 
 - (void) setColorKey:(NSString *)key;
-
-- (void) setDName:(NSString *)name;
 
 @end
