@@ -28,6 +28,11 @@
 #define SELECTED_COLOR_B    0.0
 #define SELECTED_COLOR_A    0.7
 
+#define SELECTED_OTHER_CL_R 1.0
+#define SELECTED_OTHER_CL_G 0.0
+#define SELECTED_OTHER_CL_B 0.8
+#define SELECTED_OTHER_CL_A 0.4
+
 enum kAlertingColor {
     kStandardColorsLowerBound,
     
@@ -90,7 +95,11 @@ enum EControlType {
     kTextControl = 100,
     kSingleCheckboxControl = 200,
     kMultiCheckboxControl = 300,
-    kCircleChoiceControl = 400
+    kCircleChoiceControl = 400,
+    
+        // mostly for adding children to an existing control
+    kControlVariant = 10,
+    kTagGap = 100
 };
 
 extern NSString *ccLocation;
@@ -109,9 +118,27 @@ extern NSString *kControlHeight;
 
 extern NSString *cceGridState;
 
+extern NSString *cceLocationColor;
+extern NSString *cceLocationColorCode;
+
+    // preference for step value
+extern NSString *cceStepTransformer;
+extern NSString *cceStepIncrement;
+extern NSString *cceStepIncrementIndex;
+
+enum EStepRadioChoices {
+    kStepRadioOne = 0,
+    kStepRadioHalf,
+    kStepRadioOther
+};
+
+extern NSString *applicationDomain;
+
+
 @interface CommonStrings : NSObject
 
 + (NSString *)standardColorKey:(int)colorCode;
++ (NSInteger)standardColorCodeForKey:(NSString *)theKey;
 + (NSArray *)dimensionKeys;
 
 @end

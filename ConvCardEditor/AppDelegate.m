@@ -12,8 +12,10 @@
 #import "CCEFileOps.h"
 #import "CCEUnitNameTransformer.h"
 #import "CCEUnitTransformer.h"
+#import "CCECardStyleDocument.h"
+#import "CCEEntityFetcher.h"
 
-@interface AppDelegate (CCAppDelegate_private)
+@interface AppDelegate ()
 
 - (void) flushColors;
 - (void) flushFonts;
@@ -22,9 +24,33 @@
 + (NSColor *) stdAnnounceColor;
 + (NSColor *) stdNormalColor;
 
+- (void)ensureMyDocumentsExists;
+
 @end
 
-@implementation AppDelegate (CCAppDelegate_private)
+
+@implementation AppDelegate
+
+@synthesize prefCtl;
+@synthesize typeEditorCtl;
+
+@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+@synthesize managedObjectModel = _managedObjectModel;
+@synthesize managedObjectContext = _managedObjectContext;
+
+@synthesize alertColor;
+@synthesize announceColor;
+@synthesize normalColor;
+
+@synthesize cardFont;
+
+@synthesize chooseCardTypePanel;
+@synthesize cardTypesCol;
+@synthesize cardChooser;
+@synthesize directionLabel;
+@synthesize actionButton;
+
+@synthesize myDocuments;
 
 - (void) flushColors {
     self.alertColor = nil;
@@ -54,25 +80,6 @@
     return [NSColor blackColor];
 }
 
-@end
-
-@implementation AppDelegate
-
-@synthesize prefCtl;
-@synthesize typeEditorCtl;
-
-@synthesize window;
-
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize managedObjectContext = _managedObjectContext;
-
-@synthesize alertColor;
-@synthesize announceColor;
-@synthesize normalColor;
-
-@synthesize cardFont;
-
 + (void) initialize {
     if (self != [AppDelegate class]) return;
     
@@ -91,9 +98,10 @@
                             [NSNumber numberWithDouble:6.0], ccCheckboxWidth, // points, both sides when square
                             [NSNumber numberWithDouble:6.0], ccCheckboxHeight,
                             [NSNumber numberWithBool:NO], ccCirclesAreRound,
-                            [NSNumber numberWithDouble:6.0], ccCircleWidth,  // points, diameter when round
-                            [NSNumber numberWithDouble:8.0], ccCircleHeight,
+                            [NSNumber numberWithDouble:7.0], ccCircleWidth,  // points, diameter when round
+                            [NSNumber numberWithDouble:10.0], ccCircleHeight,
                             [NSNumber numberWithBool:YES], cceGridState,
+                            [NSNumber numberWithDouble:1.0], cceStepIncrement,
                             nil];
     [ud registerDefaults:regDef];
     [ud setBool:YES forKey:@"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
@@ -107,9 +115,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+        // initialize preferences
     [prefCtl windowDidLoad];
-    [typeEditorCtl windowDidLoad];
     
     CCEFileOps *fileOps = [CCEFileOps instance];
     [fileOps setAppSupportURL:[self applicationFilesDirectory]];
@@ -119,6 +126,16 @@
     alertColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAlertColor]];
     announceColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAnnounceColor]];
     normalColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccNormalColor]];
+    
+        // if there are no card definitions (i.e., first-run or reset), load defaults
+    [self initialImport];
+}
+
+- (id)openCardWindowNib
+{
+    id nib = [[NSNib alloc] initWithNibNamed:@"CardWindow" bundle:nil];
+    [nib instantiateNibWithOwner:self topLevelObjects:nil];
+    return nib;
 }
 
 - (NSString *)colorKeyForCode:(NSInteger)code
@@ -324,7 +341,7 @@
         [alert addButtonWithTitle:cancelButton];
 
         NSInteger answer = [alert runModal];
-        
+        NSLog(@"quit answer: %ld", answer);
         if (answer == NSAlertAlternateReturn) {
             return NSTerminateCancel;
         }
@@ -338,7 +355,9 @@
 }
 
 - (IBAction)newCardType:(id)sender {
-    [self.typeEditorCtl showWindow:sender];
+    [self openCardWindowNib];
+    [NSApp sendAction:@selector(editNewCardType:) to:nil];
+        //    [self.typeEditorCtl showWindow:sender];
 }
 
 - (IBAction)openPartnership:(id)sender {
@@ -346,8 +365,130 @@
 }
 
 - (IBAction)editCard:(id)sender {
-    [typeEditorCtl editCardType:sender];
-    NSLog(@"editCard not implemented yet");
+    [chooseCardTypePanel orderOut:sender];
+    
+    [self openCardWindowNib];
+
+    typeEditorCtl.cardType = [[cardChooser selectedObjects] objectAtIndex:0];
+    [typeEditorCtl openCard:self];
+}
+
+- (IBAction)editCardType:(id)sender
+{
+    [directionLabel setStringValue:NSLocalizedString(@"Choose card style to edit:", @"edit card direction")];
+    [actionButton setTitle:NSLocalizedString(@"Edit", @"Edit")];
+    [actionButton setAction:@selector(editCard:)];
+    
+    [chooseCardTypePanel makeKeyAndOrderFront:sender];
+}
+
+- (void)ensureMyDocumentsExists
+{
+    if (myDocuments != nil)
+        return;
+    @synchronized(self) {
+        if (myDocuments == nil) {
+            myDocuments = [NSMutableSet set];
+        }
+    }
+}
+
+- (void)documentHasOpened:(NSDocument *)document
+{
+    [self ensureMyDocumentsExists];
+    [myDocuments addObject:document];
+}
+
+- (void)documentWillClose:(NSDocument *)document
+{
+    [self ensureMyDocumentsExists];
+    [myDocuments removeObject:document];
+}
+
+- (IBAction)importCardType:(id)sender
+{
+    [CCECardStyleDocument importCardStyleTo:self];
+}
+
+- (IBAction)exportCardType:(id)sender
+{
+    [directionLabel setStringValue:NSLocalizedString(@"Choose card style to export:", @"export card direction")];
+    [actionButton setTitle:NSLocalizedString(@"Export", @"Export")];
+    [actionButton setAction:@selector(doExport:)];
+    
+    [chooseCardTypePanel makeKeyAndOrderFront:sender];
+}
+
+- (void)doExport:(id)sender
+{
+//    NSLog(@"exportCardType not implemented yet");
+    [chooseCardTypePanel orderOut:sender];
+    
+    NSManagedObject *cardType = [[cardChooser selectedObjects] objectAtIndex:0];
+    
+    [CCECardStyleDocument exportCardStyle:cardType];
+    return;
+}
+
+- (IBAction)importPartnership:(id)sender
+{
+    NSLog(@"importPartnership not implemented yet");
+}
+- (IBAction)exportPartnership:(id)sender
+{
+    NSLog(@"exportPartnership not implemented yet");
+}
+
+- (void)watchCheckboxStyle
+{
+    [[NSUserDefaults standardUserDefaults] addObserver:self
+                                            forKeyPath:ccCheckboxDrawStyle
+                                               options:NSKeyValueObservingOptionNew
+                                               context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([ccCheckboxDrawStyle isEqualToString:keyPath]) {
+        [CCCheckboxCell setCheckboxStyle:[object integerForKey:keyPath]];
+    }
+    
+}
+
+#pragma mark FIRST TIME RUN or RESET
+
+- (void)initialImport
+{
+    NSArray *cardTypes = [[CCEEntityFetcher instance] allCardTypes];
+    if ([cardTypes count] > 0)
+        return;
+    
+    NSBundle *mb = [NSBundle mainBundle];
+    NSString *resourcePath = @"";
+    
+        // card styles
+    NSArray *styles = [mb pathsForResourcesOfType:cceStyledocType
+                                      inDirectory:resourcePath];
+    
+    [styles enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
+        NSURL *url = [NSURL fileURLWithPath:path];
+        CCECardStyleDocument *doc = [[CCECardStyleDocument alloc] initWithContentsOfURL:url
+                                                                                 ofType:cceStyledocType
+                                                                                  error:NULL];
+        [doc doImport];
+    }];
+}
+
+#pragma mark UNDO/REDO
+
+- (IBAction)undo:(id)sender
+{
+    [[self managedObjectContext] undo];
+}
+
+- (IBAction)redo:(id)sender
+{
+    [[self managedObjectContext] redo];
 }
 
 #pragma mark DEBUGGING

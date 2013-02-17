@@ -43,7 +43,23 @@
 		BB7ADCDD16A63532002AAB32 /* CCLeadChoiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD616A63530002AAB32 /* CCLeadChoiceCell.m */; };
 		BB7ADCDE16A63532002AAB32 /* CCLeadChoiceMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */; };
 		BB7ADCDF16A63532002AAB32 /* CCMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCDA16A63532002AAB32 /* CCMatrix.m */; };
+		BBA012E116C464C900C21930 /* CCEConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012E016C464C900C21930 /* CCEConstants.m */; };
+		BBA012E416C5D5CB00C21930 /* CardWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA012E216C5D5CA00C21930 /* CardWindow.xib */; };
+		BBA012E916CAD49D00C21930 /* CCEStepIncrementTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012E816CAD49D00C21930 /* CCEStepIncrementTransformer.m */; };
+		BBA012EF16CB091F00C21930 /* CCEIncrementBindableStepper.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012EE16CB091E00C21930 /* CCEIncrementBindableStepper.m */; };
+		BBA012F516CD9D6900C21930 /* NSManagedObject+CCESerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012F416CD9D6900C21930 /* NSManagedObject+CCESerializer.m */; };
+		BBA012FC16CEBD1A00C21930 /* card.icns in Resources */ = {isa = PBXBuildFile; fileRef = BBA012FA16CEBD1A00C21930 /* card.icns */; };
+		BBA012FD16CEBD1A00C21930 /* cardApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = BBA012FB16CEBD1A00C21930 /* cardApp.icns */; };
+		BBA012FF16CEBD6400C21930 /* CardStyle.icns in Resources */ = {isa = PBXBuildFile; fileRef = BBA012FE16CEBD6400C21930 /* CardStyle.icns */; };
+		BBA0130C16CEE02900C21930 /* CCECardStyleDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */; };
+		BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */; };
+		BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */ = {isa = PBXBuildFile; fileRef = BBA0131416D0503700C21930 /* ACBL.cardstyle */; };
 		BBB7695216B58E3F0049662A /* Grid.gif in Resources */ = {isa = PBXBuildFile; fileRef = BBB7695116B58E3F0049662A /* Grid.gif */; };
+		BBC77FBC16B9A91F003E366D /* CCELocationController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FBB16B9A91F003E366D /* CCELocationController.m */; };
+		BBC77FBE16B9DC08003E366D /* fuzzyMath.c in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FBD16B9DC08003E366D /* fuzzyMath.c */; };
+		BBC77FC616BB1385003E366D /* CCEControlTest.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FC516BB1384003E366D /* CCEControlTest.m */; };
+		BBC77FC916BD9590003E366D /* NSControl+CCESetColorCode.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FC816BD9590003E366D /* NSControl+CCESetColorCode.m */; };
+		BBC77FCE16BF042C003E366D /* CCEToolWithVariantButton.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FCD16BF042B003E366D /* CCEToolWithVariantButton.m */; };
 		BBDC594316A92A81004A56B2 /* CCELocation.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC594216A92A81004A56B2 /* CCELocation.m */; };
 		BBDC594F16A9DAEF004A56B2 /* CCEEntityFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC594E16A9DAEF004A56B2 /* CCEEntityFetcher.m */; };
 		BBDC595316A9FC4E004A56B2 /* CCESingleCheckModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BBDC595216A9FC4E004A56B2 /* CCESingleCheckModel.m */; };
@@ -139,7 +155,34 @@
 		BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLeadChoiceMatrix.m; sourceTree = "<group>"; };
 		BB7ADCD916A63531002AAB32 /* CCMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMatrix.h; sourceTree = "<group>"; };
 		BB7ADCDA16A63532002AAB32 /* CCMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CCMatrix.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		BBA012DF16C464C900C21930 /* CCEConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEConstants.h; path = Utilities/CCEConstants.h; sourceTree = "<group>"; };
+		BBA012E016C464C900C21930 /* CCEConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEConstants.m; path = Utilities/CCEConstants.m; sourceTree = "<group>"; };
+		BBA012E316C5D5CB00C21930 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CardWindow.xib; sourceTree = "<group>"; };
+		BBA012E716CAD49D00C21930 /* CCEStepIncrementTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEStepIncrementTransformer.h; sourceTree = "<group>"; };
+		BBA012E816CAD49D00C21930 /* CCEStepIncrementTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEStepIncrementTransformer.m; sourceTree = "<group>"; };
+		BBA012ED16CB091C00C21930 /* CCEIncrementBindableStepper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEIncrementBindableStepper.h; sourceTree = "<group>"; };
+		BBA012EE16CB091E00C21930 /* CCEIncrementBindableStepper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEIncrementBindableStepper.m; sourceTree = "<group>"; };
+		BBA012F316CD9D6900C21930 /* NSManagedObject+CCESerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+CCESerializer.h"; sourceTree = "<group>"; };
+		BBA012F416CD9D6900C21930 /* NSManagedObject+CCESerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+CCESerializer.m"; sourceTree = "<group>"; };
+		BBA012FA16CEBD1A00C21930 /* card.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = card.icns; sourceTree = "<group>"; };
+		BBA012FB16CEBD1A00C21930 /* cardApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cardApp.icns; sourceTree = "<group>"; };
+		BBA012FE16CEBD6400C21930 /* CardStyle.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CardStyle.icns; sourceTree = "<group>"; };
+		BBA0130916CEE02900C21930 /* CCECardStyleDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCECardStyleDocument.h; path = Documents/CCECardStyleDocument.h; sourceTree = "<group>"; };
+		BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCECardStyleDocument.m; path = Documents/CCECardStyleDocument.m; sourceTree = "<group>"; };
+		BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CCECardStyleDocument.xib; path = Documents/CCECardStyleDocument.xib; sourceTree = "<group>"; };
+		BBA0130E16D00B9800C21930 /* CCEDocumentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCEDocumentDelegate.h; path = Documents/CCEDocumentDelegate.h; sourceTree = "<group>"; };
+		BBA0131416D0503700C21930 /* ACBL.cardstyle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACBL.cardstyle; path = OtherResources/ACBL.cardstyle; sourceTree = "<group>"; };
 		BBB7695116B58E3F0049662A /* Grid.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Grid.gif; sourceTree = "<group>"; };
+		BBC77FBA16B9A91F003E366D /* CCELocationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCELocationController.h; path = Controllers/CCELocationController.h; sourceTree = "<group>"; };
+		BBC77FBB16B9A91F003E366D /* CCELocationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCELocationController.m; path = Controllers/CCELocationController.m; sourceTree = "<group>"; };
+		BBC77FBD16B9DC08003E366D /* fuzzyMath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fuzzyMath.c; sourceTree = "<group>"; };
+		BBC77FBF16B9DC4D003E366D /* fuzzyMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fuzzyMath.h; sourceTree = "<group>"; };
+		BBC77FC416BB1384003E366D /* CCEControlTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEControlTest.h; sourceTree = "<group>"; };
+		BBC77FC516BB1384003E366D /* CCEControlTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEControlTest.m; sourceTree = "<group>"; };
+		BBC77FC716BD9590003E366D /* NSControl+CCESetColorCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSControl+CCESetColorCode.h"; sourceTree = "<group>"; };
+		BBC77FC816BD9590003E366D /* NSControl+CCESetColorCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSControl+CCESetColorCode.m"; sourceTree = "<group>"; };
+		BBC77FCC16BF042B003E366D /* CCEToolWithVariantButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEToolWithVariantButton.h; sourceTree = "<group>"; };
+		BBC77FCD16BF042B003E366D /* CCEToolWithVariantButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEToolWithVariantButton.m; sourceTree = "<group>"; };
 		BBDC594116A92A81004A56B2 /* CCELocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCELocation.h; path = ManagedObjectClasses/CCELocation.h; sourceTree = "<group>"; };
 		BBDC594216A92A81004A56B2 /* CCELocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CCELocation.m; path = ManagedObjectClasses/CCELocation.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BBDC594D16A9DAEF004A56B2 /* CCEEntityFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEEntityFetcher.h; path = ManagedObjectClasses/CCEEntityFetcher.h; sourceTree = "<group>"; };
@@ -204,6 +247,8 @@
 				BB0E5F5C16965C58003F4C3E /* CCEPrefsController.m */,
 				BBFACF9C16B3723800987A7F /* CCEToolPaletteController.h */,
 				BBFACF9D16B3723800987A7F /* CCEToolPaletteController.m */,
+				BBC77FBA16B9A91F003E366D /* CCELocationController.h */,
+				BBC77FBB16B9A91F003E366D /* CCELocationController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -221,6 +266,10 @@
 				BBFACF8216B0560400987A7F /* CCEControlsSuperView.m */,
 				BBFACF9F16B4D6F900987A7F /* CCEGradientView.h */,
 				BBFACFA016B4D6F900987A7F /* CCEGradientView.m */,
+				BBC77FC716BD9590003E366D /* NSControl+CCESetColorCode.h */,
+				BBC77FC816BD9590003E366D /* NSControl+CCESetColorCode.m */,
+				BBC77FCC16BF042B003E366D /* CCEToolWithVariantButton.h */,
+				BBC77FCD16BF042B003E366D /* CCEToolWithVariantButton.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -254,6 +303,10 @@
 				BBFACF9516B1A88400987A7F /* CCESizableTextField.m */,
 				BBFACF9916B1ACFF00987A7F /* CCESizableTextFieldCell.h */,
 				BBFACF9A16B1ACFF00987A7F /* CCESizableTextFieldCell.m */,
+				BBC77FC416BB1384003E366D /* CCEControlTest.h */,
+				BBC77FC516BB1384003E366D /* CCEControlTest.m */,
+				BBA012ED16CB091C00C21930 /* CCEIncrementBindableStepper.h */,
+				BBA012EE16CB091E00C21930 /* CCEIncrementBindableStepper.m */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -327,16 +380,11 @@
 				BB0E5F66169662AF003F4C3E /* CommonStrings.m */,
 				BB4EF8D1168E46AF006C7819 /* AppDelegate.h */,
 				BB4EF8D2168E46AF006C7819 /* AppDelegate.m */,
-				BB4EF8D4168E46AF006C7819 /* MainMenu.xib */,
+				BBA012E616C9713C00C21930 /* Nibs */,
 				BB4EF8D7168E46AF006C7819 /* ConvCardEditor.xcdatamodeld */,
-				BB7ADCA5169CEEB3002AAB32 /* SelectionCounters.h */,
-				BB7ADCA6169CEEB4002AAB32 /* SelectionCounters.m */,
-				BBFACF8416B05C3E00987A7F /* CCEUnitNameTransformer.h */,
-				BBFACF8516B05C3E00987A7F /* CCEUnitNameTransformer.m */,
-				BBFACF8716B0606B00987A7F /* CCEUnitTransformer.h */,
-				BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */,
-				BB7ADCB0169F8C8D002AAB32 /* CCEFileOps.h */,
-				BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */,
+				BBA012E516C9710400C21930 /* Transformers */,
+				BBA0130816CEDFEC00C21930 /* Documents */,
+				BBC77FC016B9DC5B003E366D /* Utilities */,
 				BB0E5F5716965728003F4C3E /* Views */,
 				BB0E5F5616965640003F4C3E /* Controllers */,
 				BB0E5F5E16965E56003F4C3E /* Controls */,
@@ -349,6 +397,7 @@
 		BB4EF8C6168E46AF006C7819 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BBA0131416D0503700C21930 /* ACBL.cardstyle */,
 				BB7ADC9B1698AB1E002AAB32 /* Graphics */,
 				BB4EF8C7168E46AF006C7819 /* ConvCardEditor-Info.plist */,
 				BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */,
@@ -382,6 +431,9 @@
 		BB7ADC9B1698AB1E002AAB32 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				BBA012FE16CEBD6400C21930 /* CardStyle.icns */,
+				BBA012FA16CEBD1A00C21930 /* card.icns */,
+				BBA012FB16CEBD1A00C21930 /* cardApp.icns */,
 				BBB7695116B58E3F0049662A /* Grid.gif */,
 				BB7ADCBF16A4D03B002AAB32 /* Arrow.gif */,
 				BB7ADC9F1698AFF2002AAB32 /* ChoiceCircles.gif */,
@@ -390,6 +442,56 @@
 				BB7ADC9C1698AB1E002AAB32 /* TextTool.gif */,
 			);
 			path = Graphics;
+			sourceTree = "<group>";
+		};
+		BBA012E516C9710400C21930 /* Transformers */ = {
+			isa = PBXGroup;
+			children = (
+				BB7ADCA5169CEEB3002AAB32 /* SelectionCounters.h */,
+				BB7ADCA6169CEEB4002AAB32 /* SelectionCounters.m */,
+				BBFACF8416B05C3E00987A7F /* CCEUnitNameTransformer.h */,
+				BBFACF8516B05C3E00987A7F /* CCEUnitNameTransformer.m */,
+				BBFACF8716B0606B00987A7F /* CCEUnitTransformer.h */,
+				BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */,
+				BBA012E716CAD49D00C21930 /* CCEStepIncrementTransformer.h */,
+				BBA012E816CAD49D00C21930 /* CCEStepIncrementTransformer.m */,
+			);
+			name = Transformers;
+			sourceTree = "<group>";
+		};
+		BBA012E616C9713C00C21930 /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				BB4EF8D4168E46AF006C7819 /* MainMenu.xib */,
+				BBA012E216C5D5CA00C21930 /* CardWindow.xib */,
+			);
+			name = Nibs;
+			sourceTree = "<group>";
+		};
+		BBA0130816CEDFEC00C21930 /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				BBA0130E16D00B9800C21930 /* CCEDocumentDelegate.h */,
+				BBA0130916CEE02900C21930 /* CCECardStyleDocument.h */,
+				BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */,
+				BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */,
+			);
+			name = Documents;
+			sourceTree = "<group>";
+		};
+		BBC77FC016B9DC5B003E366D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				BBC77FBF16B9DC4D003E366D /* fuzzyMath.h */,
+				BBC77FBD16B9DC08003E366D /* fuzzyMath.c */,
+				BBA012DF16C464C900C21930 /* CCEConstants.h */,
+				BBA012E016C464C900C21930 /* CCEConstants.m */,
+				BB7ADCB0169F8C8D002AAB32 /* CCEFileOps.h */,
+				BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */,
+				BBA012F316CD9D6900C21930 /* NSManagedObject+CCESerializer.h */,
+				BBA012F416CD9D6900C21930 /* NSManagedObject+CCESerializer.m */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -437,7 +539,7 @@
 		BB4EF8B2168E46AF006C7819 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Jim Hamilton";
 			};
 			buildConfigurationList = BB4EF8B5168E46AF006C7819 /* Build configuration list for PBXProject "ConvCardEditor" */;
@@ -474,6 +576,12 @@
 				BB7ADCC016A4D03B002AAB32 /* Arrow.gif in Resources */,
 				BBFACF9816B1A96100987A7F /* loremipsum.text in Resources */,
 				BBB7695216B58E3F0049662A /* Grid.gif in Resources */,
+				BBA012E416C5D5CB00C21930 /* CardWindow.xib in Resources */,
+				BBA012FC16CEBD1A00C21930 /* card.icns in Resources */,
+				BBA012FD16CEBD1A00C21930 /* cardApp.icns in Resources */,
+				BBA012FF16CEBD6400C21930 /* CardStyle.icns in Resources */,
+				BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */,
+				BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,6 +651,16 @@
 				BBFACF9B16B1ACFF00987A7F /* CCESizableTextFieldCell.m in Sources */,
 				BBFACF9E16B3723800987A7F /* CCEToolPaletteController.m in Sources */,
 				BBFACFA116B4D6F900987A7F /* CCEGradientView.m in Sources */,
+				BBC77FBC16B9A91F003E366D /* CCELocationController.m in Sources */,
+				BBC77FBE16B9DC08003E366D /* fuzzyMath.c in Sources */,
+				BBC77FC616BB1385003E366D /* CCEControlTest.m in Sources */,
+				BBC77FC916BD9590003E366D /* NSControl+CCESetColorCode.m in Sources */,
+				BBC77FCE16BF042C003E366D /* CCEToolWithVariantButton.m in Sources */,
+				BBA012E116C464C900C21930 /* CCEConstants.m in Sources */,
+				BBA012E916CAD49D00C21930 /* CCEStepIncrementTransformer.m in Sources */,
+				BBA012EF16CB091F00C21930 /* CCEIncrementBindableStepper.m in Sources */,
+				BBA012F516CD9D6900C21930 /* NSManagedObject+CCESerializer.m in Sources */,
+				BBA0130C16CEE02900C21930 /* CCECardStyleDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +713,14 @@
 				BB4EF8E9168E46AF006C7819 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BBA012E216C5D5CA00C21930 /* CardWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BBA012E316C5D5CB00C21930 /* en */,
+			);
+			name = CardWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -9,13 +9,18 @@
 #import <Cocoa/Cocoa.h>
 #import "CCEPrefsController.h"
 #import "Controllers/CCECardTypeEditorController.h"
+#import "Documents/CCEDocumentDelegate.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, CCEDocumentDelegate>
 
 @property IBOutlet CCEPrefsController *prefCtl;
 @property IBOutlet CCECardTypeEditorController *typeEditorCtl;
 
-@property IBOutlet NSWindow *window;
+@property IBOutlet NSPanel *chooseCardTypePanel;
+@property IBOutlet NSTableColumn *cardTypesCol;
+@property IBOutlet NSArrayController *cardChooser;
+@property IBOutlet NSTextField *directionLabel;
+@property IBOutlet NSButton *actionButton;
 
 @property (readonly, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -27,7 +32,11 @@
 
 @property NSFont *cardFont;
 
+@property NSMutableSet *myDocuments;
+
 + (AppDelegate *)instance;
+
+- (id)openCardWindowNib;
 
 - (NSColor *)colorForCode:(NSInteger)code;
 - (NSString *)colorKeyForCode:(NSInteger)code;
@@ -42,6 +51,23 @@
 - (IBAction)openPartnership:(id)sender;
 
 - (IBAction)editCard:(id)sender;
+- (IBAction)editCardType:(id)sender;
+
+    // import/export card definition
+- (IBAction)importCardType:(id)sender;
+- (IBAction)exportCardType:(id)sender;
+
+- (void)initialImport;
+
+    // import/export partnership
+- (IBAction)importPartnership:(id)sender;
+- (IBAction)exportPartnership:(id)sender;
+- (IBAction)doExport:(id)sender;
+
+- (void)watchCheckboxStyle;
+
+- (IBAction)undo:(id)sender;
+- (IBAction)redo:(id)sender;
 
 #pragma mark DEBUGGING
 - (IBAction)registeredObjects:(id)sender;

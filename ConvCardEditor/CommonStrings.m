@@ -70,8 +70,26 @@ NSString *kControlHeight = @"height";
 
 NSString *cceGridState = @"gridState";
 
+NSString *cceLocationColor = @"color";
+NSString *cceLocationColorCode = @"colorCode";
+
+NSString *cceStepTransformer = @"CCEStepIncrementTransformer";
+NSString *cceStepIncrement = @"stepIncrement";
+NSString *cceStepIncrementIndex = @"stepIncrementIndex";
+
+NSString *applicationDomain = @"com.shokwave.ConvCardEditor";
 
 @implementation CommonStrings
+
++ (void)initialize
+{
+    if (self == [CommonStrings class]) {
+            // internationalize user-visible strings
+        ccUnitPoints = NSLocalizedString(ccUnitPoints, @"points unit name");
+        ccUnitInches = NSLocalizedString(ccUnitInches, @"inches unit name");
+        ccUnitCentimeters = NSLocalizedString(ccUnitCentimeters, @"centimeters unit name");
+    }
+}
 
 + (NSArray *)dimensionKeys
 {
@@ -100,6 +118,21 @@ NSString *cceGridState = @"gridState";
     }
     
     return key;
+}
+
++ (NSInteger)standardColorCodeForKey:(NSString *)theKey
+{
+    NSInteger code = -1;
+    
+    if ([ccNormalColor isEqualToString:theKey]) {
+        code = kNormalColor;
+    } else if ([ccAlertColor isEqualToString:theKey]) {
+        code = kAlertColor;
+    } else if ([ccAnnounceColor isEqualToString:theKey]) {
+        code = kAnnounceColor;
+    }
+    
+    return code;
 }
 
 @end
