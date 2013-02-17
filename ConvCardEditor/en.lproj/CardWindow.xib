@@ -103,9 +103,11 @@
 							<string key="NSToolbarItemPaletteLabel">Zoom</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSTextField" key="NSToolbarItemView" id="723398374">
-								<nil key="NSNextResponder"/>
+								<reference key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 14}, {40, 22}}</string>
+								<reference key="NSSuperview"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<string key="NSAntiCompressionPriority">{750, 750}</string>
 								<bool key="NSEnabled">YES</bool>
@@ -223,9 +225,11 @@
 							<string key="NSToolbarItemPaletteLabel">Zoom</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSSlider" key="NSToolbarItemView" id="55815313">
-								<nil key="NSNextResponder"/>
+								<reference key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 14}, {100, 28}}</string>
+								<reference key="NSSuperview"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="181333915">
@@ -1285,7 +1289,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSFrame">{{14, 9}, {39, 38}}</string>
 							<reference key="NSSuperview" ref="71208511"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
+							<reference key="NSNextKeyView" ref="207877688"/>
 							<string key="NSReuseIdentifierKey">_NS:1574</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="495623033">
@@ -1763,8 +1767,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<array class="NSMutableArray" key="NSSubviews"/>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="808746801"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="822028797">
@@ -1790,7 +1792,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{0, 192}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="981627241"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="127328210"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSClassName">CCEGradientView</string>
@@ -1805,8 +1806,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<array class="NSMutableArray" key="NSSubviews"/>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="264768818"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">100</int>
 									<bool key="NSEnabled">YES</bool>
@@ -1833,7 +1832,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{0, 144}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="981627241"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1036825732"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSClassName">CCEGradientView</string>
@@ -1848,8 +1846,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<array class="NSMutableArray" key="NSSubviews"/>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="656841750"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">200</int>
 									<bool key="NSEnabled">YES</bool>
@@ -1876,7 +1872,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{0, 96}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="981627241"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="332075354"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSClassName">CCEGradientView</string>
@@ -1891,8 +1886,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<array class="NSMutableArray" key="NSSubviews"/>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="191486171"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">300</int>
 									<bool key="NSEnabled">YES</bool>
@@ -1919,7 +1912,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{0, 48}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="981627241"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="287924784"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSClassName">CCEGradientView</string>
@@ -1934,8 +1926,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<array class="NSMutableArray" key="NSSubviews"/>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="279519153"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">400</int>
 									<bool key="NSEnabled">YES</bool>
@@ -1962,7 +1952,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrameSize">{48, 48}</string>
 							<reference key="NSSuperview" ref="981627241"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1040656688"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSClassName">CCEGradientView</string>
@@ -1970,7 +1959,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{48, 240}</string>
 					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="808746801"/>
 					<bool key="NSViewIsLayerTreeHost">YES</bool>
 					<string key="NSReuseIdentifierKey">_NS:21</string>
@@ -2009,12 +1997,60 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">2708</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">absoluteScale:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="529574929"/>
+					</object>
+					<int key="connectionID">3044</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">absoluteScale:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="326521636"/>
+					</object>
+					<int key="connectionID">3045</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">controlInfo:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="682156203"/>
+					</object>
+					<int key="connectionID">3046</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">showSelectedControlInfo:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="77796150"/>
+					</object>
+					<int key="connectionID">3058</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">squareKeeper:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="916316411"/>
+					</object>
+					<int key="connectionID">3061</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">squareKeeper:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="671659569"/>
+					</object>
+					<int key="connectionID">3062</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="896599038"/>
-						<reference key="destination" ref="626880532"/>
+						<reference key="destination" ref="493832866"/>
 					</object>
-					<int key="connectionID">636</int>
+					<int key="connectionID">3030</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2049,14 +2085,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">763</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">absoluteScale:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="529574929"/>
-					</object>
-					<int key="connectionID">988</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">cardImageView</string>
 						<reference key="source" ref="626880532"/>
@@ -2073,38 +2101,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">1572</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">coltrolInfo:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="682156203"/>
-					</object>
-					<int key="connectionID">1573</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">controlColorWell</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="292383781"/>
-					</object>
-					<int key="connectionID">1594</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setControlColorCode:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="967440685"/>
-					</object>
-					<int key="connectionID">1655</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">stdControlColorGroup</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="967440685"/>
-					</object>
-					<int key="connectionID">1660</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">selectedObject</string>
 						<reference key="source" ref="626880532"/>
@@ -2119,22 +2115,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="377655375"/>
 					</object>
 					<int key="connectionID">2041</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">showSelectedControlInfo:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="77796150"/>
-					</object>
-					<int key="connectionID">2073</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">absoluteScale:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="326521636"/>
-					</object>
-					<int key="connectionID">2107</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2177,30 +2157,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">2332</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">toolsPaletteController</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="716865776"/>
-					</object>
-					<int key="connectionID">2458</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">squareKeeper:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="671659569"/>
-					</object>
-					<int key="connectionID">2868</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">squareKeeper:</string>
-						<reference key="source" ref="626880532"/>
-						<reference key="destination" ref="916316411"/>
-					</object>
-					<int key="connectionID">2869</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: selection.cardName</string>
 						<reference key="source" ref="1021837225"/>
@@ -2218,15 +2174,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentObject: type</string>
+						<string key="label">contentObject: cardType</string>
 						<reference key="source" ref="289189479"/>
 						<reference key="destination" ref="626880532"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="289189479"/>
 							<reference key="NSDestination" ref="626880532"/>
-							<string key="NSLabel">contentObject: type</string>
+							<string key="NSLabel">contentObject: cardType</string>
 							<string key="NSBinding">contentObject</string>
-							<string key="NSKeyPath">type</string>
+							<string key="NSKeyPath">cardType</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
@@ -2559,14 +2515,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">view</string>
-						<reference key="source" ref="493832866"/>
-						<reference key="destination" ref="620927430"/>
-					</object>
-					<int key="connectionID">2110</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">observedView</string>
 						<reference key="source" ref="493832866"/>
 						<reference key="destination" ref="501037464"/>
@@ -2612,6 +2560,150 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="515236034"/>
 					</object>
 					<int key="connectionID">2994</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">cardImageView</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="501037464"/>
+					</object>
+					<int key="connectionID">3031</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">view</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="620927430"/>
+					</object>
+					<int key="connectionID">3032</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">controlColorWell</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="292383781"/>
+					</object>
+					<int key="connectionID">3033</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">heightField</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="522296394"/>
+					</object>
+					<int key="connectionID">3034</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">infoPanel</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="926075478"/>
+					</object>
+					<int key="connectionID">3035</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">window</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="896599038"/>
+					</object>
+					<int key="connectionID">3036</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">yField</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="18840771"/>
+					</object>
+					<int key="connectionID">3037</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">xField</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="207906547"/>
+					</object>
+					<int key="connectionID">3038</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">widthField</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="671659569"/>
+					</object>
+					<int key="connectionID">3039</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">selectedObject</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="818935341"/>
+					</object>
+					<int key="connectionID">3040</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">locationObject</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="377655375"/>
+					</object>
+					<int key="connectionID">3041</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">stdControlColorGroup</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="967440685"/>
+					</object>
+					<int key="connectionID">3042</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">toolsPaletteController</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="716865776"/>
+					</object>
+					<int key="connectionID">3043</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">setControlColorCode:</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="967440685"/>
+					</object>
+					<int key="connectionID">3054</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">xPosStepper</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="92081061"/>
+					</object>
+					<int key="connectionID">3063</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">yPosStepper</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="517823699"/>
+					</object>
+					<int key="connectionID">3064</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">widthStepper</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="916316411"/>
+					</object>
+					<int key="connectionID">3065</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">heightStepper</string>
+						<reference key="source" ref="493832866"/>
+						<reference key="destination" ref="513445037"/>
+					</object>
+					<int key="connectionID">3066</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2673,10 +2765,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: square</string>
 						<reference key="source" ref="522296394"/>
-						<reference key="destination" ref="626880532"/>
+						<reference key="destination" ref="493832866"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="522296394"/>
-							<reference key="NSDestination" ref="626880532"/>
+							<reference key="NSDestination" ref="493832866"/>
 							<string key="NSLabel">enabled: square</string>
 							<string key="NSBinding">enabled</string>
 							<string key="NSKeyPath">square</string>
@@ -2687,7 +2779,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2862</int>
+					<int key="connectionID">3053</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -2791,10 +2883,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: square</string>
 						<reference key="source" ref="513445037"/>
-						<reference key="destination" ref="626880532"/>
+						<reference key="destination" ref="493832866"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="513445037"/>
-							<reference key="NSDestination" ref="626880532"/>
+							<reference key="NSDestination" ref="493832866"/>
 							<string key="NSLabel">enabled: square</string>
 							<string key="NSBinding">enabled</string>
 							<string key="NSKeyPath">square</string>
@@ -2805,7 +2897,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2867</int>
+					<int key="connectionID">3060</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -2877,14 +2969,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">controller</string>
-						<reference key="source" ref="716865776"/>
-						<reference key="destination" ref="626880532"/>
-					</object>
-					<int key="connectionID">2683</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">selectButton</string>
 						<reference key="source" ref="716865776"/>
 						<reference key="destination" ref="127328210"/>
@@ -2924,29 +3008,37 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">3025</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">controller</string>
+						<reference key="source" ref="716865776"/>
+						<reference key="destination" ref="493832866"/>
+					</object>
+					<int key="connectionID">3057</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: square</string>
 						<reference key="source" ref="355479031"/>
-						<reference key="destination" ref="626880532"/>
+						<reference key="destination" ref="493832866"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="355479031"/>
-							<reference key="NSDestination" ref="626880532"/>
+							<reference key="NSDestination" ref="493832866"/>
 							<string key="NSLabel">value: square</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">square</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2857</int>
+					<int key="connectionID">3048</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">hidden: canSquare</string>
 						<reference key="source" ref="355479031"/>
-						<reference key="destination" ref="626880532"/>
+						<reference key="destination" ref="493832866"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="355479031"/>
-							<reference key="NSDestination" ref="626880532"/>
+							<reference key="NSDestination" ref="493832866"/>
 							<string key="NSLabel">hidden: canSquare</string>
 							<string key="NSBinding">hidden</string>
 							<string key="NSKeyPath">canSquare</string>
@@ -2957,7 +3049,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2858</int>
+					<int key="connectionID">3051</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -7537,22 +7629,26 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="2144.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2147.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2157.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2159.CustomClassName">CCEIncrementBindableStepper</string>
 				<boolean value="NO" key="2159.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="2159.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2160.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2168.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2171.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2174.CustomClassName">CCEIncrementBindableStepper</string>
 				<boolean value="NO" key="2174.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="2174.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2175.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2177.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2183.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2188.CustomClassName">CCEIncrementBindableStepper</string>
 				<boolean value="NO" key="2188.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="2188.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2189.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2190.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2192.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2194.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2197.CustomClassName">CCEIncrementBindableStepper</string>
 				<boolean value="NO" key="2197.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="2197.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2198.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7840,7 +7936,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">3029</int>
+			<int key="maxID">3066</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7853,8 +7949,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="newCardType:">id</string>
 						<string key="newPartnership:">id</string>
 						<string key="openPartnership:">id</string>
+						<string key="redo:">id</string>
 						<string key="registeredObjects:">id</string>
 						<string key="saveAction:">id</string>
+						<string key="undo:">id</string>
 						<string key="updatedObjects:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -7878,12 +7976,20 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">openPartnership:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="redo:">
+							<string key="name">redo:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="registeredObjects:">
 							<string key="name">registeredObjects:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="saveAction:">
 							<string key="name">saveAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="undo:">
+							<string key="name">undo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updatedObjects:">
@@ -7937,39 +8043,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">CCECardTypeEditorController</string>
 					<string key="superclassName">NSResponder</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="absoluteScale:">id</string>
 						<string key="changeArtwork:">id</string>
-						<string key="chooseControlByTag:">id</string>
-						<string key="coltrolInfo:">id</string>
 						<string key="editNewCardType:">id</string>
 						<string key="openCard:">id</string>
-						<string key="scaleLarger:">id</string>
-						<string key="scaleSmaller:">id</string>
-						<string key="scaleToWindow:">id</string>
-						<string key="scaleZero:">id</string>
-						<string key="setControlColorCode:">id</string>
-						<string key="setControlType:">id</string>
-						<string key="showSelectedControlInfo:">id</string>
-						<string key="showWindow:">id</string>
-						<string key="squareKeeper:">id</string>
-						<string key="toggleGridState:">id</string>
-						<string key="updateUnits:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="absoluteScale:">
-							<string key="name">absoluteScale:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="changeArtwork:">
 							<string key="name">changeArtwork:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="chooseControlByTag:">
-							<string key="name">chooseControlByTag:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="coltrolInfo:">
-							<string key="name">coltrolInfo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="editNewCardType:">
@@ -7980,128 +8060,24 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">openCard:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="scaleLarger:">
-							<string key="name">scaleLarger:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="scaleSmaller:">
-							<string key="name">scaleSmaller:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="scaleToWindow:">
-							<string key="name">scaleToWindow:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="scaleZero:">
-							<string key="name">scaleZero:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setControlColorCode:">
-							<string key="name">setControlColorCode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setControlType:">
-							<string key="name">setControlType:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showSelectedControlInfo:">
-							<string key="name">showSelectedControlInfo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showWindow:">
-							<string key="name">showWindow:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="squareKeeper:">
-							<string key="name">squareKeeper:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toggleGridState:">
-							<string key="name">toggleGridState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateUnits:">
-							<string key="name">updateUnits:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="artworkFileName">NSTextField</string>
-						<string key="cardImageView">FixedNSImageView</string>
 						<string key="cardTypeName">NSTextField</string>
-						<string key="controlColorWell">NSColorWell</string>
 						<string key="controlsView">CCEControlsViewController</string>
-						<string key="heightField">NSTextField</string>
-						<string key="infoPanel">NSPanel</string>
-						<string key="locationObject">NSObjectController</string>
-						<string key="selectedObject">NSObjectController</string>
-						<string key="stdControlColorGroup">NSMatrix</string>
-						<string key="toolsPaletteController">CCEToolPaletteController</string>
-						<string key="widthField">NSTextField</string>
-						<string key="window">NSWindow</string>
-						<string key="xField">NSTextField</string>
-						<string key="yField">NSTextField</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="artworkFileName">
 							<string key="name">artworkFileName</string>
 							<string key="candidateClassName">NSTextField</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="cardImageView">
-							<string key="name">cardImageView</string>
-							<string key="candidateClassName">FixedNSImageView</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="cardTypeName">
 							<string key="name">cardTypeName</string>
 							<string key="candidateClassName">NSTextField</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="controlColorWell">
-							<string key="name">controlColorWell</string>
-							<string key="candidateClassName">NSColorWell</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="controlsView">
 							<string key="name">controlsView</string>
 							<string key="candidateClassName">CCEControlsViewController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="heightField">
-							<string key="name">heightField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoPanel">
-							<string key="name">infoPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="locationObject">
-							<string key="name">locationObject</string>
-							<string key="candidateClassName">NSObjectController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="selectedObject">
-							<string key="name">selectedObject</string>
-							<string key="candidateClassName">NSObjectController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="stdControlColorGroup">
-							<string key="name">stdControlColorGroup</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toolsPaletteController">
-							<string key="name">toolsPaletteController</string>
-							<string key="candidateClassName">CCEToolPaletteController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="widthField">
-							<string key="name">widthField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="window">
-							<string key="name">window</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="xField">
-							<string key="name">xField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="yField">
-							<string key="name">yField</string>
-							<string key="candidateClassName">NSTextField</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -8141,17 +8117,49 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">CCEControlsViewController</string>
-					<string key="superclassName">NSView</string>
+					<string key="superclassName">NSResponder</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="absoluteScale:">id</string>
 						<string key="cancelTestControl:">id</string>
+						<string key="chooseControlByTag:">id</string>
+						<string key="chooseControlType:">id</string>
+						<string key="controlInfo:">id</string>
 						<string key="deleteSelected:">id</string>
 						<string key="layoutClick:">id</string>
+						<string key="redo:">id</string>
+						<string key="scaleLarger:">id</string>
+						<string key="scaleSmaller:">id</string>
+						<string key="scaleToWindow:">id</string>
+						<string key="scaleZero:">id</string>
+						<string key="setControlColorCode:">id</string>
+						<string key="showSelectedControlInfo:">id</string>
+						<string key="showWindow:">id</string>
+						<string key="squareKeeper:">id</string>
 						<string key="stopAllControlTesters:">id</string>
 						<string key="testControl:">id</string>
+						<string key="toggleGridState:">id</string>
+						<string key="undo:">id</string>
+						<string key="updateUnits:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="absoluteScale:">
+							<string key="name">absoluteScale:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="cancelTestControl:">
 							<string key="name">cancelTestControl:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="chooseControlByTag:">
+							<string key="name">chooseControlByTag:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="chooseControlType:">
+							<string key="name">chooseControlType:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="controlInfo:">
+							<string key="name">controlInfo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="deleteSelected:">
@@ -8162,6 +8170,42 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">layoutClick:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="redo:">
+							<string key="name">redo:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scaleLarger:">
+							<string key="name">scaleLarger:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scaleSmaller:">
+							<string key="name">scaleSmaller:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scaleToWindow:">
+							<string key="name">scaleToWindow:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="scaleZero:">
+							<string key="name">scaleZero:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setControlColorCode:">
+							<string key="name">setControlColorCode:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showSelectedControlInfo:">
+							<string key="name">showSelectedControlInfo:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showWindow:">
+							<string key="name">showWindow:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="squareKeeper:">
+							<string key="name">squareKeeper:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="stopAllControlTesters:">
 							<string key="name">stopAllControlTesters:</string>
 							<string key="candidateClassName">id</string>
@@ -8170,17 +8214,77 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">testControl:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="toggleGridState:">
+							<string key="name">toggleGridState:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="undo:">
+							<string key="name">undo:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="updateUnits:">
+							<string key="name">updateUnits:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="cardImageView">FixedNSImageView</string>
+						<string key="controlColorWell">NSColorWell</string>
+						<string key="heightField">NSTextField</string>
+						<string key="heightStepper">CCEIncrementBindableStepper</string>
+						<string key="infoPanel">NSPanel</string>
+						<string key="locationObject">NSObjectController</string>
 						<string key="observedView">NSView</string>
+						<string key="selectedObject">NSObjectController</string>
+						<string key="stdControlColorGroup">NSMatrix</string>
 						<string key="stopTestControlButton">NSButton</string>
 						<string key="testControlButton">NSButton</string>
+						<string key="toolsPaletteController">CCEToolPaletteController</string>
 						<string key="view">CCEControlsSuperView</string>
+						<string key="widthField">NSTextField</string>
+						<string key="widthStepper">CCEIncrementBindableStepper</string>
+						<string key="window">NSWindow</string>
+						<string key="xField">NSTextField</string>
+						<string key="xPosStepper">CCEIncrementBindableStepper</string>
+						<string key="yField">NSTextField</string>
+						<string key="yPosStepper">CCEIncrementBindableStepper</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="cardImageView">
+							<string key="name">cardImageView</string>
+							<string key="candidateClassName">FixedNSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="controlColorWell">
+							<string key="name">controlColorWell</string>
+							<string key="candidateClassName">NSColorWell</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="heightField">
+							<string key="name">heightField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="heightStepper">
+							<string key="name">heightStepper</string>
+							<string key="candidateClassName">CCEIncrementBindableStepper</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="infoPanel">
+							<string key="name">infoPanel</string>
+							<string key="candidateClassName">NSPanel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="locationObject">
+							<string key="name">locationObject</string>
+							<string key="candidateClassName">NSObjectController</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="observedView">
 							<string key="name">observedView</string>
 							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="selectedObject">
+							<string key="name">selectedObject</string>
+							<string key="candidateClassName">NSObjectController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="stdControlColorGroup">
+							<string key="name">stdControlColorGroup</string>
+							<string key="candidateClassName">NSMatrix</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="stopTestControlButton">
 							<string key="name">stopTestControlButton</string>
@@ -8190,9 +8294,41 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">testControlButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="toolsPaletteController">
+							<string key="name">toolsPaletteController</string>
+							<string key="candidateClassName">CCEToolPaletteController</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="view">
 							<string key="name">view</string>
 							<string key="candidateClassName">CCEControlsSuperView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="widthField">
+							<string key="name">widthField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="widthStepper">
+							<string key="name">widthStepper</string>
+							<string key="candidateClassName">CCEIncrementBindableStepper</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="window">
+							<string key="name">window</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="xField">
+							<string key="name">xField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="xPosStepper">
+							<string key="name">xPosStepper</string>
+							<string key="candidateClassName">CCEIncrementBindableStepper</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="yField">
+							<string key="name">yField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="yPosStepper">
+							<string key="name">yPosStepper</string>
+							<string key="candidateClassName">CCEIncrementBindableStepper</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -8209,22 +8345,34 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">CCEIncrementBindableStepper</string>
+					<string key="superclassName">NSStepper</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/CCEIncrementBindableStepper.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">CCEPrefsController</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">showWindow:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">showWindow:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="setStep:">id</string>
+						<string key="showWindow:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="setStep:">
+							<string key="name">setStep:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showWindow:">
 							<string key="name">showWindow:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="checkBox">CCBoxView</string>
 						<string key="fillBox">CCBoxView</string>
+						<string key="incrementMatrix">NSMatrix</string>
 						<string key="window">NSWindow</string>
 						<string key="xBox">CCBoxView</string>
 					</dictionary>
@@ -8236,6 +8384,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="fillBox">
 							<string key="name">fillBox</string>
 							<string key="candidateClassName">CCBoxView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="incrementMatrix">
+							<string key="name">incrementMatrix</string>
+							<string key="candidateClassName">NSMatrix</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="window">
 							<string key="name">window</string>
@@ -8274,7 +8426,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="controller">CCECardTypeEditorController</string>
+						<string key="controller">CCEControlsViewController</string>
 						<string key="leadChoiceButton">CCEToolWithVariantButton</string>
 						<string key="multiCheckButton">CCEToolWithVariantButton</string>
 						<string key="selectButton">NSButton</string>
@@ -8285,7 +8437,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="controller">
 							<string key="name">controller</string>
-							<string key="candidateClassName">CCECardTypeEditorController</string>
+							<string key="candidateClassName">CCEControlsViewController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="leadChoiceButton">
 							<string key="name">leadChoiceButton</string>
