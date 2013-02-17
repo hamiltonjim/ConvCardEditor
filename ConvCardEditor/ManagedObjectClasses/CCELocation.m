@@ -77,12 +77,12 @@
 - (void)setColor:(NSColor *)aColor
 {
         // change color code
-    [self setColor:color clearColorCode:YES];
+    [self setColor:aColor clearColorCode:YES];
 }
 
 - (void)setColor:(NSColor *)aColor clearColorCode:(BOOL)clear
 {
-    NSString *key = @"colorCode";
+    NSString *key = @"color";
     [self willChangeValueForKey:key];
     color = [aColor colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
     [self didChangeValueForKey:key];
@@ -98,6 +98,42 @@
         [self setPrimitiveValue:nil forKey:key];
         [self didChangeValueForKey:key];
     }
+}
+
+- (NSRect)rectValue
+{
+    return NSMakeRect([self.locX doubleValue], [self.locY doubleValue],
+                      [self.width doubleValue], [self.height doubleValue]);
+}
+
+- (void)setRectValue:(NSRect)rect
+{
+    self.locX = [NSNumber numberWithDouble:rect.origin.x];
+    self.locY = [NSNumber numberWithDouble:rect.origin.y];
+    self.width = [NSNumber numberWithDouble:rect.size.width];
+    self.height = [NSNumber numberWithDouble:rect.size.height];
+}
+
+- (NSPoint)originValue
+{
+    return NSMakePoint([self.locX doubleValue], [self.locY doubleValue]);
+}
+
+- (void)setOriginValue:(NSPoint)pt
+{
+    self.locX = [NSNumber numberWithDouble:pt.x];
+    self.locY = [NSNumber numberWithDouble:pt.y];
+}
+
+- (NSSize)sizeValue
+{
+    return NSMakeSize([self.width doubleValue], [self.height doubleValue]);
+}
+
+- (void)setSizeValue:(NSSize)sz
+{
+    self.width = [NSNumber numberWithDouble:sz.width];
+    self.height = [NSNumber numberWithDouble:sz.height];
 }
 
 @end

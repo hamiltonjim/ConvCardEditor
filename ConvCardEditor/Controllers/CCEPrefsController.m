@@ -9,9 +9,13 @@
 #import "CCEPrefsController.h"
 #import "CCCheckbox.h"
 #import "CCCheckboxCell.h"
+#import "CommonStrings.h"
+
+static NSString *changedKey = @"stepIsOther";
 
 @implementation CCEPrefsController
 
+@synthesize incrementIndex;
 
 - (void)windowDidLoad
 {
@@ -36,11 +40,59 @@
     [xBox addSubview:cbox];
     [cbox setIntegerValue:1];
     [cbox setEnabled:NO];
+    
+        // increment value
+    incrementIndex = [self stepForIncrementValue];
 }
 
 - (IBAction)showWindow:(id)sender
 {
     [window makeKeyAndOrderFront:sender];
+}
+
+- (IBAction)setStep:(id)sender
+{
+    double value = -1.0;
+    
+    if (sender == incrementMatrix) {
+        NSInteger matrixVal = [incrementMatrix selectedRow];
+        [self willChangeValueForKey:changedKey];
+        incrementIndex = [NSNumber numberWithInteger:matrixVal];
+        [self didChangeValueForKey:changedKey];
+        
+        switch (matrixVal) {
+            case kStepRadioOne:
+                value = 1.0;
+                break;
+                
+            case kStepRadioHalf:
+                value = 0.5;
+                break;
+                
+            default:
+                    // do nothing
+                break;
+        }
+    } else if ([sender respondsToSelector:@selector(doubleValue)]) {
+        incrementIndex = [self stepForIncrementValue];
+    }
+    
+    if (value > 0.0)
+        [[NSUserDefaults standardUserDefaults] setDouble:value forKey:cceStepIncrement];
+    
+    
+}
+
+- (NSNumber *)stepForIncrementValue
+{
+    NSValueTransformer *xform = [NSValueTransformer valueTransformerForName:cceStepTransformer];
+    return [xform transformedValue:[[NSUserDefaults standardUserDefaults]
+                                    valueForKey:cceStepIncrement]];
+}
+
+- (NSNumber *)stepIsOther
+{
+    return [NSNumber numberWithBool:(incrementIndex.integerValue == kStepRadioOther)];
 }
 
 @end

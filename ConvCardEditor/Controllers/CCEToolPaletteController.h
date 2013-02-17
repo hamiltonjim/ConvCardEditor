@@ -8,23 +8,32 @@
 
 #import <Foundation/Foundation.h>
 
-@class CCECardTypeEditorController;
+@class CCEControlsViewController;
+@class CCEToolWithVariantButton;
 
-@interface CCEToolPaletteController : NSObject
+@interface CCEToolPaletteController : NSResponder
 
 @property NSNumber *value;
 
 @property IBOutlet NSButton *selectButton;
 @property IBOutlet NSButton *textButton;
 @property IBOutlet NSButton *singleCheckButton;
-@property IBOutlet NSButton *multiCheckButton;
-@property IBOutlet NSButton *leadChoiceButton;
+@property IBOutlet CCEToolWithVariantButton *multiCheckButton;
+@property IBOutlet CCEToolWithVariantButton *leadChoiceButton;
 
-@property (weak) IBOutlet CCECardTypeEditorController *controller;
+@property (weak) IBOutlet CCEControlsViewController *controller;
 @property IBOutlet NSPanel *toolsPalette;
 
+@property BOOL variant;
+
 - (IBAction)chooseControl:(id)sender;
+- (IBAction)variantChooseControl:(id)sender;
+
+- (IBAction)chooseControlByTag:(id)sender;
 
 - (void)chooseNextControl;
+
+- (void)hide;
+- (void)show;
 
 @end

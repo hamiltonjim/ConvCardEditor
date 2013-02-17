@@ -7,7 +7,13 @@
 //
 
 #import "CCESizableTextField.h"
-#import "CCESizableTextFieldCell.h"
+#import "CommonStrings.h"
+#import "CCELocation.h"
+#import "CCETextModel.h"
+#import "AppDelegate.h"
+#import "NSControl+CCESetColorCode.h"
+#import "fuzzyMath.h"
+#import "CCELocationController.h"
 
 /*
     Creates a rect with the two given points as opposite corners.
@@ -38,92 +44,400 @@ NSRect JFH_RectFromPoints(NSPoint p1, NSPoint p2)
 
 static NSString *loremIpsum;
 
+static NSFont *defaultFont;
+static CGFloat defaultLineHeight;
+
 @interface CCESizableTextField ()
 
+@property (readwrite) CGFloat lineHeight;
+@property (readwrite) NSUInteger lineCount;
+
+@property NSRect borderRect;
+@property (nonatomic) int debugMode;
+
++ (AppDelegate *)appDelegate;
++ (NSFont *)defaultFont;
+
 - (void)contentInit;
+
+    // relay the action from the subview
+- (void)relay:(id)sender;
+- (void)setLineMetrics;
 
 @end
 
 @implementation CCESizableTextField
+
+@synthesize insideTextField;
+
+@synthesize borderRect;
+@synthesize useDoubleHandles;
+@synthesize font;
+@synthesize lineHeight;
+@synthesize lineCount;
+@synthesize frameColor;
+
+@synthesize modelledControl;
+@synthesize locationController;
 
 + (Class)cellClass
 {
     return [CCESizableTextFieldCell class];
 }
 
++ (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[NSApp delegate];
+}
+
++ (NSFont *)defaultFont
+{
+    if (defaultFont == nil) {
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        defaultFont = [NSFont fontWithName:[ud stringForKey:ccDefaultFontName]
+                                      size:[ud doubleForKey:ccDefaultFontSize]];
+        defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+    }
+    
+    return defaultFont;
+}
++ (void)setDefaultFont:(NSFont *)font
+{
+    defaultFont = font;
+    defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+}
+
 + (void)initialize
 {
-    NSURL *url = [[NSBundle mainBundle] URLForResource:@"loremipsum" withExtension:@"text"];
-    loremIpsum = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    if (self == [CCESizableTextField class]) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:@"loremipsum" withExtension:@"text"];
+        loremIpsum = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    }
+}
+
++ (CCESizableTextField *)textFieldFromModel:(CCETextModel *)model
+{
+    return [[CCESizableTextField alloc] initWithTextModel:model];
+}
+
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    modelledControl = model;
+    
+        // monitoring
+    locationController = [[CCELocationController alloc] initWithModel:model control:self];
+    
+    return locationController;
+}
+
+    // the sizable version is larger by 4 points in each dimension
+    // (delegated to cell class)
+- (NSPoint)insetModelledRect
+{
+    return [CCESizableTextFieldCell insetSize];
+}
+
+- (CCESizableTextFieldCell *)cell
+{
+    return (CCESizableTextFieldCell *)[super cell];
 }
 
 - (void)contentInit
 {
-    [[self cell] setPlaceholderString:loremIpsum];
+    useDoubleHandles = NO;
+    [[insideTextField cell] setPlaceholderString:loremIpsum];
     [self setStringValue:@""];
+    [self calcSize];
+    [[self cell] sendActionOn:NSLeftMouseUpMask];
+    
+    [self setFont:[[self class] defaultFont]];
+     
+     if (lineCount > 1) {
+         [[insideTextField cell] setWraps:YES];
+     }
+
+}
+
+- (void)setStringValue:(NSString *)aString
+{
+    [insideTextField setStringValue:aString];
 }
 
 - (void)setFrame:(NSRect)frameRect
 {
     [super setFrame:frameRect];
+    [self resetCursorRects];
+}
+
+- (void)resetCursorRects
+{
     [self calcSize];
+    
+    NSArray *rectArray = [[self cell] dragRectArray];
+    [rectArray enumerateObjectsUsingBlock:^(NSValue *obj, NSUInteger idx, BOOL *stop) {
+        NSRect rect = [obj rectValue];
+        [self addCursorRect:rect cursor:[NSCursor crosshairCursor]];
+    }];
+}
+
+- (void)resizeSubviewsWithOldSize:(NSSize)oldSize
+{
+    const NSUInteger xbits = NSViewMinXMargin | NSViewWidthSizable | NSViewMaxXMargin;
+    const NSUInteger ybits = NSViewMinYMargin | NSViewHeightSizable | NSViewMaxYMargin;
+    
+    NSSize newSize = [self frame].size;
+    CGFloat xDiff = newSize.width - oldSize.width;
+    CGFloat yDiff = newSize.height - oldSize.height;
+    
+        // short-circuit test
+    if (fuzzyZero(xDiff) && fuzzyZero(yDiff)) {
+        return;
+    }
+    
+    NSUInteger mask = [self autoresizingMask];
+    
+        // how many parts get sized (in each direction)?
+    xDiff /= count1bits(xbits & mask);
+    yDiff /= count1bits(ybits & mask);
+    
+    [[self subviews] enumerateObjectsUsingBlock:^(NSView *obj, NSUInteger idx, BOOL *stop) {
+        NSRect frame = [obj frame];
+        if (mask & NSViewMinXMargin)
+            frame.origin.x += xDiff;
+        if (mask & NSViewWidthSizable)
+            frame.size.width += xDiff;
+        
+        if (mask & NSViewMinYMargin)
+            frame.origin.y += yDiff;
+        if (mask & NSViewHeightSizable)
+            frame.size.height += yDiff;
+        
+            // nothing needs to be done for Max[XY]Margin...
+        
+        [obj setFrame:frame];
+    }];
+}
+
+- (void)relay:(id)sender
+{
+    [self sendAction:[self action] to:[self target]];
+}
+
+    // designated initializer
+- (id)initWithFrame:(NSRect)frRect
+           isNumber:(BOOL)isNum
+          colorName:(NSString *)colorName
+              color:(NSColor *)color
+               font:(NSString *)fontName
+           fontSize:(CGFloat)fontSize
+{
+        // frRect is the frame of the inside text field; actual control is outside...
+    NSPoint inset = [self insetModelledRect];
+    NSRect outsideRect = NSInsetRect(frRect, -inset.x, -inset.y);
+    if ((self = [super initWithFrame:outsideRect]) != nil) {
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        if (fontSize < 0.5) {
+            fontSize = [ud doubleForKey:ccDefaultFontSize];
+        }
+        
+        if (colorName == nil && color == nil) {
+            colorName = ccNormalColor;
+        }
+        
+            // re-specify inside control's frame in view coordinates
+        NSRect insideRect = [self convertRect:frRect fromView:nil];
+        if (colorName == nil) {
+            insideTextField = [[CCTextField alloc] initWithFrame:insideRect
+                                                            font:fontName
+                                                           color:color
+                                                        isNumber:isNum];
+        } else {
+            insideTextField = [[CCTextField alloc] initWithFrame:insideRect
+                                                            font:fontName
+                                                        colorKey:colorName
+                                                        isNumber:isNum];
+        }
+        
+        [insideTextField setFontSize:fontSize];
+        [insideTextField setRefusesFirstResponder:YES];
+        [[insideTextField cell] setFocusRingType:NSFocusRingTypeNone];
+        [insideTextField setEnabled:NO];
+        [insideTextField setEditable:NO];
+        
+        [insideTextField sendActionOn:NSLeftMouseUpMask];
+        
+        [self addSubview:insideTextField];
+        
+        NSButton *transparentButton = [[NSButton alloc] initWithFrame:insideRect];
+        [transparentButton setTransparent:YES];
+        [transparentButton setTarget:self];
+        [transparentButton setAction:@selector(relay:)];
+        [self addSubview:transparentButton];
+        
+        [self setAutoresizesSubviews:YES];
+        [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        
+        [self contentInit];
+    }
+    
+    return self;
 }
 
 - (id)initWithLocation:(CCELocation *)location
 {
-    if (self = [super initWithLocation:location]) {
-        [self contentInit];
-    }
-    
-    return self;
+    return [self initWithFrame:[location rectValue]
+                      isNumber:NO
+                     colorName:nil
+                         color:nil
+                          font:nil
+                      fontSize:0.0];
+}
+
+- (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum
+{
+    return [self initWithFrame:[location rectValue]
+                      isNumber:isNum
+                     colorName:nil
+                         color:nil
+                          font:nil
+                      fontSize:0.0];
 }
 
 - (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum colorCode:(NSInteger)colorCode
 {
-    if (self = [super initWithLocation:location isNumber:isNum colorCode:colorCode]) {
-        [self contentInit];
-    }
-    
-    return self;
+    NSString *colorKey = [[CCESizableTextField appDelegate] colorKeyForCode:colorCode];
+    return [self initWithFrame:[location rectValue]
+                      isNumber:isNum
+                     colorName:colorKey
+                         color:nil
+                          font:nil
+                      fontSize:0.0];
+}
+
+- (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum colorKey:(NSString *)colorKey
+{
+    return [self initWithFrame:[location rectValue]
+                      isNumber:isNum
+                     colorName:colorKey
+                         color:nil
+                          font:nil
+                      fontSize:0.0];
 }
 
 - (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum color:(NSColor *)aColor
 {
-    if (self = [super initWithLocation:location isNumber:isNum color:aColor]) {
-        [self contentInit];
-    }
-    
-    return self;
+    return [self initWithFrame:[location rectValue]
+                      isNumber:isNum
+                     colorName:nil
+                         color:aColor
+                          font:nil
+                      fontSize:0.0];
 }
 
 - (id)initWithTextModel:(CCETextModel *)model
 {
-    if (self = [super initWithTextModel:model]) {
-        [self contentInit];
+    CCELocation *location = model.location;
+    NSNumber *colorCode = location.colorCode;
+    NSString *colorKey = model == nil ? nil : [[CCESizableTextField appDelegate] colorKeyForCode:[colorCode doubleValue]];
+    NSColor *aColor = nil;
+    if (colorKey == nil) {
+        aColor = model.location.color;
+    }
+    
+    if (self = [self initWithFrame:[location rectValue]
+                          isNumber:[model.numeric boolValue]
+                         colorName:colorKey
+                             color:aColor
+                              font:nil
+                          fontSize:[model.fontSize doubleValue]]) {
+        [self monitorModel:model];
     }
     
     return self;
 }
 
-//- (void)drawRect:(NSRect)dirtyRect
-//{
-//    // Drawing code here.
-//    [super drawRect:dirtyRect];
-//}
-
-#pragma mark MOUSE HANDLING
-
-- (BOOL)becomeFirstResponder
+- (void)setDebugMode:(int)debugMode
 {
-        // send the action
-    id target = [self target];
-    SEL action = [self action];
-    
-    if (target != nil && action != nil) {
-        [target performSelector:action withObject:self];
+    CCESizableTextFieldCell *cell = [self cell];
+    [cell setDebugMode:debugMode];
+}
+
+#pragma mark DRAWING
+
+- (NSUInteger)linesForHeight:(CGFloat)height
+{
+    return MAX(round(height / lineHeight), 1.0);
+}
+
++ (NSUInteger)linesForHeight:(CGFloat)height
+{
+    (void)[self defaultFont];
+    return MAX(round(height / defaultLineHeight), 1.0);
+}
+
+    // no focus ring!
+- (NSFocusRingType)focusRingType
+{
+    return NSFocusRingTypeNone;
+}
+
+#pragma mark COLOR
+    // delegated to inside text control
+- (void)setColor:(NSColor *)aColor
+{
+    [insideTextField setColor:aColor];
+}
+- (NSColor *)color
+{
+    return [insideTextField color];
+}
+
+- (void)setColorKey:(NSString *)aColorKey
+{
+    [insideTextField setColorKey:aColorKey];
+}
+- (NSString *)colorKey
+{
+    return [insideTextField colorKey];
+}
+
+
+#pragma mark FONTS
+
+- (void)setFont:(NSFont *)aFont
+{
+    font = aFont;
+    [self setLineMetrics];
+}
+
+- (void)setLineMetrics
+{
+    lineHeight = [font ascender] - [font descender] + [font leading];
+    NSRect frame = [insideTextField frame];
+    lineCount = round(frame.size.height / lineHeight);
+    if (lineCount < 1)
+        lineCount = 1;
+}
+
+- (void)advanceTest
+{
+    if (insideTextField.isNumber) {
+        NSInteger val = [insideTextField integerValue];
+        if (val >= 40)
+            val = -1;
+        [insideTextField setIntegerValue:++val];
+    } else {
+        static NSString *strings[] = {@"This is a test!", @"Testing too", @"Why not try", @"Something new", @"Burma Shave"};
+        static int index = 0;
+        
+        [insideTextField setStringValue:strings[index]];
+        if (++index >= 5) index = 0;
     }
-    
-    return YES;
+}
+
+- (void)resetTest
+{
+    [insideTextField setStringValue:@""];
 }
 
 @end

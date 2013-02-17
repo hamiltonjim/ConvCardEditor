@@ -11,10 +11,26 @@
 #import "CCMatrix.h"
 #import "CCCheckbox.h"
 
+@class CCEMultiCheckModel;
+
 @interface CCBoxMatrix : CCMatrix 
 
     // Pass an array of just one color to use the same color for all 
     // Pass rectangles of individual boxes
-- (id) initWithRects:(NSArray *)rects colors:(NSArray *)colorVals name:(NSString *)matrixName;
+- (id)initWithRects:(NSArray *)rects
+             colors:(NSArray *)colorVals
+               name:(NSString *)matrixName;
+
+    // For editing; we need to be able to place a new child anywhere
+    // inside a larger rectangle.
+- (id)initWithFrame:(NSRect)frameRect
+              rects:(NSArray *)rects
+             colors:(NSArray *)colorVals
+               name:(NSString *)matrixName;
+
+- (id)initWithModel:(CCEMultiCheckModel *)model;
+- (id)initWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect;
++ (CCBoxMatrix *)matrixWithModel:(CCEMultiCheckModel *)model;
++ (CCBoxMatrix *)matrixWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect;
 
 @end

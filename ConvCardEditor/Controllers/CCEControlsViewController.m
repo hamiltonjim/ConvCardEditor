@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Jim Hamilton. All rights reserved.
 //
 
-#import "NSView+ScaleUtilities.h"
+
 #import "CCEControlsViewController.h"
+#import "NSView+ScaleUtilities.h"
 #import "CCEControlsSuperView.h"
 #import "CCEManagedObjectModels.h"
 #import "CommonStrings.h"
@@ -18,13 +19,26 @@
 #import "CCEModelledControl.h"
 #import "CCELocation.h"
 #import "CCESingleCheckModel.h"
+#import "CCEMultiCheckModel.h"
 #import "CCECardTypeEditorController.h"
 #import "CCEEntityFetcher.h"
 #import "NSView+ScaleUtilities.h"
 #import "CCESizableTextField.h"
 #import "CCETextModel.h"
+#import "CCTextField.h"
+#import "CCEControlTest.h"
+#import "CCELocationController.h"
+#import "FixedNSImageView.h"
+#import "AppDelegate.h"
+#import "CCEColorBindableButtonCell.h"
+#import "CCEToolPaletteController.h"
+#import "CCEIncrementBindableStepper.h"
 
 #import "math.h"
+#include "fuzzyMath.h"
+
+static NSString *showGrid;
+static NSString *hideGrid;
 
 @interface CCEControlsViewController ()
 
@@ -34,9 +48,21 @@
 
 @property NSEvent *mouseDownEvent;
 
+@property (readwrite) NSNumber *isTesterForSelected;
+
+    // for controls of indeterminate size, that need to be framed in the whole window
+    // (building from models, this is before the view is sized...)
+@property NSRect wholeFrame;
+
+@property (readwrite) NSString *gridStateLabel;
+
 - (void)observeDefaults:(NSArray *)defaultsList;
 
+- (void)selectControlObject:(CCEModelledControl *)object;
+- (void)selectControlObject:(CCEModelledControl *)object selIndex:(NSInteger)index;
+
 - (void)visualSelect:(NSControl<CCDebuggableControl> *)aControl;
+- (void)visualSelect:(NSControl<CCDebuggableControl> *)aControl index:(NSInteger)index;
 - (void)targetSelf:(NSControl <CCDebuggableControl> *)control;
 
 - (NSPoint)checkBoxLowerLeft:(NSPoint)where;
@@ -44,27 +70,40 @@
 - (CCCheckbox *)createCheckboxAt:(NSPoint)where size:(NSSize)size;
 - (void)createSingleCheckbox:(NSEvent *)theEvent;
 
+- (void)createMultiCheckbox:(NSEvent *)theEvent;
+- (void)addBoxToMultiCheckbox:(NSEvent *)theEvent;
+
+- (void)createLeadCircle:(NSEvent *)theEvent;
+- (void)addCircleToLeadCircles:(NSEvent *)theEvent;
+
 - (void)createTextControl:(NSEvent *)theEvent;
 
-- (void)createLocationFor:(CCEModelledControl *)ctl;
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where;
-- (void)createLocationFor:(CCEModelledControl *)ctl withIndex:(short)index;
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withIndex:(short)index;
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withSize:(NSSize)size;
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withIndex:(short)index withSize:(NSSize)size;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                                at:(NSPoint)where;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                         withIndex:(NSUInteger)index;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                                at:(NSPoint)where
+                         withIndex:(NSUInteger)index;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                                at:(NSPoint)where
+                          withSize:(NSSize)size;
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                                at:(NSPoint)where
+                         withIndex:(NSUInteger)index
+                          withSize:(NSSize)size;
 
 - (CCEModelledControl *)modelledControlFor:(NSControl <CCDebuggableControl> *)ctl;
 
-- (NSPoint)zoomPoint:(NSPoint)pt;
-- (NSPoint)unzoomPoint:(NSPoint)pt;
-
-- (void)placeView:(id <CCDebuggableControl>)view;
-
 - (NSControl <CCDebuggableControl> *)controlFromModel:(CCEModelledControl *)model;
 - (CCCheckbox *)checkboxFromModel:(CCEModelledControl *)model;
-- (CCBoxMatrix *)boxMatrixFromModel:(CCEModelledControl *)model;
-- (CCLeadChoiceMatrix *)ovalMatrixFromModel:(CCEModelledControl *)model;
-- (id)textBoxFromModel:(CCEModelledControl *)model;
+- (CCMatrix *)matrixFromModel:(CCEMultiCheckModel *)model;
+- (id)textBoxFromModel:(CCETextModel *)model;
+
+- (void)flashControlTester:(CCEControlTest *)tester;
+
+- (void)infoPanelInit;
 
 @end
 
@@ -117,23 +156,114 @@ NSPoint roundPt(NSPoint pt)
 
 @implementation CCEControlsViewController
 
+@synthesize window;
 @synthesize view;
 @synthesize cardType;
 @synthesize cardSettings;
 @synthesize zoom;
 
+@synthesize wholeFrame;
+
 @synthesize observedView;
 @synthesize controls;
 @synthesize selectedControl;
+
 @synthesize controlType;
+@synthesize controlVariant;
 
 @synthesize editMode;
+@synthesize isTesterForSelected;
 
 @synthesize controller;
 
 @synthesize mouseDownEvent;
 
+@synthesize cardImageView;
 
+    // info panel
+@synthesize infoPanel;
+@synthesize controlColorWell;
+@synthesize stdControlColorGroup;
+
+@synthesize xField;
+@synthesize yField;
+@synthesize widthField;
+@synthesize heightField;
+
+@synthesize xPosStepper;
+@synthesize yPosStepper;
+@synthesize widthStepper;
+@synthesize heightStepper;
+
+@synthesize selectedObject;
+@synthesize locationObject;
+
+@synthesize canSquare;
+@synthesize square;
+
+@synthesize gridState;
+@synthesize gridStateLabel;
+
+@synthesize toolsPaletteController;
+
+
+- (void)dealloc
+{
+    NSLog(@"%@ dealloc", [self class]);
+}
+
+#pragma mark INITIALIZATION
++ (void)initialize
+{
+    if (self == [CCEControlsViewController class]) {
+        showGrid = NSLocalizedString(@"Show Grid", @"show grid label");
+        hideGrid = NSLocalizedString(@"Hide Grid", @"hide grid label");
+    }
+}
+
+- (void)awakeFromNib
+{
+    [cardImageView setImageAlignment:NSImageAlignBottomLeft];
+    [cardImageView setMaxZoom:[NSNumber numberWithDouble:4.0]];
+    [cardImageView setMinZoom:[NSNumber numberWithDouble:1.0]];
+    
+    [cardImageView setAutoresizingMask:NSViewWidthSizable + NSViewHeightSizable];
+    [cardImageView setAutoresizesSubviews:YES];
+    
+        // resizing handled manually
+    [view setAutoresizesSubviews:NO];
+    
+    NSArray *dfltsList = @[ccDimensionUnit,
+        ccChecksAreSquare, ccCheckboxWidth, ccCheckboxHeight,
+        ccCirclesAreRound, ccCircleWidth, ccCircleHeight];
+    [self observeDefaults:dfltsList];
+    
+    [infoPanel setNextResponder:window];
+    
+        // scale
+    NSNumber *scaleNumber = [[NSUserDefaults standardUserDefaults] valueForKey:ccDefaultScale];
+    [self absoluteScale:scaleNumber];
+    
+    self.gridState = [[NSUserDefaults standardUserDefaults] boolForKey:cceGridState];
+    
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [xPosStepper observeIncrementFrom:ud keypath:cceStepIncrement];
+    [yPosStepper observeIncrementFrom:ud keypath:cceStepIncrement];
+    [widthStepper observeIncrementFrom:ud keypath:cceStepIncrement];
+    [heightStepper observeIncrementFrom:ud keypath:cceStepIncrement];
+    
+    [self infoPanelInit];
+    [self showWindow:self];
+}
+
+- (IBAction)showWindow:(id)sender
+{
+    [window makeKeyAndOrderFront:sender];
+    [window setNextResponder:toolsPaletteController.toolsPalette];
+}
+
+#pragma mark KVO
     // start observing a list of preferences
 - (void)observeDefaults:(NSArray *)defaultsList
 {
@@ -150,23 +280,19 @@ NSPoint roundPt(NSPoint pt)
 {
     if ([keyPath isEqualToString:ccDimensionUnit]) {
         [view setNeedsDisplay:YES];
+    } else if ([keyPath isEqualToString:kTesterIsRunning]) {
+            // if the change in running status is for the SELECTED control...
+        CCEControlTest *tester = object;
+        if (tester.control == selectedControl) {
+            [self flashControlTester:tester];
+        }
     } else {
             // catch-all is for control sizes
         localDflts.defaultsValid = false;
     }
 }
 
-- (void)awakeFromNib
-{
-        // resizing handled manually
-    [view setAutoresizesSubviews:NO];
-    
-    NSArray *dfltsList = @[ccDimensionUnit,
-        ccChecksAreSquare, ccCheckboxWidth, ccCheckboxHeight,
-        ccCirclesAreRound, ccCircleWidth, ccCircleHeight];
-    [self observeDefaults:dfltsList];
-}
-
+#pragma mark MOUSE EVENTS
 - (void)viewMouseUp:(NSEvent *)theEvent
 {
     switch (controlType) {
@@ -178,8 +304,24 @@ NSPoint roundPt(NSPoint pt)
             [self createSingleCheckbox:theEvent];
             break;
             
+        case kMultiCheckboxControl:
+            [self createMultiCheckbox:theEvent];
+            break;
+            
+        case kMultiCheckboxControl + kControlVariant:
+            [self addBoxToMultiCheckbox:theEvent];
+            break;
+            
         case kTextControl:
             [self createTextControl:theEvent];
+            break;
+            
+        case kCircleChoiceControl:
+            [self createLeadCircle:theEvent];
+            break;
+            
+        case kCircleChoiceControl + kControlVariant:
+            [self addCircleToLeadCircles:theEvent];
             break;
         
         default:
@@ -187,7 +329,7 @@ NSPoint roundPt(NSPoint pt)
             break;
     }
     
-    [controller chooseNextControl];
+    [self chooseNextControl];
 }
 
 - (void)viewMouseDown:(NSEvent *)theEvent
@@ -211,11 +353,85 @@ NSPoint roundPt(NSPoint pt)
     return NO;
 }
 
+#pragma mark SELECTION MODE
+
+- (IBAction)chooseControlType:(id)sender
+{
+    static int errorStage = 0;
+    
+    NSInteger ccType = [sender tag];
+    if (controlVariant) {
+        ccType += kControlVariant;
+    }
+    controlType = (int)ccType;
+    switch (ccType) {
+        case kPointerControl:
+        case kTextControl:
+        case kSingleCheckboxControl:
+        case kMultiCheckboxControl:
+        case kCircleChoiceControl:
+            errorStage = 0;
+            break;
+            
+        case kMultiCheckboxControl + kControlVariant:
+        case kCircleChoiceControl + kControlVariant:
+                // make sure state is valid!
+        {
+            CCEModelledControl *control = selectedObject.content;
+            if (control == nil || !control.isIndexed) {
+                NSBeep();
+                if (++errorStage >= 2) {
+                        // error window
+                    
+                    controlType = kPointerControl;
+                }
+            } else {
+                errorStage = 0;
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+}
+
+- (void)chooseNextControl
+{
+    [toolsPaletteController chooseNextControl];
+}
+
+- (IBAction)chooseControlByTag:(id)sender
+{
+        // forward to the tools palette
+    [toolsPaletteController chooseControlByTag:sender];
+}
+
+#pragma mark SELECTION
+
 - (void)visualSelect:(NSControl<CCDebuggableControl> *)aControl
 {
-    [selectedControl setDebugMode:kShowUnselected];
+    [self visualSelect:aControl index:0];
+}
+
+- (void)visualSelect:(NSControl<CCDebuggableControl> *)aControl index:(NSInteger)index
+{
+    if ([self testerForSelected] == nil) {
+        [selectedControl setDebugMode:kShowUnselected];
+    }
+    
     self.selectedControl = aControl;
-    [selectedControl setDebugMode:kShowSelected];
+    [self flashControlTester:[self testerForSelected]];
+    
+    if ([self testerForSelected] == nil) {
+        if ([selectedControl respondsToSelector:@selector(setDebugMode:index:)]) {
+            [selectedControl setDebugMode:kShowSelected index:index];
+        } else {
+            [selectedControl setDebugMode:kShowSelected];
+        }
+    }
 }
 
 - (void)load:(NSManagedObject *)type
@@ -233,6 +449,9 @@ NSPoint roundPt(NSPoint pt)
     if (numCtls > size) size = numCtls;
     controls = [NSMutableArray arrayWithCapacity:size];
     
+        // target rect
+    wholeFrame = NSMakeRect(0.0, 0.0, type.width.doubleValue, type.height.doubleValue);
+    
         // load existing controls
     [cardSettings enumerateObjectsUsingBlock:^(CCEModelledControl *obj, BOOL *stop) {
         [self controlFromModel:obj];
@@ -241,14 +460,25 @@ NSPoint roundPt(NSPoint pt)
 
 - (void)setSelection:(NSControl<CCDebuggableControl> *)aControl
 {
+    [self setSelection:aControl index:0];
+}
+
+- (void)setSelection:(NSControl<CCDebuggableControl> *)aControl index:(NSInteger)index
+{
     if (!editMode)
         return;
     
     self.mouseDownEvent = nil;
     
-    [self visualSelect:aControl];
+    [self visualSelect:aControl index:index];
     self.selectedControl = aControl;
-    [controller selectControlObject:[self modelledControlFor:aControl]];
+    [self selectControlObject:[self modelledControlFor:aControl] selIndex:index];
+    
+        // if object is under test, note that
+    [self flashControlTester:[CCEControlTest testerForControl:aControl]];
+    if (isTesterForSelected.boolValue) {
+        [aControl setDebugMode:kOff];
+    }
 }
 
 - (IBAction)deleteSelected:(id)sender
@@ -259,10 +489,11 @@ NSPoint roundPt(NSPoint pt)
         return;
     }
         // if the control is part of a matrix, delete it from the matrix
-    if ([selectedControl respondsToSelector:@selector(parent)]) {
-        CCMatrix *parent = (CCMatrix *)[selectedControl performSelector:@selector(parent)];
-        if (parent != nil) {
-            [parent deleteChild:sender];
+    if ([selectedControl respondsToSelector:@selector(deleteChild:)]) {
+        CCMatrix *parent = (CCMatrix *)selectedControl;
+            // returns NO if any other children remain
+        if (![parent deleteChild:sender]) {
+            [self setSelection:selectedControl index:[parent currentIndex]];
             return;
         }
     }
@@ -281,22 +512,92 @@ NSPoint roundPt(NSPoint pt)
     [[model managedObjectContext] deleteObject:model];
 }
 
-- (void)setGridState:(BOOL)state
+- (IBAction)setControlColorCode:(id)sender
 {
-    [view setGridState:state];
+    if (![sender respondsToSelector:@selector(selectedCell)]) {
+        return;
+    }
+    NSInteger code = [[sender selectedCell] tag];
+    
+    [controlColorWell setColor:[(AppDelegate *)[NSApp delegate] colorForCode:code]];
 }
 
-#pragma mark CREATE_CONTROLS
+- (void)selectControlObject:(CCEModelledControl *)object
+{
+    [self selectControlObject:object selIndex:0];
+}
+
+- (void)selectControlObject:(CCEModelledControl *)object selIndex:(NSInteger)index
+{
+        // make sure force-squaring does not affect newly set object
+    self.square = [NSNumber numberWithBool:NO];
+    selectedObject.content = nil;
+    locationObject.content = nil;
+    
+    [selectedObject setContent:object];
+    
+    CCELocation *posObject = nil;
+    if ([[object isIndexed] boolValue]) {
+        CCEMultiCheckModel *indexedModel = (CCEMultiCheckModel *)object;
+        posObject = [indexedModel locationWithIndex:index];
+    } else {
+        posObject = [object valueForKey:@"location"];
+    }
+    [locationObject setContent:posObject];
+    
+    self.canSquare = [NSNumber numberWithBool:object != nil && posObject != nil &&
+                      ![[[object entity] name] isEqualToString:entityText]];
+    self.square = [NSNumber numberWithBool:self.canSquare &&
+                   0 == fuzzyCompare([posObject.width doubleValue], [posObject.height doubleValue])];
+    
+    [infoPanel orderFront:self];
+}
+
+- (void)setSquare:(NSNumber *)value
+{
+    square = value;
+    [self squareKeeper:self];
+}
+
+- (IBAction)squareKeeper:(id)sender
+{
+    if ([square boolValue]) {
+        CCELocation *locObject = locationObject.content;
+        double side = locObject.width.doubleValue;
+        locObject.height = [NSNumber numberWithDouble:side];
+    }
+}
+
+- (IBAction)updateUnits:(id)sender
+{
+        // Force the x, y, width, height fields to update when the preferred unit changes. Since
+        // the actual value is the same (only the transformed value changes), NSTextField would
+        // not update as expected.  Unbinding and rebinding the selected object location does the
+        // trick, though.
+    NSManagedObject *posObject = [locationObject content];
+    [locationObject setContent:nil];
+    [locationObject setContent:posObject];
+}
+
+#pragma mark CREATE CONTROLS
 
     // target of controls in layout mode
 - (IBAction)layoutClick:(id)sender
 {
     if (editMode) {
-        [sender setIntegerValue:0]; // always off
+        NSInteger index = 0;
+        
+        if ([sender isKindOfClass:[NSButton class]]) {
+            [sender setIntegerValue:0]; // always off
+        } else if ([sender isKindOfClass:[CCMatrix class]]) {
+            index = [sender integerValue];
+            [sender setIntegerValue:0]; // always no selection
+        }
+            // TODO: preference for changing to kPointerControl
         if (controlType != kPointerControl)
             return;
         
-        [self setSelection:sender];
+        [self setSelection:sender index:index];
     }
 }
 
@@ -310,13 +611,24 @@ NSPoint roundPt(NSPoint pt)
 
 - (NSControl <CCDebuggableControl> *)controlFromModel:(CCEModelledControl *)model
 {
-    NSControl <CCDebuggableControl> *newControl = nil;
-    
-    if ([entityCheckbox isEqualToString:[[model entity] name]]) {
-        newControl = [self checkboxFromModel:model];
+    @try {
+        NSControl <CCDebuggableControl> *newControl = nil;
+        
+        if ([entityCheckbox isEqualToString:[[model entity] name]]) {
+            newControl = [self checkboxFromModel:model];
+        } else if ([entityText isEqualToString:[[model entity] name]]) {
+            newControl = [self textBoxFromModel:(CCETextModel *)model];
+        } else if ([entityMultiCheck isEqualToString:[[model entity] name]]) {
+            newControl = [self matrixFromModel:(CCEMultiCheckModel *)model];
+        }
+        
+        return newControl;
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%s line %d caught exception %@", __FILE__, __LINE__, exception);
     }
     
-    return newControl;
+    return nil;
 }
 
 #pragma mark CHECKBOXES
@@ -367,8 +679,7 @@ NSPoint roundPt(NSPoint pt)
     
     [self createLocationFor:checkbox at:where];
     
-    [checkbox setControlInView:cbox];
-    [cbox setModelledControl:checkbox];
+    [cbox monitorModel:checkbox];
     
     [self setSelection:cbox];
 }
@@ -386,6 +697,155 @@ NSPoint roundPt(NSPoint pt)
     
     return cbox;
 }
+
+#pragma mark MULTI-CHECKBOXES
+
+- (void)createMultiCheckbox:(NSEvent *)theEvent
+{
+    NSPoint where = [self checkBoxLowerLeft:theEvent.locationInWindow];
+    NSSize size = NSMakeSize(localDflts.boxWidth, localDflts.boxHeight);
+    NSRect theRect = {where, size};
+    
+        // create matrix coincident with view
+    CCBoxMatrix *matrix = [[CCBoxMatrix alloc] initWithFrame:view.frame
+                                                       rects:@[[NSValue valueWithRect:theRect]]
+                                                      colors:@[ccNormalColor]
+                                                        name:nil];
+    [self targetSelf:matrix];
+    [controls addObject:matrix];
+    [view addSubview:matrix];
+    
+    CCEMultiCheckModel *model = [NSEntityDescription insertNewObjectForEntityForName:ccMultiCheck
+                                                                   inManagedObjectContext:[controller managedObjectContext]];
+    [cardSettings addObject:model];
+    model.dimX = [NSNumber numberWithDouble:size.width];
+    model.dimY = [NSNumber numberWithDouble:size.height];
+    model.shape = [NSNumber numberWithInteger:kCheckboxes];
+    
+        // first checkbox in the control gets index 1, not 0; zero is reserved for "none selected"
+    [self createLocationFor:model at:where withIndex:1];
+    
+    [matrix monitorModel:model index:1];
+    [self setSelection:matrix index:1];
+}
+
+- (void)addBoxToMultiCheckbox:(NSEvent *)theEvent
+{
+    if (selectedControl == nil || ![selectedControl isKindOfClass:[CCBoxMatrix class]])
+        [NSException raise:@"InvalidAddition"
+                    format:@"%@ is the wrong type for adding a checkbox", [selectedControl class]];
+    CCBoxMatrix *matrix = (CCBoxMatrix *)selectedControl;
+    CCEMultiCheckModel *model = (CCEMultiCheckModel *)[matrix modelledControl];
+    short prevIndex = [model.locations count];  // indices start at 1!
+    short index = prevIndex + 1;
+    
+    NSPoint where = [self checkBoxLowerLeft:theEvent.locationInWindow];
+    NSSize size = NSMakeSize(localDflts.boxWidth, localDflts.boxHeight);
+    NSRect theRect = {where, size};
+    
+    [matrix placeChildInRect:theRect withColorCode:kNormalColor];
+    
+    CCELocation *locObj = [self createLocationFor:model withIndex:index];
+    
+    [matrix monitorModel:model index:index];
+
+    CCELocation *prevLocation = [model locationWithIndex:prevIndex];
+    NSNumber *colorCode = prevLocation.colorCode;
+    if (colorCode == nil) {
+        [locObj setColor:prevLocation.color];
+    } else {
+        [locObj setColorCode:colorCode];
+    }
+    
+    [self setSelection:matrix index:index];
+}
+
+- (CCMatrix *)matrixFromModel:(CCEMultiCheckModel *)model
+{
+    CCMatrix *matrix;
+    
+    if (editMode) {
+            // editing, so allow NEW child controls anywhere on screen
+        
+        matrix = [CCMatrix matrixFromModel:model insideRect:wholeFrame];
+        [self targetSelf:matrix];
+        [matrix monitorModel:model];
+        [matrix setDebugMode:kShowUnselected];
+    } else {
+            // establish control rect from union of child rects
+        matrix = [CCMatrix matrixFromModel:model];
+    }
+    
+    [controls addObject:matrix];
+    [view addSubview:matrix];
+    
+    return matrix;
+}
+
+#pragma mark LEAD CHOICE CIRCLES
+
+- (void)createLeadCircle:(NSEvent *)theEvent
+{
+    NSPoint where = [self checkBoxLowerLeft:theEvent.locationInWindow];
+    NSSize size = NSMakeSize(localDflts.ovalWidth, localDflts.ovalHeight);
+    NSRect theRect = {where, size};
+    
+        // create matrix coincident with view
+    CCLeadChoiceMatrix *matrix = [[CCLeadChoiceMatrix alloc] initWithFrame:view.frame
+                                                                     rects:@[[NSValue valueWithRect:theRect]]
+                                                                      name:nil];
+    [self targetSelf:matrix];
+    [controls addObject:matrix];
+    [view addSubview:matrix];
+    
+    CCEMultiCheckModel *model = [NSEntityDescription insertNewObjectForEntityForName:ccMultiCheck
+                                                              inManagedObjectContext:[controller managedObjectContext]];
+    [cardSettings addObject:model];
+    model.dimX = [NSNumber numberWithDouble:size.width];
+    model.dimY = [NSNumber numberWithDouble:size.height];
+    model.shape = [NSNumber numberWithInteger:kOvals];
+    
+        // first checkbox in the control gets index 1, not 0; zero is reserved for "none selected"
+    CCELocation *loc = [self createLocationFor:model at:where withIndex:1];
+    loc.colorCode = [NSNumber numberWithInteger:kNormalColor];
+    
+    [matrix monitorModel:model index:1];
+    [self setSelection:matrix index:1];
+
+}
+
+
+- (void)addCircleToLeadCircles:(NSEvent *)theEvent
+{
+    if (selectedControl == nil || ![selectedControl isKindOfClass:[CCLeadChoiceMatrix class]])
+        [NSException raise:@"InvalidAddition"
+                    format:@"%@ is the wrong type for adding a circle", [selectedControl class]];
+    CCLeadChoiceMatrix *matrix = (CCLeadChoiceMatrix *)selectedControl;
+    CCEMultiCheckModel *model = (CCEMultiCheckModel *)[matrix modelledControl];
+    short prevIndex = [model.locations count];  // indices start at 1!
+    short index = prevIndex + 1;
+    
+    NSPoint where = [self checkBoxLowerLeft:theEvent.locationInWindow];
+    NSSize size = NSMakeSize(localDflts.ovalWidth, localDflts.ovalHeight);
+    NSRect theRect = {where, size};
+    
+    [matrix placeChildInRect:theRect withColorCode:kNormalColor];
+    
+    CCELocation *locObj = [self createLocationFor:model withIndex:index];
+    
+    [matrix monitorModel:model index:index];
+    
+    CCELocation *prevLocation = [model locationWithIndex:prevIndex];
+    NSNumber *colorCode = prevLocation.colorCode;
+    if (colorCode == nil) {
+        [locObj setColor:prevLocation.color];
+    } else {
+        [locObj setColorCode:colorCode];
+    }
+    
+    [self setSelection:matrix index:index];
+}
+
 
 #pragma mark TEXTBOXES
 
@@ -409,40 +869,68 @@ NSPoint roundPt(NSPoint pt)
     [controls addObject:textField];
     [view addSubview:textField];
     
-    [model setControlInView:textField];
-    [textField setModelledControl:model];
+    [textField monitorModel:model];
     
     [self setSelection:textField];
 }
 
+- (id)textBoxFromModel:(CCETextModel *)model
+{
+    id textField;
+    
+    if (editMode) {
+        textField = [CCESizableTextField textFieldFromModel:model];
+        [self targetSelf:textField];
+        [textField setDebugMode:kShowUnselected];
+    } else {
+        textField = [CCTextField textFieldFromModel:model];
+    }
+    
+    [controls addObject:textField];
+    [view addSubview:textField];
+    
+    return textField;
+}
+
 #pragma mark LOCATIONS
 
-- (void)createLocationFor:(CCEModelledControl *)ctl
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
 {
-    [self createLocationFor:ctl withIndex:0];
+    return [self createLocationFor:ctl withIndex:0];
 }
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where
 {
-    [self createLocationFor:ctl at:where withIndex:0];
+    return [self createLocationFor:ctl at:where withIndex:0];
 }
-- (void)createLocationFor:(CCEModelledControl *)ctl withIndex:(short)index
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl withIndex:(NSUInteger)index
 {
-    NSView *theControl = [ctl controlInView];
+    NSView *theControl = selectedControl;
         // locations must account for zooming, too
-    NSPoint realPt = [view convertPoint:[theControl frame].origin fromView:view];
+    NSPoint realPt;
+    if (index > 0 && [theControl conformsToProtocol:@protocol(CCctrlParent)]) {
+        NSView *innerControl = [(id<CCctrlParent>)theControl childWith1Index:index];
+        realPt = [view convertPoint:[innerControl frame].origin fromView:view];
+    } else {
+        realPt = [view convertPoint:[theControl frame].origin fromView:view];
+    }
     
-    [self createLocationFor:ctl at:realPt withIndex:index];
+    return [self createLocationFor:ctl at:realPt withIndex:index];
 }
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withIndex:(short)index
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                       at:(NSPoint)where
+                withIndex:(NSUInteger)index
 {
     NSSize size = NSMakeSize([[ctl dimX] doubleValue], [[ctl dimY] doubleValue]);
-    [self createLocationFor:ctl at:where withIndex:index withSize:size];
+    return [self createLocationFor:ctl at:where withIndex:index withSize:size];
 }
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withSize:(NSSize)size
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withSize:(NSSize)size
 {
-    [self createLocationFor:ctl at:where withIndex:0 withSize:size];
+    return [self createLocationFor:ctl at:where withIndex:0 withSize:size];
 }
-- (void)createLocationFor:(CCEModelledControl *)ctl at:(NSPoint)where withIndex:(short)index withSize:(NSSize)size
+- (CCELocation *)createLocationFor:(CCEModelledControl *)ctl
+                       at:(NSPoint)where
+                withIndex:(NSUInteger)index
+                 withSize:(NSSize)size
 {
     CCELocation *locObj = [NSEntityDescription insertNewObjectForEntityForName:ccLocation
                                                         inManagedObjectContext:[controller managedObjectContext]];
@@ -455,9 +943,95 @@ NSPoint roundPt(NSPoint pt)
     [locObj setIndex:[NSNumber numberWithShort:index]];
     
     [ctl setLocation:locObj];
+    return locObj;
 }
 
-#pragma mark FINDING_CONTROL_OBJECTS
+#pragma mark SCALING
+
+- (IBAction)absoluteScale:(id)sender
+{
+    double newScale;
+    if ([sender isKindOfClass:[NSControl class]]) {
+        NSControl *slider = (NSControl *)sender;
+        newScale = [slider doubleValue];
+    } else if ([sender isKindOfClass:[NSNumber class]]) {
+        NSNumber *num = (NSNumber *)sender;
+        newScale = [num doubleValue];
+    } else {
+        [NSException raise:@"UnrecognizedIdType"
+                    format:@"sender (%@) is neither a NSControl nor NSNumber", sender];
+    }
+    
+    [self rescale:newScale];
+}
+
+- (IBAction)scaleZero:(id)sender
+{
+    [cardImageView zoomImageToActualSize:sender];
+}
+
+- (IBAction)scaleLarger:(id)sender
+{
+    [cardImageView zoomIn:sender];
+}
+
+- (IBAction)scaleSmaller:(id)sender
+{
+    [cardImageView zoomOut:sender];
+}
+
+- (IBAction)scaleToWindow:(id)sender
+{
+    [cardImageView fill];
+}
+
+- (void)rescale:(double)newScale
+{
+    [cardImageView setZoomFactor:newScale];
+}
+
+    // forward image information
+- (void)setImageWithURL:(NSURL *)url
+{
+    [cardImageView setImageWithURL:url];
+}
+
+- (NSSize)imageSize
+{
+    return [cardImageView imageSize];
+}
+
+#pragma mark INFO PANEL
+
+- (void)resignFront
+{
+    [infoPanel orderOut:self];
+    [toolsPaletteController hide];
+}
+
+- (IBAction)controlInfo:(id)sender
+{
+    if ([infoPanel isVisible]) {
+        [infoPanel orderOut:sender];
+    } else {
+        [infoPanel orderFront:sender];
+    }
+}
+
+    // enable the "controls visible" mode when template window (or infoPanel) is key
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSWindow *keyWindow = (NSWindow *)[notification object];
+    if (keyWindow == window || keyWindow == infoPanel) {
+        [CCDebuggableControlEnable setEnabled:YES];
+    }
+    
+    [controller activateEditorWindow:self];
+}
+
+
+
+#pragma mark FINDING CONTROL OBJECTS
 
     // find the control model representing the control view
 - (CCEModelledControl *)modelledControlFor:(NSControl<CCDebuggableControl> *)ctl
@@ -465,41 +1039,230 @@ NSPoint roundPt(NSPoint pt)
     if (ctl == nil) {
         return nil;
     }
-    NSRect rect = [view convertRect:[ctl bounds] fromView:ctl];
-    CCEModelledControl *control = [[CCEEntityFetcher instance] modelledControlAt:rect.origin];
-    if (control == nil) {
-            // kluge: find it the old-fashioned way
-        NSArray *ctls = [[CCEEntityFetcher instance] allModelledControls];
-        
-        __block CCEModelledControl *found = nil;
-        [ctls enumerateObjectsUsingBlock:^(CCEModelledControl *obj, NSUInteger idx, BOOL *stop) {
-            if ([obj controlInView] == ctl) {
-                found = obj;
-                *stop = YES;
-            }
-        }];
-        control = found;
+    CCEModelledControl *control = ctl.modelledControl;
+    if (control != nil) {
+        return control;
     }
+    NSRect rect = [view convertRect:[ctl bounds] fromView:ctl];
+    control = [[CCEEntityFetcher instance] modelledControlAt:rect.origin];
+//    if (control == nil) {
+//            // kluge: find it the old-fashioned way
+//        NSArray *ctls = [[CCEEntityFetcher instance] allModelledControls];
+//        
+//        __block CCEModelledControl *found = nil;
+//        [ctls enumerateObjectsUsingBlock:^(CCEModelledControl *obj, NSUInteger idx, BOOL *stop) {
+//            if ([obj controlInView] == ctl) {
+//                found = obj;
+//                *stop = YES;
+//            }
+//        }];
+//        control = found;
+//    }
     
     return control;
 }
 
-#pragma mark SCALING
+#pragma mark TEST CONTROLS
 
-- (NSPoint)zoomPoint:(NSPoint)pt
+- (IBAction)testControl:(id)sender
 {
-    pt.x *= zoom;
-    pt.y *= zoom;
+    NSControl <CCDebuggableControl> *control = selectedControl;
+    if (selectedControl == nil) {
+        NSLog(@"ERROR: no control selected");
+        return;
+    }
     
-    return pt;
+    [CCEControlTest newTesterForControl:control notify:self];
 }
 
-- (NSPoint)unzoomPoint:(NSPoint)pt
+- (CCEControlTest *)testerForSelected
 {
-    pt.x /= zoom;
-    pt.y /= zoom;
+    NSString *name = selectedControl.modelledControl.name;
+    return [CCEControlTest testerForName:name];
+}
+
+- (IBAction)cancelTestControl:(id)sender
+{
+    NSControl <CCDebuggableControl> *control = selectedControl;
+    if (control == nil) {
+        return;
+    }
     
-    return pt;
+    CCEControlTest *tester = [CCEControlTest testerForControl:control];
+    if (tester) {
+        [tester cancel];
+    }
+}
+
+- (void)flashControlTester:(CCEControlTest *)tester
+{
+    BOOL testerForSelected = tester != nil && tester.isRunning;
+    self.isTesterForSelected = [NSNumber numberWithBool:testerForSelected];
+    if (!testerForSelected) {
+        [selectedControl setDebugMode:kShowSelected];
+    }
+}
+
+- (IBAction)stopAllControlTesters:(id)sender
+{
+    [CCEControlTest stopAllTesters];
+}
+
+#pragma mark VALIDATION
+
+- (BOOL)validateUserInterfaceItem:(NSObject <NSValidatedUserInterfaceItem> *)anItem
+{
+    if ([anItem action] == @selector(testControl:)) {
+        if ([anItem isKindOfClass:[NSMenuItem class]]) {
+            NSMenuItem *menuItem = (NSMenuItem *)anItem;
+            [menuItem setHidden:isTesterForSelected.boolValue];
+            return ![testControlButton isHidden] && [testControlButton isEnabled];
+        }
+    } else if ([anItem action] == @selector(cancelTestControl:)) {
+        if ([anItem isKindOfClass:[NSMenuItem class]]) {
+            NSMenuItem *menuItem = (NSMenuItem *)anItem;
+            [menuItem setHidden:!isTesterForSelected.boolValue];
+            return ![stopTestControlButton isHidden];
+        }
+    } else if ([anItem action] == @selector(stopAllControlTesters:)) {
+        return [CCEControlTest testerCount] > 0;
+    } else if ([anItem action] == @selector(scaleLarger:)) {
+        return [cardImageView canZoomIn];
+    } else if ([anItem action] == @selector(scaleSmaller:)) {
+        return [cardImageView canZoomOut];
+    } else if ([anItem action] == @selector(showSelectedControlInfo:)) {
+        id obj = [selectedObject content];
+        return obj != nil;
+    } else if ([anItem action] == @selector(toggleGridState:)) {
+        if ([anItem isKindOfClass:[NSMenuItem class]]) {
+            NSMenuItem *menuItem = (NSMenuItem *)anItem;
+            [menuItem setState:gridState ? NSOnState : NSOffState];
+        }
+        return YES;
+    }
+
+    
+    return YES;
+}
+
+- (IBAction)toggleGridState:(id)sender
+{
+    self.gridState = !gridState;
+}
+
+- (void)setGridState:(BOOL)state
+{
+    gridState = state;
+    [[NSUserDefaults standardUserDefaults] setBool:state forKey:cceGridState];
+    self.gridStateLabel = state ? hideGrid : showGrid;
+    [view setGridState:state];
+}
+
+- (BOOL)validateToolbarItem:(NSToolbarItem *)theItem
+{
+    if ([theItem action] == @selector(toggleGridState:)) {
+        [theItem setLabel:gridStateLabel];
+    }
+    return cardType != nil;
+}
+
+#pragma mark WINDOW DELEGATE
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+    [toolsPaletteController.toolsPalette orderFront:self];
+    [controller activateEditorWindow:self];
+}
+
+- (BOOL)windowShouldClose:(id)sender {
+    if (sender == window) {
+        [sender orderOut:self];
+        [infoPanel close];
+        [toolsPaletteController.toolsPalette close];
+        [controller editorWindowClosing:self];
+    }
+    
+    return YES;
+}
+
+#pragma mark WINDOW_INITIALIZATION
+
+- (void)infoPanelInit
+{
+        // standard colors for controls
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    for (int index = kStandardColorsLowerBound; index < kNumberStandardColors; ++index) {
+        CCEColorBindableButtonCell *cell = [stdControlColorGroup cellWithTag:index];
+        
+        if (cell == nil)
+            continue;
+        if (![cell isKindOfClass:[CCEColorBindableButtonCell class]])
+            continue;
+        
+        [cell observeTextColorFrom:ud keypath:[CommonStrings standardColorKey:index]];
+    }
+}
+
+#pragma mark UNDO MANAGEMENT
+
+- (NSUndoManager *)undoManager
+{
+    return [[controller managedObjectContext] undoManager];
+}
+
+- (IBAction)undo:(id)sender
+{
+    [[controller managedObjectContext] undo];
+}
+
+- (IBAction)redo:(id)sender
+{
+    [[controller managedObjectContext] redo];
+}
+
+#pragma mark DEBUGGING
+
+- (IBAction)showSelectedControlInfo:(id)sender
+{
+    CCEModelledControl *ctl = [selectedObject content];
+    if (ctl == nil) {
+        NSLog(@"No control is selected--abort");
+        return;
+    }
+    
+    NSRect frame, bounds;
+    
+    NSControl *selected = [self selectedControl];
+    frame = [selected frame];
+    bounds = [selected bounds];
+    
+    NSLog(@"In itself: frame:%@ bounds:%@", NSStringFromRect(frame), NSStringFromRect(bounds));
+    
+        // in view
+    [view convertRect:frame fromView:selected];
+    [view convertRect:bounds fromView:selected];
+    
+    NSLog(@"In view: frame:%@ bounds:%@", NSStringFromRect(frame), NSStringFromRect(bounds));
+    
+        // in window
+    [view convertRect:frame toView:nil];
+    [view convertRect:bounds toView:nil];
+    
+    NSLog(@"In window: frame:%@ bounds:%@", NSStringFromRect(frame), NSStringFromRect(bounds));
+    
+    NSLog(@"un-nest view frames:");
+    
+    for (NSView *aview = selected; aview != nil; aview = [aview superview]) {
+        NSLog(@"view %@ (%p): frame %@ zoom %g", NSStringFromClass([aview class]), aview,
+              NSStringFromRect([aview frame]), [view scale].width);
+    }
+    
+    NSLog(@"sub views (frame inside view):");
+    
+    [[selected subviews] enumerateObjectsUsingBlock:^(NSView *aview, NSUInteger idx, BOOL *stop) {
+        NSLog(@"view %@ (%p): frame %@ zoom %g", NSStringFromClass([aview class]), aview,
+              NSStringFromRect([aview convertRect:[aview frame] toView:selected]), [view scale].width);
+    }];
 }
 
 @end

@@ -8,6 +8,9 @@
 
 #import <CoreData/CoreData.h>
 #import "CCELocation.h"
+#import "CCDebuggableControl.h"
+
+@class CCELocationController;
 
 extern NSString *entityCheckbox;
 extern NSString *entityMultiCheck;
@@ -20,11 +23,9 @@ enum kMultiCheckShape {
 
 @interface CCEModelledControl : NSManagedObject
 
-@property (readonly) NSString *controlType;
-@property (readonly) NSNumber *isIndexed;
-@property (readonly) NSNumber *numParts;
-
-@property (weak) NSControl *controlInView;
+@property (readonly, nonatomic) NSString *controlType;
+@property (readonly, nonatomic) NSNumber *isIndexed;
+@property (readonly, nonatomic) NSNumber *numParts;
 
 @end
 
@@ -39,6 +40,15 @@ enum kMultiCheckShape {
     // MultiCheck; it has a set property ("locations"); but defines
     // setLocation: to _add_ a location object to the set.
 @property (nonatomic) NSManagedObject *location;
+
+    // make control view listen to changes in color
+- (void)observeLocation:(NSManagedObject *)location
+             forControl:(NSControl <CCDebuggableControl> *)control;
+- (void)stopObservingLocation:(NSManagedObject *)location
+                   forControl:(NSControl <CCDebuggableControl> *)control;
+
+- (void)observeColor:(CCELocationController *)observer;
+- (void)unobserveColor:(CCELocationController *)observer;
 
 @end
 

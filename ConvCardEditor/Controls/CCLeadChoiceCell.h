@@ -12,8 +12,7 @@
 
 @interface CCLeadChoiceCell : NSButtonCell <CCDebuggableControl>
 
-@property int debugMode;
-@property CCEModelledControl *modelledControl;
+@property (nonatomic) int debugMode;
 
 + (void) setStrokeWidth:(double)newWidth;
 + (void) setCircleColor:(NSColor *)newColor;

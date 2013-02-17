@@ -8,6 +8,7 @@
 
 #import "CCEFileOps.h"
 #import "CCEEntityFetcher.h"
+#import "CommonStrings.h"
 
 NSString *CCEF_BadFileURL = @"BadFileURL";
 NSString *CCEF_FileMoveError = @"FileMoveError";
@@ -122,6 +123,42 @@ static CCEFileOps *theInstance = nil;
     if (file != nil) {
         [[self fileManager] removeItemAtURL:file error:&error];
     }
+    return error;
+}
+
+- (NSURL *)appSupportFileURL:(NSString *)path
+{
+    return [[NSURL alloc] initWithString:[path lastPathComponent] relativeToURL:appSupportURL];
+}
+
+- (BOOL)fileExistsAtURL:(NSURL *)url
+{
+    return [[self fileManager] fileExistsAtPath:[url path]];
+}
+
+- (NSError *)writeFileAtURL:(NSURL *)url withData:(NSData *)data
+{
+    return [self writeFileAtURL:url withData:data withAttributes:nil];
+}
+
+- (NSError *)writeFileAtURL:(NSURL *)url
+                   withData:(NSData *)data
+             withAttributes:(NSDictionary *)attributes
+{
+    NSError *error = nil;
+    
+    BOOL wrote = [[self fileManager] createFileAtPath:[url path]
+                                             contents:data
+                                           attributes:attributes];
+    if (!wrote) {
+        error = [NSError errorWithDomain:applicationDomain
+                                    code:2
+                                userInfo:@{
+                      NSFilePathErrorKey: [url path],
+               NSLocalizedDescriptionKey: NSLocalizedString(@"The operation couldn't be completed.", @"not completed")
+                 }];
+    }
+    
     return error;
 }
 

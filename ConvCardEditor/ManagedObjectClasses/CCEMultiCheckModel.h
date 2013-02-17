@@ -8,9 +8,16 @@
 
 #import "CCEModelledControl.h"
 
+@class CCELocation;
+
 @interface CCEMultiCheckModel : CCEModelledControl
 
 @property (nonatomic) NSNumber *shape;
 @property (nonatomic) NSSet *locations;
+
+- (CCELocation *)locationWithIndex:(NSInteger)index;
+
+    // convenience method:
+- (void)removeLocationWithIndex:(NSUInteger)index;
 
 @end

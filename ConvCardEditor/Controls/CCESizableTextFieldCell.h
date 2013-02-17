@@ -24,22 +24,22 @@ enum ETextControlSizerHandle {
     kDoubleHandleCount = kBottomRight + 1
     };
 
-@interface CCESizableTextFieldCell : NSTextFieldCell {
+@interface CCESizableTextFieldCell : NSCell {
     @protected
-    NSRect rect[kDoubleHandleCount];
+    NSRect _dragRect[kDoubleHandleCount];
 }
 
 @property BOOL useDoubleHandles;
-@property (nonatomic) NSFont *font;
-@property CGFloat lineHeight;
-@property NSUInteger lineCount;
-@property NSColor *frameColor;
 
-    // Returns the whole number of lines for the given height in points.
-    // Amount will be rounded to nearest.
-- (NSUInteger)linesForHeight:(CGFloat)height;
+@property NSArray *dragRectArray;
+@property NSRect textRect;
+@property NSRect borderRect;
 
-+ (void)setDefaultFont:(NSFont *)font;
-+ (NSUInteger)linesForHeight:(CGFloat)height;
+@property (nonatomic) int debugMode;
+
+@property (nonatomic) id target;
+@property (nonatomic) SEL action;
+
++ (NSPoint)insetSize;
 
 @end

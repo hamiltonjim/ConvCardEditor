@@ -10,6 +10,7 @@
 #import "CCLeadChoiceCell.h"
 #import "AppDelegate.h"
 #import "CommonStrings.h"
+#import "CCEConstants.h"
 
 static AppDelegate *appDel() {
     static AppDelegate *del = nil;
@@ -28,6 +29,7 @@ static NSColor *circleColor = nil;
 
 static NSColor *showColor;
 static NSColor *selectedColor;
+static NSColor *selectedOtherColor;
 
 + (void)initialize
 {
@@ -35,19 +37,21 @@ static NSColor *selectedColor;
         return;
     }
     
-    showColor = [NSColor colorWithCalibratedRed:UNSELECTED_COLOR_R
-                                          green:UNSELECTED_COLOR_G
-                                           blue:UNSELECTED_COLOR_B
-                                          alpha:UNSELECTED_COLOR_A];
-    selectedColor = [NSColor colorWithCalibratedRed:SELECTED_COLOR_R
-                                              green:SELECTED_COLOR_G
-                                               blue:SELECTED_COLOR_B
-                                              alpha:SELECTED_COLOR_A];
+    showColor = [CCEConstants unselectedColor];
+    selectedColor = [CCEConstants selectedColor];
+    selectedOtherColor = [CCEConstants selectedOtherColor];
     
     strokeWidth = [[NSUserDefaults standardUserDefaults]
                    doubleForKey:ccLeadCircleStrokeWidth];
     [self setCircleColor:[NSUnarchiver unarchiveObjectWithData:
                           [[NSUserDefaults standardUserDefaults] valueForKey:ccLeadCircleColorKey]]];
+}
+
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    [NSException raise:@"NotImplementedInCell"
+                format:@"monitorModel should not be implemented in cell class %@", [self class]];
+    return nil;
 }
 
 + (void) setStrokeWidth:(double)newWidth {
@@ -91,6 +95,12 @@ static NSColor *selectedColor;
     [appDel() removeObserver:self forKeyPath:ccLeadCircleColorKey];
 }
 
+- (void)setDebugMode:(int)mode
+{
+    debugMode = mode;
+    [[self controlView] setNeedsDisplay:YES];
+}
+
 - (void) drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     if (NSOnState == [self state]) {
         NSBezierPath *rpath = [NSBezierPath bezierPathWithOvalInRect:cellFrame];
@@ -113,6 +123,10 @@ static NSColor *selectedColor;
                 
             case kShowSelected:
                 dColor = selectedColor;
+                break;
+                
+            case kShowSelectedOther:
+                dColor = selectedOtherColor;
                 break;
         }
         NSBezierPath *dpath = [NSBezierPath bezierPathWithOvalInRect:cellFrame];

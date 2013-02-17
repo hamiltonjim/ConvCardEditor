@@ -7,6 +7,8 @@
 //
 
 #import "CCEModelledControl.h"
+#import "CCELocationController.h"
+#import "CommonStrings.h"
 
 NSString *entityCheckbox = @"SingleCheck";
 NSString *entityMultiCheck = @"MultiCheck";
@@ -27,8 +29,6 @@ NSString *entityText = @"Text";
 @synthesize controlType;
 @synthesize isIndexed;
 @synthesize numParts;
-
-@synthesize controlInView;
 
 - (void)awakeFromFetch
 {

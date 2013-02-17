@@ -16,6 +16,6 @@
 @property (nonatomic) CCELocation *location;
 @property (nonatomic) NSNumber *fontSize;
 
-@property (nonatomic, getter = isNumeric) NSNumber *numeric;
+@property (nonatomic) NSNumber *numeric;
 
 @end

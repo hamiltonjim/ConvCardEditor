@@ -22,4 +22,6 @@
 
 - (NSManagedObject *)cardUsingGraphicsFile:(NSString *)path;
 
+- (NSArray *)allCardTypes;
+
 @end

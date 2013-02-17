@@ -21,15 +21,13 @@ enum CCCheckboxStyle {
     NSColor *color;
     NSString *colorKey;
     
-    BOOL observingSet;
-    
     int debugMode;
     
     NSNumber *forceMode;
 }
 
-@property NSColor *color;
-@property NSString *colorKey;
+@property (nonatomic) NSColor *color;
+@property (nonatomic) NSString *colorKey;
 
 @property (nonatomic) int debugMode;
 

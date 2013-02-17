@@ -16,6 +16,8 @@
 #import "CCEManagedObjectModels.h"
 #import "CCETextModel.h"
 #import "CCELocation.h"
+#import "NSControl+CCESetColorCode.h"
+#import "CCELocationController.h"
 
 static NSNumberFormatter *myNumFormatter = nil;
 
@@ -57,13 +59,9 @@ static const char *kSpadeCharUTF8 = "\xe2\x99\xa0";
 
 @property double baseSize;
 @property double baseFontSize;
-@property NSColor *color;
-
-
-@property BOOL isNumber;
 
 @property NSString *fontKey;
-@property NSString *colorKey;
+@property NSString *fontName;
 
 @property NSRect frameRect;
 
@@ -84,10 +82,11 @@ static NSFont *defaultFont;
 @synthesize allOrNothing;
 
 @synthesize modelledControl;
-@synthesize modelLocation;
+@synthesize locationController;
 
 @synthesize baseSize;
 @synthesize baseFontSize;
+@synthesize fontName;
 
 @synthesize isNumber;
 @synthesize fontKey;
@@ -130,6 +129,21 @@ static NSFont *defaultFont;
     return [[self alloc] initWithTextModel:model];
 }
 
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    modelledControl = model;
+    
+        // monitoring
+    locationController = [[CCELocationController alloc] initWithModel:model control:self];
+    
+    return locationController;
+}
+
+- (void)setColorKey:(NSString *)aColorKey
+{
+    [self watchColor:aColorKey];
+}
+
 - (void) watchColor:(NSString *)aColorKey {
     [self unwatchColor];
     if (aColorKey) {
@@ -147,6 +161,13 @@ static NSFont *defaultFont;
         
         colorKey = nil;
     }
+}
+
+- (void)setColor:(NSColor *)aColor
+{
+    [self unwatchColor];
+    color = aColor;
+    [self setTextColor:aColor];
 }
 
 - (void) watchFont:(NSString *)aFontKey {
@@ -275,10 +296,10 @@ static NSFont *defaultFont;
     NSSize howBig = NSMakeSize([location.width doubleValue], [location.height doubleValue]);
     NSRect frameR = {where, howBig};
 
-    NSString *fontName = [[NSUserDefaults standardUserDefaults] valueForKey:ccDefaultFontName];
+    fontName = [[NSUserDefaults standardUserDefaults] valueForKey:ccDefaultFontName];
     double fontSize = [model.fontSize doubleValue];
     
-    BOOL isNum = [model.isNumeric boolValue];
+    BOOL isNum = [model.numeric boolValue];
     
     NSNumber *colorKeyObject = location.colorCode;
     if (colorKeyObject != nil) {
@@ -300,79 +321,20 @@ static NSFont *defaultFont;
     }
     
     self.baseFontSize = fontSize;
-    self.modelledControl = model;
-    [model setControlInView:self];
+    [self monitorModel:model];
     
     return self;
 }
 
-- (void)setModelledControl:(CCETextModel *)model
-{
-    modelledControl = model;
-    CCELocation *location = [modelledControl valueForKey:ccModelLocation];
-    if (location != nil) {
-        self.modelLocation = location;
-    }
-}
-
-- (void)setModelLocation:(CCELocation *)location
-{
-        // stop observing old location, if any
-    if (modelLocation != nil) {
-        [[CommonStrings dimensionKeys] enumerateObjectsUsingBlock:^(id key, NSUInteger idx, BOOL *stop) {
-            [modelLocation removeObserver:self forKeyPath:@"key"];
-        }];
-    }
-    
-    modelLocation = location;
-    
-    [[CommonStrings dimensionKeys] enumerateObjectsUsingBlock:^(id key, NSUInteger idx, BOOL *stop) {
-        [modelLocation addObserver:self
-                        forKeyPath:key
-                           options:NSKeyValueObservingOptionInitial
-                           context:nil];
-    }];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    BOOL frameChange = NO;
-    
-    if ([keyPath isEqualToString:kControlLocationX]) {
-        frameRect.origin.x = [[object valueForKeyPath:keyPath] doubleValue];
-        frameChange = YES;
-    } else if ([keyPath isEqualToString:kControlLocationY]) {
-        frameRect.origin.y = [[object valueForKeyPath:keyPath] doubleValue];
-        frameChange = YES;
-    } else if ([keyPath isEqualToString:kControlWidth]) {
-        frameRect.size.width = [[object valueForKeyPath:keyPath] doubleValue];
-        frameChange = YES;
-    } else if ([keyPath isEqualToString:kControlHeight]) {
-        frameRect.size.height = [[object valueForKeyPath:keyPath] doubleValue];
-        frameChange = YES;
-    }
-    if ([keyPath isEqualToString:colorKey]) {
-        [self setTextColor:[[CCTextField appDel] valueForKey:colorKey]];
-    }
-    if ([keyPath isEqualToString:fontKey]) {
-        [self setFont:[[CCTextField appDel] valueForKey:fontKey]];
-    }
-    
-    if (frameChange) {
-//        NSLog(@"%@ set frame to %@; scale %g", [self class], NSStringFromRect(frameRect), [self scale].width);
-        [self setFrame:frameRect];
-        [self setNeedsDisplay];
-    }
-}
-
-
 - (void) setFont:(NSFont *)fontObj {
-    double fontSize = baseFontSize;
-    NSString *fontName = [fontObj fontName];
-    [super setFont:[NSFont fontWithName:fontName size:fontSize]];
+    fontName = [fontObj fontName];
+    [super setFont:[NSFont fontWithName:fontName size:baseFontSize]];
+}
+
+- (void)setFontSize:(CGFloat)size
+{
+    baseFontSize = size;
+    [super setFont:[NSFont fontWithName:fontName size:baseFontSize]];
 }
 
 - (void) setFrame:(NSRect)frameR {

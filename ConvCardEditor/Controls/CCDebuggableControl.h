@@ -9,6 +9,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CCDebuggableControlEnable.h"
+#import "CCctrlParent.h"
 
 @class CCEModelledControl;
 
@@ -21,21 +22,48 @@
 
 enum EDebugState {
     kOff,
-    kShowUnselected,
-    kShowSelected
+    kShowUnselected,    // shade
+    kShowSelected,      // shade & highlight
+    kShowSelectedOther  // shade & highlight, but as part of a larger control
     };
 
 @protocol CCDebuggableControl
 
 @required
+
+    // observe currently edited location, and update
+- (id)monitorModel:(CCEModelledControl *)model;
+
 - (void) setDebugMode:(int)newDebugMode;
 
 @optional
+
+- (id)monitorModel:(CCEModelledControl *)model index:(NSUInteger)index;
+
+@property (weak, nonatomic) id <CCctrlParent> parent;
+
+    // observe currently edited location, and update
+    // usually a CCELocationController; sometimes an array...
+@property (nonatomic) id locationController;
+@property (weak, nonatomic) CCEModelledControl *modelledControl;
+
+    // colors (monitored for changes by a separate controller)
+@property (nonatomic) NSColor *color;
+@property (nonatomic) NSString *colorKey;
+
 - (int) debugMode;
 
-    // modelledControl should be implemented as a property of a
-    // subtype of CCEModelledControl
-- (void)setModelledControl:(CCEModelledControl *)model;
-- (CCEModelledControl *)modelledControl;
+    // If an editable control is a different size from its fixed counterpart,
+    // return the amout by which the modelled location should be inset (i.e.,
+    // by which the editable version is larger on each side)
+- (NSPoint)insetModelledRect;
+
+- (void)advanceTest;
+- (void)resetTest;
+
+    // for a multiple part control:  show the part with the selected index
+    // as selected, and the other parts as "selected-other"
+- (void)setDebugMode:(int)newDebugMode index:(NSInteger)index;
+
 
 @end

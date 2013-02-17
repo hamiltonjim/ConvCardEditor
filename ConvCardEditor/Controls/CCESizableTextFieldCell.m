@@ -8,23 +8,30 @@
 
 #import "CCESizableTextFieldCell.h"
 #import "CommonStrings.h"
+#import "CCDebuggableControl.h"
+#import "CCEModelledControl.h"
 
-const CGFloat kHandleRadius = 2.0;
-const CGFloat kHandleDiameter = kHandleRadius * 2.0;
+const CGFloat kInsetPoints = 4.0;
+const NSPoint kInsetSize = {kInsetPoints, kInsetPoints};
 
-static NSFont *defaultFont;
-static CGFloat defaultLineHeight;
+const CGFloat kHandleRadius = kInsetPoints / 2.0;
+const CGFloat kHandleDiameter = kInsetPoints;
+
+
+static NSColor *selectedColor;
+static NSColor *unselectedColor;
 
 @interface CCESizableTextFieldCell ()
 
-@property NSRect textRect;
-@property NSRect borderRect;
-
-+ (NSFont *)defaultFont;
+@property BOOL inDrag;
+@property int dragIndex;
+@property NSPoint dragStartPoint;
 
 - (NSRect)fillOvalAt:(NSRect)ovalRect;
 
 - (NSRect)dotRectAroundX:(CGFloat)x y:(CGFloat)y;
+
+- (void)reFrame:(NSView *)controlView at:(NSRect)rect;
 
 @end
 
@@ -33,32 +40,39 @@ static CGFloat defaultLineHeight;
 @synthesize textRect;
 @synthesize borderRect;
 @synthesize useDoubleHandles;
-@synthesize font;
-@synthesize lineHeight;
-@synthesize lineCount;
-@synthesize frameColor;
 
-+ (NSFont *)defaultFont
+@synthesize dragRectArray;
+@synthesize debugMode;
+
+@synthesize inDrag;
+@synthesize dragIndex;
+@synthesize dragStartPoint;
+
++ (void)initialize
 {
-    if (defaultFont == nil) {
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        defaultFont = [NSFont fontWithName:[ud stringForKey:ccDefaultFontName]
-                                      size:[ud doubleForKey:ccDefaultFontSize]];
-        defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+    if (self == [CCESizableTextFieldCell class]) {
+        selectedColor = [NSColor blackColor];
+        unselectedColor = [NSColor colorWithCalibratedWhite:0.6 alpha:0.8];
     }
-    
-    return defaultFont;
 }
-+ (void)setDefaultFont:(NSFont *)font
+
++ (NSPoint)insetSize
 {
-    defaultFont = font;
-    defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+    return kInsetSize;
+}
+
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    [NSException raise:@"NotImplementedInCell"
+                format:@"monitorModel should not be implemented in cell class %@", [self class]];
+    return nil;
 }
 
 - (id)initTextCell:(NSString *)aString
 {
     if ((self = [super initTextCell:aString])) {
         [self sendActionOn:NSLeftMouseUpMask];
+        inDrag = NO;
     }
     
     return self;
@@ -68,6 +82,7 @@ static CGFloat defaultLineHeight;
 {
     if ((self = [super initImageCell:image])) {
         [self sendActionOn:NSLeftMouseUpMask];
+        inDrag = NO;
     }
     return self;
 }
@@ -75,24 +90,9 @@ static CGFloat defaultLineHeight;
 {
     if ((self = [super initWithCoder:aDecoder])) {
         [self sendActionOn:NSLeftMouseUpMask];
+        inDrag = NO;
     }
     return self;
-}
-
-- (void)setFont:(NSFont *)aFont
-{
-    font = aFont;
-    
-        // calculate line height
-    if (font != nil) {
-        self.lineHeight = [font ascender] - [font descender] + [font leading];
-    }
-}
-- (NSFont *)font
-{
-    if (font == nil)
-        font = [[self class] defaultFont];
-    return font;
 }
 
 - (NSRect)dotRectAroundX:(CGFloat)x y:(CGFloat)y
@@ -106,35 +106,58 @@ static CGFloat defaultLineHeight;
     
     borderRect = NSInsetRect(aRect, kHandleRadius, kHandleRadius);
     
-    rect[kLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMidY(borderRect)];
-    rect[kRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMidY(borderRect)];
+    _dragRect[kLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMidY(borderRect)];
+    _dragRect[kRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMidY(borderRect)];
     
-    rect[kTop] = [self dotRectAroundX:NSMidX(borderRect) y:NSMaxY(borderRect)];
-    rect[kBottom] = [self dotRectAroundX:NSMidX(borderRect) y:NSMinY(borderRect)];
+    _dragRect[kTop] = [self dotRectAroundX:NSMidX(borderRect) y:NSMaxY(borderRect)];
+    _dragRect[kBottom] = [self dotRectAroundX:NSMidX(borderRect) y:NSMinY(borderRect)];
     
-    rect[kBottomLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMinY(borderRect)];
-    rect[kBottomRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMinY(borderRect)];
-    rect[kTopLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMaxY(borderRect)];
-    rect[kTopRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMaxY(borderRect)];
+    if (useDoubleHandles) {
+        _dragRect[kBottomLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMinY(borderRect)];
+        _dragRect[kBottomRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMinY(borderRect)];
+        _dragRect[kTopLeft] = [self dotRectAroundX:NSMinX(borderRect) y:NSMaxY(borderRect)];
+        _dragRect[kTopRight] = [self dotRectAroundX:NSMaxX(borderRect) y:NSMaxY(borderRect)];
+    }
+    
+    NSInteger kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:kMax];
+    for (NSInteger index = 0; index < kMax; ++index) {
+        [array addObject:[NSValue valueWithRect:_dragRect[index]]];
+    }
+    
+    self.dragRectArray = array;
+}
+
+- (void)setDebugMode:(int)mode
+{
+    debugMode = mode;
+    [[self controlView] setNeedsDisplay:YES];
 }
 
 - (void)drawWithFrame:(NSRect)origCellFrame inView:(NSView *)controlView
 {
-    if (frameColor == nil) {
-        frameColor = [NSColor blackColor];
+    switch (debugMode) {
+        case kShowSelected:
+            [selectedColor set];
+            break;
+            
+        case kShowUnselected:
+            [unselectedColor set];
+            break;
+            
+        default:
+                // don't even draw anything in any other state
+            return;
     }
-    
         // actual rect is "outset" by kHandleRadius points
-    [frameColor set];
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:borderRect];
     [path setLineWidth:0.0];
     [path stroke];
     
         // centered handles
-    const int kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
-    
-    for (int index = 0; index < kMax; ++index) {
-        [self fillOvalAt:rect[index]];
+    const NSInteger kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
+    for (NSInteger index = 0; index < kMax; ++index) {
+        [self fillOvalAt:_dragRect[index]];
     }
 }
 
@@ -146,17 +169,6 @@ static CGFloat defaultLineHeight;
     return ovalRect;
 }
 
-- (NSUInteger)linesForHeight:(CGFloat)height
-{
-    return MIN(round(height / lineHeight), 1.0);
-}
-
-+ (NSUInteger)linesForHeight:(CGFloat)height
-{
-    (void)[self defaultFont];
-    return MIN(round(height / defaultLineHeight), 1.0);
-}
-
     // no focus ring!
 - (NSFocusRingType)focusRingType
 {
@@ -166,37 +178,104 @@ static CGFloat defaultLineHeight;
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
     NSPoint where = [controlView convertPoint:event.locationInWindow fromView:nil];
-    
-    if (NSPointInRect(where, textRect)) {
-        NSUInteger value = NSCellHitContentArea;
-        if ([self isEditable])
-            value |= NSCellHitEditableTextArea;
-        NSLog(@"hitTestForEvent %ld", value);
-        return value;
-    }
+    NSLog(@"hitTestForEvent: where: %@", NSStringFromPoint(where));
     
     const int kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
     
     for (int index = 0; index < kMax; ++index) {
-        if (NSPointInRect(where, rect[index])) {
+        if (NSPointInRect(where, _dragRect[index])) {
             NSLog(@"hitTestForEvent %d", NSCellHitTrackableArea);
             return NSCellHitTrackableArea;
         }
     }
 
+    if (NSPointInRect(where, borderRect)) {
+        NSUInteger value = NSCellHitContentArea;
+        NSLog(@"hitTestForEvent %ld", value);
+        return value;
+    }
+    
     return NSCellHitNone;
 }
 
-//- (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:(NSView *)controlView mouseIsUp:(BOOL)flag
-//{
-//    if (flag) {
-//        id target = [self target];
-//        SEL action = [self action];
+- (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView
+{
+    const int kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
+    for (int index = 0; index < kMax; ++index) {
+        if (NSPointInRect(startPoint, _dragRect[index])) {
+            dragIndex = index;
+            inDrag = YES;
+            dragStartPoint = startPoint;
+            NSLog(@"dragIndex: %d startpoint %@", dragIndex, NSStringFromPoint(dragStartPoint));
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+- (BOOL)continueTracking:(NSPoint)lastPoint at:(NSPoint)currentPoint inView:(NSView *)controlView
+{
+    NSRect frame = [controlView frame];
+    CGFloat diff;
+    switch (dragIndex) {
+        case kLeft:
+            frame.origin.x += (diff = currentPoint.x - lastPoint.x);
+            frame.size.width -= diff;
+            break;
+            
+        case kRight:
+            frame.size.width += currentPoint.x - lastPoint.x;
+            break;
+            
+        case kTop:
+            frame.size.height += currentPoint.y - lastPoint.y;
+            break;
+            
+        case kBottom:
+            frame.origin.y += (diff = currentPoint.y - lastPoint.y);
+            frame.size.height -= diff;
+            break;
+            
+        default:
+            return NO;
+    }
+//    NSLog(@"last: %@; new: %@", NSStringFromRect([controlView frame]), NSStringFromRect(frame));
+    [self reFrame:controlView at:frame];
+        
+    return YES;
+}
+
+
+- (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:(NSView *)controlView mouseIsUp:(BOOL)flag
+{
+    NSLog(@"last: %@  stop: %@", NSStringFromPoint(lastPoint), NSStringFromPoint(stopPoint));
+    if (flag) {
+//        id target = self.target;
+//        SEL action = self.action;
 //        if (target && action) {
-//            [target performSelector:action withObject:controlView];
+//            [(NSControl *)controlView sendAction:action to:target];
 //        }
-//    }
-//}
-//
+        NSRect frame = NSIntegralRect([controlView frame]);
+        [self reFrame:controlView at:frame];
+    }
+}
+
+    // if control is modelled, reset model location to frame; otherwise, just call setFrame
+    // Account for inset!
+- (void)reFrame:(NSView *)controlView at:(NSRect)rect
+{
+    if ([controlView respondsToSelector:@selector(modelledControl)]) {
+        CCEModelledControl *model = [(id)controlView modelledControl];
+        CCELocation *location = (CCELocation *)[model location];
+        if (location != nil) {
+            [location setRectValue:NSInsetRect(rect, kInsetPoints, kInsetPoints)];
+            return;
+        }
+    }
+    
+        // else
+    [controlView setFrame:rect];
+}
 
 @end

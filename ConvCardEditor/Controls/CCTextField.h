@@ -17,30 +17,35 @@
 
 @interface CCTextField : NSTextField <NSTextFieldDelegate, CCDebuggableControl>
 
-@property (nonatomic) CCETextModel *modelledControl;
 @property (nonatomic) CCELocation *modelLocation;
 @property BOOL allOrNothing;  // if YES, refers to selection (used for font prefs panel)
 
-+ (NSNumberFormatter*) numFormatter;
-+ (AppDelegate *) appDel;
+@property BOOL isNumber;
 
-+ (void) readMagic;
+@property (nonatomic) NSColor *color;
+@property (nonatomic) NSString *colorKey;
+
+
++ (NSNumberFormatter*)numFormatter;
++ (AppDelegate *)appDel;
+
++ (void)readMagic;
 
 + (CCTextField *)textFieldFromModel:(CCETextModel*)model;
 
-- (id) initWithFrame:(NSRect)frameRect font:(NSString *)aFont;
-- (id) initWithFrame:(NSRect)frameRect font:(NSString *)aFont color:(NSColor *)aColor;
-- (id) initWithFrame:(NSRect)frameRect font:(NSString *)aFont isNumber:(BOOL)isNum;
-- (id) initWithFrame:(NSRect)frameRect
-                font:(NSString *)aFont
-               color:(NSColor *)aColor
-            isNumber:(BOOL)isNum;
+- (id)initWithFrame:(NSRect)frameRect font:(NSString *)aFont;
+- (id)initWithFrame:(NSRect)frameRect font:(NSString *)aFont color:(NSColor *)aColor;
+- (id)initWithFrame:(NSRect)frameRect font:(NSString *)aFont isNumber:(BOOL)isNum;
+- (id)initWithFrame:(NSRect)frameRect
+               font:(NSString *)aFont
+              color:(NSColor *)aColor
+           isNumber:(BOOL)isNum;
 
-- (id) initWithFrame:(NSRect)frameRect font:(NSString *)aFont colorKey:(NSString *)aColorKey;
-- (id) initWithFrame:(NSRect)frameRect
-                font:(NSString *)aFont
-            colorKey:(NSString *)aColorKey
-            isNumber:(BOOL)isNum;
+- (id)initWithFrame:(NSRect)frameRect font:(NSString *)aFont colorKey:(NSString *)aColorKey;
+- (id)initWithFrame:(NSRect)frameRect
+               font:(NSString *)aFont
+           colorKey:(NSString *)aColorKey
+           isNumber:(BOOL)isNum;
 
     // instantiate from model record
 - (id)initWithTextModel:(CCETextModel *)model;
@@ -49,8 +54,10 @@
 - (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum color:(NSColor *)color;
 - (id)initWithLocation:(CCELocation *)location isNumber:(BOOL)isNum colorCode:(NSInteger)colorCode;
 
-- (void) setColorByCode:(NSInteger)code;
+- (void)setColorByCode:(NSInteger)code;
 
-- (void) suitSubstitution:(NSTextView *)editor;
+- (void)setFontSize:(CGFloat)size;
+
+- (void)suitSubstitution:(NSTextView *)editor;
 
 @end

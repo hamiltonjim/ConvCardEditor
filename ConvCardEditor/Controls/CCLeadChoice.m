@@ -9,11 +9,23 @@
 
 #import "CCLeadChoice.h"
 #import "AppDelegate.h"
+#import "CCELocationController.h"
 
 @implementation CCLeadChoice
 
-@synthesize frame;
 @synthesize parent;
+@synthesize modelledControl;
+@synthesize locationController;
+
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    modelledControl = model;
+    
+        // monitoring
+    locationController = [[CCELocationController alloc] initWithModel:model control:self];
+    
+    return locationController;
+}
 
 - (int) debugMode {
     return [[self cell] debugMode];
@@ -28,8 +40,6 @@
 
 - (id) initWithFrame:(NSRect)frameRect {
     if ((self = [super initWithFrame:frameRect])) {
-        frame = frameRect;
-        
         [self setButtonType:NSOnOffButton];
     }
     return self;

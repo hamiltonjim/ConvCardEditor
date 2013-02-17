@@ -11,10 +11,12 @@
 #import "CCctrlParent.h"
 #import "CCDebuggableControl.h"
 
+@class CCEMultiCheckModel;
+
     // An aggregate control that behaves like a radio group
 @interface CCMatrix : NSControl <CCctrlParent, CCDebuggableControl>  
 
-@property NSMutableArray *controls;
+@property (nonatomic) NSMutableArray *controls;
 @property BOOL allowsEmptySelection;
 @property BOOL allowsMultiSelection;
 
@@ -23,17 +25,35 @@
 
 @property NSString *name;
 
-@property CCEModelledControl *modelledControl;
+@property (weak, nonatomic) CCEModelledControl *modelledControl;
+
+    // factory can return various subclasses
++ (CCMatrix *)matrixFromModel:(CCEMultiCheckModel *)model;
++ (CCMatrix *)matrixFromModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect;
 
 - (id) initWithFrame:(NSRect)bounds name:(NSString *)name;
 
 - (void) choose;
 - (void) updateBoundObjects;
 
-- (void)deleteChild:(id <CCDebuggableControl>)child;
+- (BOOL)deleteChild:(id <CCDebuggableControl>)child;
+
+- (NSControl <CCDebuggableControl> *)childWith1Index:(NSUInteger)index;
+
+- (NSUInteger)tagChild:(NSControl <CCDebuggableControl> *)child;
+
+    // if a child is to be deleted, keep the remaining indices contiguous;
+    // remove the child at the given index and return it.
+- (NSControl <CCDebuggableControl> *)removeChild:(NSUInteger)index;
+    // esp. when a child is deleted, get the new "suggested" child index
+- (NSUInteger)currentIndex;
+
+- (void)addChildControl:(id <CCDebuggableControl>)child;
+
+- (void)placeChildControlsInRects:(NSArray *)rects;
 
     // The following methods must be defined in subclasses
-- (void)addChildControl:(id <CCDebuggableControl>)child;
+- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect;
 
 - (void)placeChildInRect:(NSRect)rect withColor:(NSColor *)color;
 - (void)placeChildInRect:(NSRect)rect withColorCode:(NSInteger)colorCode;

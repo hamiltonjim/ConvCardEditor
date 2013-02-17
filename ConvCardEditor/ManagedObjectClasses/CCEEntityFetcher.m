@@ -158,4 +158,19 @@ static const double fuzziness = 5.0;
     return object;
 }
 
+- (NSArray *)allCardTypes
+{
+    NSEntityDescription *cardDesc = [NSEntityDescription entityForName:@"CardType"
+                                                inManagedObjectContext:appContext];
+    NSFetchRequest *req = [NSFetchRequest new];
+    NSPredicate *predicate = nil;
+    [req setEntity:cardDesc];
+    [req setPredicate:predicate];
+    [req setSortDescriptors:nil];
+    
+    NSArray *result = [appContext executeFetchRequest:req error:nil];
+
+    return result;
+}
+
 @end

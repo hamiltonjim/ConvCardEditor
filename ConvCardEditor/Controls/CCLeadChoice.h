@@ -14,7 +14,6 @@
 
 @interface CCLeadChoice : NSButton <CCDebuggableControl> 
 
-@property (assign) NSRect frame;
-@property (weak) id <CCctrlParent> parent;
+@property (weak, nonatomic) id <CCctrlParent> parent;
 
 @end

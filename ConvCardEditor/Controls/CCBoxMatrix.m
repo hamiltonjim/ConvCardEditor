@@ -10,13 +10,13 @@
 #import <Foundation/NSObjCRuntime.h>
 #import "CCBoxMatrix.h"
 #import "CCCheckbox.h"
-
+#import "CCEMultiCheckModel.h"
 #import "CommonStrings.h"
 #import "AppDelegate.h"
 
 static NSRect 
 matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
-    NSRect result = NSMakeRect(0.0, 0.0, 0.0, 0.0); // empty
+    NSRect result = NSZeroRect; // empty
     
     for (NSNumber *theY in wyes) {
         double yval = [theY doubleValue];
@@ -32,10 +32,7 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 
 @interface CCBoxMatrix ()
 
-- (void)placeChildControlsInRects:(NSArray *)rects;
 - (void)setCellColors:(NSArray *)colorVals;
-
-- (void)appendChild:(NSControl <CCDebuggableControl> *)appendChild;
 
 @property (readwrite, weak) NSControl *selected;
 
@@ -43,22 +40,9 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 
 @implementation CCBoxMatrix
 
-
-- (void) placeChildControlsInRects:(NSArray *)rects {
-    NSMutableArray *tmpArray = [NSMutableArray arrayWithCapacity:[rects count]];
-    NSInteger ctr = 0;
-    
-    for (NSValue *rv in rects) {
-            // rect was given in absolute coordinates; convert to the matrix control's coordinates
-        NSRect theRect = [self convertRect:[rv rectValue] fromView:[self superview]];
-        CCCheckbox *cbox = [[CCCheckbox alloc] initWithFrame:theRect];
-        [self addSubview:cbox];
-        [cbox setParent:self];
-        [tmpArray addObject:cbox];
-        [cbox setTag:ctr++];
-    }
-    
-    self.controls = tmpArray;
+- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect
+{
+    return [[CCCheckbox alloc] initWithFrame:theRect];
 }
 
 - (void) setCellColors:(NSArray *)colorVals {
@@ -116,13 +100,24 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 
     // pass an array of just one color to use the same color for all 
     // cells; pass nil array to use black for all
-- (id) initWithRects:(NSArray *)rects colors:(NSArray *)colors name:(NSString *)matrixName {
+- (id)initWithRects:(NSArray *)rects
+             colors:(NSArray *)colors
+               name:(NSString *)matrixName
+{
     if (!rects || 0 == [rects count])
         [NSException raise:@"badParams" 
                     format:@"Invalid parameters for %@:  rects %@ colors %@",
          NSStringFromClass([self class]), rects, colors];
     
-    NSRect bounds = NSZeroRect;
+    return [self initWithFrame:NSZeroRect rects:rects colors:colors name:matrixName];
+}
+
+- (id)initWithFrame:(NSRect)frameRect
+              rects:(NSArray *)rects
+             colors:(NSArray *)colors
+               name:(NSString *)matrixName
+{
+    NSRect bounds = frameRect;
     for (NSValue *ct in rects) {
         bounds = NSUnionRect(bounds, [ct rectValue]);
     }
@@ -132,29 +127,74 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
         
         [self setCellColors:colors];
         [self setAllowsEmptySelection:YES];
-        self.selected = nil;
     }
     
     return self;
 }
 
-- (void)appendChild:(NSControl<CCDebuggableControl> *)child
+- (id)initWithModel:(CCEMultiCheckModel *)model
 {
-    NSRect rect = [child convertRect:[child frame] toView:self];
-    [self setFrame:NSUnionRect([self frame], rect)];
-    [self addSubview:child];
-    [self.controls addObject:child];
+    return [self initWithModel:model insideRect:NSZeroRect];
+}
+- (id)initWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)frame
+{
+    NSSet *locations = model.locations;
+    NSUInteger count = locations.count;
+
+    NSMutableArray *rectArray = [NSMutableArray arrayWithCapacity:count];
+        // prefill with null objects; they will be replaced
+    for (NSUInteger index = 0; index < count; ++index) {
+        [rectArray addObject:[NSNull null]];
+    }
+        // also need array for colors
+    NSMutableArray *colorArray = [rectArray mutableCopy];
+    
+    [locations enumerateObjectsUsingBlock:^(CCELocation *loc, BOOL *stop) {
+        NSUInteger lIndex = loc.index.integerValue;
+        
+            // indices start at 1, so correct, then check
+        if (--lIndex >= count) {
+            NSLog(@"%s line %d invalid index %ld > %ld in location %@ of model %@",
+                  __FILE__, __LINE__,  lIndex, count, loc, model.name);
+            return;
+        }
+        
+        NSRect rect = NSMakeRect(loc.locX.doubleValue, loc.locY.doubleValue,
+                                 loc.width.doubleValue, loc.height.doubleValue);
+        [rectArray replaceObjectAtIndex:lIndex withObject:[NSValue valueWithRect:rect]];
+        
+        id colorObj;
+        NSNumber *colorCodeObj = loc.colorCode; // code takes precedence over raw color...
+        if (colorCodeObj == nil) {
+            colorObj = loc.color;
+        } else {
+            colorObj = [(AppDelegate *)[NSApp delegate] colorKeyForCode:colorCodeObj.integerValue];
+        }
+        if (colorObj == nil) {  // still
+            colorObj = ccNormalColor;
+        }
+        [colorArray replaceObjectAtIndex:lIndex withObject:colorObj];
+    }];
+    
+    if ((self = [self initWithFrame:frame rects:rectArray colors:colorArray name:model.name])) {
+        self.modelledControl = model;
+    }
+    return self;
 }
 
-- (void)addChildControl:(CCCheckbox *)child
++ (CCBoxMatrix *)matrixWithModel:(CCEMultiCheckModel *)model
 {
-    [self appendChild:child];
+    return [[CCBoxMatrix alloc] initWithModel:model];
+}
++ (CCBoxMatrix *)matrixWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect
+{
+    return [[CCBoxMatrix alloc] initWithModel:model insideRect:rect];
 }
 
 - (void)placeChildInRect:(NSRect)rect withColor:(NSColor *)color
 {
     CCCheckbox *cbox = [[CCCheckbox alloc] initWithFrame:rect color:color];
-    [self appendChild:cbox];
+    [self addChildControl:cbox];
 }
 
 - (void)placeChildInRect:(NSRect)rect withColorCode:(NSInteger)colorCode
@@ -166,7 +206,7 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 - (void)placeChildInRect:(NSRect)rect withColorKey:(NSString *)colorKey
 {
     CCCheckbox *cbox = [[CCCheckbox alloc] initWithFrame:rect colorKey:colorKey];
-    [self appendChild:cbox];
+    [self addChildControl:cbox];
 }
 
 @end

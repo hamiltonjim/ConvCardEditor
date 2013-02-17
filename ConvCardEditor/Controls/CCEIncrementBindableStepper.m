@@ -1,21 +1,20 @@
 //
-//  CCEColorBindableButtonCell.m
+//  CCEIncrementBindableStepper.m
 //  ConvCardEditor
 //
-//  Created by Jim Hamilton on 1/15/13.
+//  Created by Jim Hamilton on 2/12/13.
 //  Copyright (c) 2013 Jim Hamilton. All rights reserved.
 //
 
-#import "CCEColorBindableButtonCell.h"
+#import "CCEIncrementBindableStepper.h"
 
-@implementation CCEColorBindableButtonCell
+@implementation CCEIncrementBindableStepper
 
 @synthesize observedObject;
 @synthesize observedKeypath;
 
-@synthesize color;
 
-- (void)observeTextColorFrom:(id)object keypath:(NSString *)keypath
+- (void)observeIncrementFrom:(id)object keypath:(NSString *)keypath
 {
     if (observedObject != nil && observedKeypath != nil) {
         [observedObject removeObserver:self forKeyPath:observedKeypath];
@@ -38,17 +37,9 @@
                        context:(void *)context
 {
     if (object == observedObject && [keyPath isEqualToString:observedKeypath]) {
-        id newColor = [NSUnarchiver unarchiveObjectWithData:[observedObject valueForKeyPath:observedKeypath]];
-        if ([newColor isKindOfClass:[NSColor class]]) {
-            color = newColor;
-            
-            NSMutableAttributedString *title = [[self attributedTitle] mutableCopy];
-            [title addAttribute:NSForegroundColorAttributeName
-                          value:newColor
-                          range:NSMakeRange(0, [title length])];
-            [self setAttributedTitle:title];
-        }
-        
+        double val = [[object valueForKeyPath:keyPath] doubleValue];
+        if (val > 0.0)
+            [self setIncrement:val];
         return;
     }
     

@@ -9,11 +9,9 @@
 
 #import "CCLeadChoiceMatrix.h"
 #import "CCLeadChoice.h"
+#import "CCEMultiCheckModel.h"
 
 @interface CCLeadChoiceMatrix ()
-
-- (void)placeChildControlsInRects:(NSArray *)cRects;
-- (void)appendChild:(NSControl <CCDebuggableControl> *)appendChild;
 
 @property (readwrite, weak) NSControl *selected;
 
@@ -22,26 +20,37 @@
 
 @implementation CCLeadChoiceMatrix
 
-- (void)placeChildControlsInRects:(NSArray *)cRects
+@synthesize selected;
+
+- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect
 {
-    NSMutableArray *tmpArray = [NSMutableArray arrayWithCapacity:[cRects count]];
-    NSInteger ctr = 0;
-    
-    for (NSValue *rv in cRects) {
-        NSRect frm = [self convertRect:[rv rectValue] fromView:[self superview]];
-        CCLeadChoice *cbox = [[CCLeadChoice alloc] initWithFrame:frm];
-        [self addSubview:cbox];
-        [cbox setParent:self];
-        [tmpArray addObject:cbox];
-        [cbox setTag:++ctr];
-    }
-    
-    self.controls = tmpArray;
+    return [[CCLeadChoice alloc] initWithFrame:theRect];
 }
+//- (void)placeChildControlsInRects:(NSArray *)cRects
+//{
+//    NSMutableArray *tmpArray = [NSMutableArray arrayWithCapacity:[cRects count]];
+//    NSInteger ctr = 0;
+//    
+//    for (NSValue *rv in cRects) {
+//        NSRect frm = [self convertRect:[rv rectValue] fromView:[self superview]];
+//        CCLeadChoice *cbox =
+//        [self addSubview:cbox];
+//        [cbox setParent:self];
+//        [tmpArray addObject:cbox];
+//        [cbox setTag:++ctr];
+//    }
+//    
+//    self.controls = tmpArray;
+//}
 
     // Pass an array of just one color to use the same color for all
     // Pass rectangles containing individual ovals
 - (id)initWithRects:(NSArray *)rects name:(NSString *)matrixName;
+{
+    return [self initWithFrame:NSZeroRect rects:rects name:matrixName];
+}
+
+- (id)initWithFrame:(NSRect)frameRect rects:(NSArray *)rects name:(NSString *)matrixName
 {
     if (!rects || 0 == [rects count]) {
         [NSException raise:@"badParams"
@@ -49,7 +58,7 @@
          NSStringFromClass([self class]), rects];
     }
     
-    NSRect bounds = NSZeroRect;
+    NSRect bounds = frameRect;
     for (NSValue *ct in rects) {
         bounds = NSUnionRect(bounds, [ct rectValue]);
     }
@@ -58,31 +67,63 @@
         [self placeChildControlsInRects:rects];
         
         [self setAllowsEmptySelection:YES];
-        self.selected = nil;
+        selected = nil;
     }
     
     return self;
 }
 
-- (void)appendChild:(NSControl<CCDebuggableControl> *)child
+- (id)initWithModel:(CCEMultiCheckModel *)model
 {
-    NSRect rect = [child convertRect:[child frame] toView:self];
-    [self setFrame:NSUnionRect([self frame], rect)];
-    [self addSubview:child];
-    [self.controls addObject:child];
+    return [self initWithModel:model insideRect:NSZeroRect];
+}
+- (id)initWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect
+{
+    NSSet *locations = model.locations;
+    NSUInteger count = locations.count;
+    
+    NSMutableArray *rectArray = [NSMutableArray arrayWithCapacity:count];
+        // prefill with null objects; they will be replaced
+    for (NSUInteger index = 0; index < count; ++index) {
+        [rectArray addObject:[NSNull null]];
+    }
+
+    [locations enumerateObjectsUsingBlock:^(CCELocation *loc, BOOL *stop) {
+        NSUInteger lIndex = loc.index.integerValue;
+        
+            // indices start at 1, so correct, then check
+        if (--lIndex >= count) {
+            NSLog(@"%s line %d invalid index %ld > %ld in location %@ of model %@",
+                  __FILE__, __LINE__,  lIndex, count, loc, model.name);
+            return;
+        }
+        
+        NSRect rect = NSMakeRect(loc.locX.doubleValue, loc.locY.doubleValue,
+                                 loc.width.doubleValue, loc.height.doubleValue);
+        [rectArray replaceObjectAtIndex:lIndex withObject:[NSValue valueWithRect:rect]];
+        
+    }];
+    
+    if ((self = [self initWithFrame:rect rects:rectArray name:model.name])) {
+        self.modelledControl = model;
+    }
+    return self;
 }
 
-- (void)addChildControl:(NSControl <CCDebuggableControl> *)child
++ (CCLeadChoiceMatrix *)matrixWithModel:(CCEMultiCheckModel *)model
 {
-    [self appendChild:child];
+    return [[CCLeadChoiceMatrix alloc] initWithModel:model];
 }
-
++ (CCLeadChoiceMatrix *)matrixWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect
+{
+    return [[CCLeadChoiceMatrix alloc] initWithModel:model insideRect:rect];
+}
 
     // colors objects are ignored
 - (void)placeChildInRect:(NSRect)rect withColor:(NSColor *)color
 {
     CCLeadChoice *cbox = [[CCLeadChoice alloc] initWithFrame:rect];
-    [self appendChild:cbox];
+    [self addChildControl:cbox];
 }
 
 - (void)placeChildInRect:(NSRect)rect withColorCode:(NSInteger)colorCode
@@ -91,11 +132,11 @@
     [self placeChildInRect:rect withColor:nil];
 }
 
-- (void)setDebugMode:(int)newDebugMode
-{
-    for (NSControl <CCDebuggableControl> *ctrl in self.controls) {
-        [ctrl setDebugMode:newDebugMode];
-    }
-}
-
+//- (void)setDebugMode:(int)newDebugMode
+//{
+//    for (NSControl <CCDebuggableControl> *ctrl in self.controls) {
+//        [ctrl setDebugMode:newDebugMode];
+//    }
+//}
+//
 @end

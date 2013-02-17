@@ -23,6 +23,17 @@ extern NSString *CCEF_FileCopyError;
 - (NSError *)undoSafeRemoveFile:(NSURL *)trashFile backTo:(NSURL *)originalFile;
 - (NSError *)finalizeRemoveFile:(NSURL *)file;
 
+    // return URL for file named with the last component of path, in
+    // the app support directory
+- (NSURL *)appSupportFileURL:(NSString *)path;
+
+- (BOOL)fileExistsAtURL:(NSURL *)url;
+- (NSError *)writeFileAtURL:(NSURL *)url withData
+                           :(NSData *)data;
+- (NSError *)writeFileAtURL:(NSURL *)url
+                   withData:(NSData *)data
+             withAttributes:(NSDictionary *)attributes;
+
     // at startup: make sure any files not used in data store are removed
 - (void)checkFileTypes:(NSArray *)types;
 

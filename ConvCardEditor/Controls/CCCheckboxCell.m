@@ -8,6 +8,7 @@
 //  $Id: CCCheckboxCell.m,v 1.4 2010/12/21 05:13:27 jimh Exp $
 
 #import "CCCheckboxCell.h"
+#import "CCEConstants.h"
 #import "AppDelegate.h"
 
 static AppDelegate *appDel() {
@@ -16,6 +17,8 @@ static AppDelegate *appDel() {
         del = (AppDelegate *)[NSApp delegate];
     return del;
 }
+
+static BOOL observingSet = NO;
 
 @interface CCCheckboxCell()
 
@@ -35,6 +38,7 @@ static NSInteger checkboxStyle;
 
 static NSColor *showColor;
 static NSColor *selectedColor;
+static NSColor *selectedOtherColor;
 
 + (void)initialize
 {
@@ -42,14 +46,9 @@ static NSColor *selectedColor;
         return;
     }
     
-    showColor = [NSColor colorWithCalibratedRed:UNSELECTED_COLOR_R
-                                          green:UNSELECTED_COLOR_G
-                                           blue:UNSELECTED_COLOR_B
-                                          alpha:UNSELECTED_COLOR_A];
-    selectedColor = [NSColor colorWithCalibratedRed:SELECTED_COLOR_R
-                                              green:SELECTED_COLOR_G
-                                               blue:SELECTED_COLOR_B
-                                              alpha:SELECTED_COLOR_A];
+    showColor = [CCEConstants unselectedColor];
+    selectedColor = [CCEConstants selectedColor];
+    selectedOtherColor = [CCEConstants selectedOtherColor];
     
     [self setCheckboxStyle:[[NSUserDefaults standardUserDefaults]
                             integerForKey:ccCheckboxDrawStyle]];
@@ -59,10 +58,15 @@ static NSColor *selectedColor;
     checkboxStyle = newStyle;
 }
 
+- (id)monitorModel:(CCEModelledControl *)model
+{
+    [NSException raise:@"NotImplementedInCell"
+                format:@"monitorModel should not be implemented in cell class %@", [self class]];
+    return nil;
+}
+
 - (void) dealloc {
     [self unwatchColor];
-    
-    [appDel() removeObserver:self forKeyPath:ccCheckboxDrawStyle];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -101,11 +105,8 @@ static NSColor *selectedColor;
     if (observingSet)
         return;
     
-    [appDel() addObserver:self 
-               forKeyPath:ccCheckboxDrawStyle
-                  options:NSKeyValueObservingOptionNew
-                  context:nil];
-    observingSet = YES;    
+    [appDel() watchCheckboxStyle];
+    observingSet = YES;
 }
 
 - (id) initCCCheckboxCellWithColor:(NSColor *)col {
@@ -114,6 +115,7 @@ static NSColor *selectedColor;
         self.debugMode = kOff;
         
         [self setButtonType:NSOnOffButton];
+        observingSet = NO;
         [self observeCheckboxStyle];
     }
     return self;
@@ -191,6 +193,10 @@ static NSColor *selectedColor;
                 
             case kShowSelected:
                 dColor = selectedColor;
+                break;
+                
+            case kShowSelectedOther:
+                dColor = selectedOtherColor;
                 break;
         }
         NSBezierPath *dpath = [NSBezierPath bezierPathWithRect:cellFrame];

@@ -12,6 +12,10 @@
 
 @protocol CCctrlParent
 
+@property (nonatomic) NSMutableArray *controls;
+
 - (void) notify:(NSControl *)sender;
+
+- (NSControl *)childWith1Index:(NSUInteger)index;
 
 @end

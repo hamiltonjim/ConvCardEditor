@@ -17,10 +17,8 @@
 
 @interface CCCheckbox : NSButton <CCDebuggableControl>
 
-@property id <CCctrlParent> parent;
-@property (nonatomic) CCESingleCheckModel *modelledControl;
+@property (weak, nonatomic) id <CCctrlParent> parent;
 @property (nonatomic) CCELocation *modelLocation;
-@property (nonatomic) NSColor *color;
 
 @property NSRect frameRect;
 

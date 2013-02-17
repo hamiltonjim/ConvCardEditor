@@ -10,9 +10,18 @@
 #import <Cocoa/Cocoa.h>
 #import "CCMatrix.h"
 
+@class CCLeadChoiceMatrix;
+
 @interface CCLeadChoiceMatrix : CCMatrix
 
     // Pass rectangles containing individual ovals
-- (id) initWithRects:(NSArray *)rects name:(NSString *)matrixName;
+- (id)initWithRects:(NSArray *)rects name:(NSString *)matrixName;
+    // version that's expandable
+- (id)initWithFrame:(NSRect)frameRect rects:(NSArray *)rects name:(NSString *)matrixName;
+
+- (id)initWithModel:(CCEMultiCheckModel *)model;
+- (id)initWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect;
++ (CCLeadChoiceMatrix *)matrixWithModel:(CCEMultiCheckModel *)model;
++ (CCLeadChoiceMatrix *)matrixWithModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect;
 
 @end

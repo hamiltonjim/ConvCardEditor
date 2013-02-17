@@ -31,4 +31,14 @@
 @property (nonatomic) CCEModelledControl *multiCheckControl;
 @property (nonatomic) CCEModelledControl *textControl;
 
+    // location values
+- (NSRect)rectValue;
+- (void)setRectValue:(NSRect)rect;
+
+- (NSPoint)originValue;
+- (void)setOriginValue:(NSPoint)pt;
+
+- (NSSize)sizeValue;
+- (void)setSizeValue:(NSSize)sz;
+
 @end

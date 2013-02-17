@@ -7,16 +7,20 @@
 //
 
 #import "CCEToolPaletteController.h"
-#import "CCECardTypeEditorController.h"
+#import "CCEToolWithVariantButton.h"
+#import "CCEControlsViewController.h"
 #import "CCEGradientView.h"
+#import "CommonStrings.h"
+
 
 @interface CCEToolPaletteController ()
 
-@property IBOutlet NSButton *selectedButton;
+@property NSButton *selectedButton;
 @property BOOL sticky;
 
 - (void)selectControl:(NSView *)control;
 - (void)stickifyControl:(NSView *)control;
+- (void)variantStickifyControl:(NSView *)control;
 - (void)unselectControl:(NSView *)control;
 
 @end
@@ -37,12 +41,16 @@
 
 @synthesize selectedButton;
 @synthesize sticky;
+@synthesize variant;
 
 static NSColor *startBlue;
 static NSColor *endBlue;
 static NSColor *startGray;
 static NSColor *endGray;
+static NSColor *startRed;
+static NSColor *endRed;
 
+static NSDictionary *controlsByTag = nil;
 
 + (void)initialize
 {
@@ -52,6 +60,9 @@ static NSColor *endGray;
         
         startGray = [NSColor colorWithCalibratedWhite:0.5 alpha:0.8];
         endGray = [NSColor colorWithCalibratedWhite:0.7 alpha:0.4];
+        
+        startRed = [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.8];
+        endRed = [NSColor colorWithCalibratedRed:0.75 green:0.1 blue:0.4 alpha:0.4];
     }
 }
 
@@ -59,7 +70,7 @@ static NSColor *endGray;
 {
     [self selectControl:selectButton];
     self.selectedButton = selectButton;
-    [controller setControlType:selectButton];
+    [controller chooseControlType:selectButton];
     
     [self unselectControl:textButton];
     [self unselectControl:singleCheckButton];
@@ -68,6 +79,18 @@ static NSColor *endGray;
     
     [toolsPalette setBecomesKeyOnlyIfNeeded:YES];
     [toolsPalette setFloatingPanel:YES];
+    
+    SEL altAction = @selector(variantChooseControl:);
+    [multiCheckButton setAlternateAction:altAction];
+    [leadChoiceButton setAlternateAction:altAction];
+    
+    controlsByTag = @{
+                      [NSNumber numberWithInteger:[selectButton tag]] : selectButton,
+                      [NSNumber numberWithInteger:[textButton tag]] : textButton,
+                      [NSNumber numberWithInteger:[singleCheckButton tag]] : singleCheckButton,
+                      [NSNumber numberWithInteger:[multiCheckButton tag]] : multiCheckButton,
+                      [NSNumber numberWithInteger:[leadChoiceButton tag]] : leadChoiceButton
+                      };
 }
 
 - (void)selectControl:(NSView *)control
@@ -86,6 +109,14 @@ static NSColor *endGray;
     [gview setNeedsDisplay:YES];
 }
 
+- (void)variantStickifyControl:(NSView *)control
+{
+    CCEGradientView *gview = (CCEGradientView *)[control superview];
+    gview.startingColor = startRed;
+    gview.endingColor = endRed;
+    [gview setNeedsDisplay:YES];
+}
+
 - (void)unselectControl:(NSView *)control
 {
     if (control == nil)
@@ -99,7 +130,7 @@ static NSColor *endGray;
 
 - (IBAction)chooseControl:(id)sender
 {
-    if (selectedButton == sender) {
+    if (selectedButton == sender && !variant) {
         if (sender != selectButton) {
             [self stickifyControl:sender];
             sticky = YES;
@@ -110,19 +141,69 @@ static NSColor *endGray;
         [self selectControl:sender];
     }
     
+    variant = NO;
     selectedButton = sender;
     self.value = [NSNumber numberWithInteger:[sender tag]];
-    [controller setControlType:sender];
+    controller.controlVariant = NO;
+    [controller chooseControlType:sender];
     
     [controller.window makeKeyAndOrderFront:sender];
 }
 
+- (IBAction)variantChooseControl:(id)sender
+{
+    if (selectedButton != sender) {
+        [self unselectControl:selectedButton];
+    }
+    sticky = YES;
+    variant = YES;
+    
+    [self variantStickifyControl:sender];
+    self.value = [NSNumber numberWithInteger:([sender tag] + kControlVariant)];
+    controller.controlVariant = YES;
+    [controller chooseControlType:sender];
+}
+
+- (IBAction)chooseControlByTag:(id)sender
+{
+    NSInteger tag = [sender tag];
+    NSInteger modulo = tag % kTagGap;
+    
+    NSNumber *tagNumber = [NSNumber numberWithInteger:tag - modulo];
+    
+    NSButton *button = [controlsByTag objectForKey:tagNumber];
+    if (button == nil) {
+        NSBeep();
+        return;
+    }
+    
+    if (modulo == kControlVariant) {
+        [self variantChooseControl:button];
+    } else {
+        [self chooseControl:button];
+    }
+}
+
 - (void)chooseNextControl
 {
+    if ([selectedButton isKindOfClass:[CCEToolWithVariantButton class]]) {
+        [self variantChooseControl:selectedButton];
+        return;
+    }
+    
     if (sticky)
         return;
     
     [self chooseControl:selectButton];
+}
+
+- (void)hide
+{
+    [toolsPalette orderOut:self];
+}
+- (void)show
+{
+    [toolsPalette orderFront:self];
 }
 
 @end
