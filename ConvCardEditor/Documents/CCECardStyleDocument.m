@@ -326,7 +326,9 @@ static NSString *dictKey = @"dict";
     if (error) {
         if (cardType != nil)
             [context deleteObject:cardType];
-        
+        if (copiedArtwork) {
+                // TODO remove copied artwork!
+        }
             // TODO display error
         NSLog(@"Error: %@", error);
     }
