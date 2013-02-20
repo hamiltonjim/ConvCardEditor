@@ -85,9 +85,9 @@ NSString *applicationDomain = @"com.shokwave.ConvCardEditor";
 {
     if (self == [CommonStrings class]) {
             // internationalize user-visible strings
-        ccUnitPoints = NSLocalizedString(ccUnitPoints, @"points unit name");
-        ccUnitInches = NSLocalizedString(ccUnitInches, @"inches unit name");
-        ccUnitCentimeters = NSLocalizedString(ccUnitCentimeters, @"centimeters unit name");
+        ccUnitPoints = NSLocalizedString(@"points", @"points unit name");
+        ccUnitInches = NSLocalizedString(@"in", @"inches unit name");
+        ccUnitCentimeters = NSLocalizedString(@"cm", @"centimeters unit name");
     }
 }
 

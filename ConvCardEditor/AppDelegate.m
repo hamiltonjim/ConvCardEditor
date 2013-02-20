@@ -14,15 +14,19 @@
 #import "CCEUnitTransformer.h"
 #import "CCECardStyleDocument.h"
 #import "CCEEntityFetcher.h"
+#import "NSUserDefaults+CCEColorOps.h"
+#import "CCEMathTransformer.h"
 
 @interface AppDelegate ()
 
-- (void) flushColors;
-- (void) flushFonts;
+- (void)flushColors;
+- (void)flushFonts;
 
-+ (NSColor *) stdAlertColor;
-+ (NSColor *) stdAnnounceColor;
-+ (NSColor *) stdNormalColor;
+- (void)loadColors;
+
++ (NSColor *)stdAlertColor;
++ (NSColor *)stdAnnounceColor;
++ (NSColor *)stdNormalColor;
 
 - (void)ensureMyDocumentsExists;
 
@@ -113,6 +117,16 @@
     return it;
 }
 
+- (void)loadColors
+{
+    [self flushColors];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    self.alertColor = [ud colorForKey:ccAlertColor];
+    self.announceColor = [ud colorForKey:ccAnnounceColor];
+    self.normalColor = [ud colorForKey:ccNormalColor];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
         // initialize preferences
@@ -122,10 +136,12 @@
     [fileOps setAppSupportURL:[self applicationFilesDirectory]];
     [fileOps checkFileTypes:[NSImage imageFileTypes]];
     
+        // observe standard colors
+    [self loadColors];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    alertColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAlertColor]];
-    announceColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccAnnounceColor]];
-    normalColor = [NSUnarchiver unarchiveObjectWithData:[ud dataForKey:ccNormalColor]];
+    [@[ccNormalColor, ccAlertColor, ccAnnounceColor] enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+        [ud addObserver:self forKeyPath:obj options:0 context:NULL];
+    }];
     
         // if there are no card definitions (i.e., first-run or reset), load defaults
     [self initialImport];
@@ -350,6 +366,11 @@
     return NSTerminateNow;
 }
 
+- (IBAction)changeStdColor:(id)sender
+{
+    [self loadColors];
+}
+
 - (IBAction)newPartnership:(id)sender {
     NSLog(@"newPartnership not implemented yet");
 }
@@ -447,10 +468,19 @@
                                                context:nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
 {
     if ([ccCheckboxDrawStyle isEqualToString:keyPath]) {
         [CCCheckboxCell setCheckboxStyle:[object integerForKey:keyPath]];
+    } else if ([ccAlertColor isEqualToString:keyPath]) {
+        self.alertColor = [object colorForKey:keyPath];
+    } else if ([ccAnnounceColor isEqualToString:keyPath]) {
+        self.announceColor = [object colorForKey:keyPath];
+    } else if ([ccNormalColor isEqualToString:keyPath]) {
+        self.normalColor = [object colorForKey:keyPath];
     }
     
 }
@@ -476,7 +506,15 @@
                                                                                  ofType:cceStyledocType
                                                                                   error:NULL];
         [doc doImport];
+        [self saveAction:self];
+        
+        [doc close];
     }];
+}
+
+- (IBAction)runPreferences:(id)sender
+{
+    [prefCtl showWindow:sender];
 }
 
 #pragma mark UNDO/REDO

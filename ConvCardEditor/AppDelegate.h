@@ -43,6 +43,8 @@
 
 - (NSURL *)applicationFilesDirectory;
 
+- (IBAction)changeStdColor:(id)sender;
+
 - (IBAction)saveAction:(id)sender;
 
 - (IBAction)newPartnership:(id)sender;
@@ -68,6 +70,8 @@
 
 - (IBAction)undo:(id)sender;
 - (IBAction)redo:(id)sender;
+
+- (IBAction)runPreferences:(id)sender;
 
 #pragma mark DEBUGGING
 - (IBAction)registeredObjects:(id)sender;
