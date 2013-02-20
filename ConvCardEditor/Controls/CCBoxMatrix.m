@@ -85,7 +85,7 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
     }
     
     NSEnumerator *controlEnum = [self.controls objectEnumerator];
-    NSEnumerator *colorEnum = [colorVals objectEnumerator];
+    NSEnumerator *colorEnum = [colors objectEnumerator];
     CCCheckbox *ckbox;
     NSColor *color;
     while ((ckbox = [controlEnum nextObject]) != nil && (color = [colorEnum nextObject]) != nil) {

@@ -120,7 +120,8 @@
     } else if ([keyPath isEqualToString:cceLocationColorCode]) {
         if ([viewedControl respondsToSelector:@selector(setColorKey:)]) {
             NSInteger code = [value integerValue];
-            [(AppDelegate *)[NSApp delegate] colorKeyForCode:code];
+            NSString *colorKey = [(AppDelegate *)[NSApp delegate] colorKeyForCode:code];
+            [viewedControl setColorKey:colorKey];
         }
     }
     

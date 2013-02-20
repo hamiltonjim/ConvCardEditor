@@ -24,7 +24,7 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
 
 @property NSTimer *timer;
 @property NSInteger invocations;
-@property NSControl <CCDebuggableControl> *control;
+@property (weak, readwrite) NSControl <CCDebuggableControl> *control;
 @property NSString *ctlName;
 
 @property NSMutableArray *observers;
@@ -39,7 +39,9 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
 
 - (void)invoke:(NSTimer *)timer;
 
++ (void)addObject:(CCEControlTest *)object;
 + (void)removeObject:(CCEControlTest *)object;
++ (CCEControlTest *)objectForControl:(NSControl <CCDebuggableControl> *)control;
 
 @end
 
@@ -65,8 +67,24 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
         // get array of all tester objects
     NSArray *tempArray = [NSArray arrayWithArray:[testers allValues]];
     
-    [tempArray enumerateObjectsUsingBlock:^(CCEControlTest *obj, NSUInteger idx, BOOL *stop) {
-        [obj cancel];
+    [tempArray enumerateObjectsUsingBlock:^(NSSet *set, NSUInteger idx, BOOL *stop) {
+        [set enumerateObjectsUsingBlock:^(CCEControlTest *obj, BOOL *stop) {
+            [obj cancel];
+        }];
+    }];
+}
+
++ (void)stopAllTestersInWindow:(NSWindow *)window
+{
+    NSArray *tempArray = [NSArray arrayWithArray:[testers allValues]];
+    
+    [tempArray enumerateObjectsUsingBlock:^(NSSet *set, NSUInteger idx, BOOL *stop) {
+        [set enumerateObjectsUsingBlock:^(CCEControlTest *obj, BOOL *stop2) {
+            if ([obj.control.window isEqualTo:window]) {
+                [obj cancel];
+                *stop2 = YES;
+            }
+        }];
     }];
 }
 
@@ -95,21 +113,10 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
 
 + (CCEControlTest *)testerForControl:(NSControl<CCDebuggableControl> *)aControl
 {
-    NSString *name = aControl.modelledControl.name;
-    if (name == nil)
-        return nil;
-    return [testers objectForKey:name];
+    return [self objectForControl:aControl];
 }
 
-+ (CCEControlTest *)testerForModel:(CCEModelledControl *)model
-{
-    NSString *name = model.name;
-    if (name == nil)
-        return nil;
-    return [testers objectForKey:name];
-}
-
-+ (CCEControlTest *)testerForName:(NSString *)name
++ (NSSet *)testerForName:(NSString *)name
 {
     return [testers objectForKey:name];
 }
@@ -136,9 +143,9 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
         control = aControl;
         ctlName = name;
         
-        [testers setObject:self forKey:ctlName];
+        [self.class addObject:self];
         
-        observers = [NSMutableArray arrayWithCapacity:2];
+        observers = [NSMutableArray array];
         
         invocations = kNumInvokations;
         
@@ -164,6 +171,12 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
 {
     if (!isRunning) {
         self.isRunning = YES;
+    }
+    
+        // if control goes away, so do I.
+    if (control == nil) {
+        [self cancel];
+        return;
     }
      
     if ([control respondsToSelector:@selector(advanceTest)]) {
@@ -194,10 +207,42 @@ const NSInteger kNumInvokations = 3 * 60 * 5;
     [[self class] removeObject:self];
 }
 
++ (void)addObject:(CCEControlTest *)object
+{
+    NSMutableSet *nameArray = [testers objectForKey:object.ctlName];
+    if (nameArray == nil) {
+        nameArray = [NSMutableSet setWithObject:object];
+        [testers setObject:nameArray forKey:object.ctlName];
+    } else {
+        [nameArray addObject:object];
+    }
+}
     // safely remove an object; last reference
 + (void)removeObject:(CCEControlTest *)object
 {
-    [testers removeObjectForKey:object.ctlName];
+    NSMutableSet *nameArray = [testers objectForKey:object.ctlName];
+    if (nameArray != nil) {
+        [nameArray removeObject:object];
+        
+        if (nameArray.count <= 0) {
+            [testers removeObjectForKey:object.ctlName];
+        }
+    }
+}
+
++ (CCEControlTest *)objectForControl:(NSControl<CCDebuggableControl> *)control
+{
+    NSMutableSet *nameSet = [testers objectForKey:control.modelledControl.name];
+    NSSet *foundObjects = [nameSet objectsPassingTest:^BOOL(CCEControlTest *obj, BOOL *stop) {
+        BOOL found = obj.control == control;
+        if (found) {
+            *stop = YES;
+        }
+        return found;
+    }];
+        // foundObjects will be a set of zero or one objects
+    
+    return foundObjects.anyObject;
 }
 
 - (NSString *)description

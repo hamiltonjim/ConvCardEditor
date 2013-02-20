@@ -10,4 +10,6 @@
 
 @interface ConvCardEditorTests : SenTestCase
 
+- (void)count1bitsIn:(NSUInteger)value expect:(int)expected;
+
 @end

@@ -16,14 +16,14 @@ extern NSString *kTesterIsRunning;
 @interface CCEControlTest : NSObject
 
 @property (readonly) BOOL isRunning;
-@property (readonly) NSControl <CCDebuggableControl> *control;
+@property (weak, readonly) NSControl <CCDebuggableControl> *control;
 
 + (void)stopAllTesters;
++ (void)stopAllTestersInWindow:(NSWindow *)window;
 + (NSUInteger)testerCount;
 
-+ (CCEControlTest *)testerForModel:(CCEModelledControl *)model;
 + (CCEControlTest *)testerForControl:(NSControl <CCDebuggableControl> *)control;
-+ (CCEControlTest *)testerForName:(NSString *)name;
++ (NSSet *)testerForName:(NSString *)name;
 
 /*
  Add a tester for the given control, optionally passing an object to be

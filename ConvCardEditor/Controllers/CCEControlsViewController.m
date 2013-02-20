@@ -56,6 +56,8 @@ static NSString *hideGrid;
 
 @property (readwrite) NSString *gridStateLabel;
 
+@property CGFloat stepIncrementValue;
+
 - (void)observeDefaults:(NSArray *)defaultsList;
 
 - (void)selectControlObject:(CCEModelledControl *)object;
@@ -104,6 +106,9 @@ static NSString *hideGrid;
 - (void)flashControlTester:(CCEControlTest *)tester;
 
 - (void)infoPanelInit;
+
+- (void)offsetObjectLocationX:(CGFloat)xOffset andY:(CGFloat)yOffset;
+- (void)growObjectWidth:(CGFloat)deltaW andHeight:(CGFloat)deltaH;
 
 @end
 
@@ -159,6 +164,7 @@ NSPoint roundPt(NSPoint pt)
 @synthesize window;
 @synthesize view;
 @synthesize cardType;
+@synthesize partnership;
 @synthesize cardSettings;
 @synthesize zoom;
 
@@ -185,6 +191,7 @@ NSPoint roundPt(NSPoint pt)
 @synthesize controlColorWell;
 @synthesize stdControlColorGroup;
 
+@synthesize nameField;
 @synthesize xField;
 @synthesize yField;
 @synthesize widthField;
@@ -206,10 +213,11 @@ NSPoint roundPt(NSPoint pt)
 
 @synthesize toolsPaletteController;
 
+@synthesize stepIncrementValue;
 
 - (void)dealloc
 {
-    NSLog(@"%@ dealloc", [self class]);
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:cceStepIncrement];
 }
 
 #pragma mark INITIALIZATION
@@ -253,6 +261,11 @@ NSPoint roundPt(NSPoint pt)
     [widthStepper observeIncrementFrom:ud keypath:cceStepIncrement];
     [heightStepper observeIncrementFrom:ud keypath:cceStepIncrement];
     
+    [[NSUserDefaults standardUserDefaults] addObserver:self
+                                            forKeyPath:cceStepIncrement
+                                               options:NSKeyValueObservingOptionInitial
+                                               context:NULL];
+    
     [self infoPanelInit];
     [self showWindow:self];
 }
@@ -286,6 +299,8 @@ NSPoint roundPt(NSPoint pt)
         if (tester.control == selectedControl) {
             [self flashControlTester:tester];
         }
+    } else if ([keyPath isEqualToString:cceStepIncrement]) {
+        stepIncrementValue = [[NSUserDefaults standardUserDefaults] doubleForKey:keyPath];
     } else {
             // catch-all is for control sizes
         localDflts.defaultsValid = false;
@@ -351,6 +366,79 @@ NSPoint roundPt(NSPoint pt)
     }
     
     return NO;
+}
+
+#pragma mark KEY EVENTS
+
+- (void)offsetObjectLocationX:(CGFloat)xOffset andY:(CGFloat)yOffset
+{
+    CCELocation *selectedLocation = locationObject.content;
+    if (selectedLocation == nil) {
+        return;
+    }
+    
+    CGFloat coordinate = selectedLocation.locX.doubleValue;
+    selectedLocation.locX = [NSNumber numberWithDouble:(coordinate + xOffset)];
+    
+    coordinate = selectedLocation.locY.doubleValue;
+    selectedLocation.locY = [NSNumber numberWithDouble:(coordinate + yOffset)];
+}
+
+- (void)nudgeUp:(CGFloat)multiplier
+{
+    [self offsetObjectLocationX:0.0 andY:stepIncrementValue * multiplier];
+}
+
+- (void)nudgeDown:(CGFloat)multiplier
+{
+    [self offsetObjectLocationX:0.0 andY:-stepIncrementValue * multiplier];
+}
+
+- (void)nudgeLeft:(CGFloat)multiplier
+{
+    [self offsetObjectLocationX:-stepIncrementValue * multiplier andY:0.0];
+}
+
+- (void)nudgeRight:(CGFloat)multiplier
+{
+    [self offsetObjectLocationX:stepIncrementValue * multiplier andY:0.0];
+}
+
+- (void)growObjectWidth:(CGFloat)deltaW andHeight:(CGFloat)deltaH
+{
+    CCELocation *selectedLocation = locationObject.content;
+    if (selectedLocation == nil) {
+        return;
+    }
+    
+        // don't shrink below 1 point
+    CGFloat sizeValue = selectedLocation.width.doubleValue;
+    sizeValue = MAX(sizeValue + deltaW, 1.0);
+    selectedLocation.width = [NSNumber numberWithDouble:sizeValue];
+    
+    sizeValue = selectedLocation.height.doubleValue;
+    sizeValue = (MAX(sizeValue + deltaH, 1.0));
+    selectedLocation.height = [NSNumber numberWithDouble:sizeValue];
+}
+
+- (void)growH:(CGFloat)multiplier
+{
+    [self growObjectWidth:stepIncrementValue * multiplier andHeight:0.0];
+}
+
+- (void)growV:(CGFloat)multiplier
+{
+    [self growObjectWidth:0.0 andHeight:stepIncrementValue * multiplier];
+}
+
+- (void)shrinkH:(CGFloat)multiplier
+{
+    [self growObjectWidth:-stepIncrementValue * multiplier andHeight:0.0];
+}
+
+- (void)shrinkV:(CGFloat)multiplier
+{
+    [self growObjectWidth:0.0 andHeight:-stepIncrementValue * multiplier];
 }
 
 #pragma mark SELECTION MODE
@@ -434,8 +522,9 @@ NSPoint roundPt(NSPoint pt)
     }
 }
 
-- (void)load:(NSManagedObject *)type
+- (void)load:(NSManagedObject *)type for:(NSManagedObject *)partnershipObj
 {
+    partnership = partnershipObj;
     [self load:type editMode:NO];
 }
 - (void)load:(NSManagedObject *)type editMode:(BOOL)editing
@@ -448,6 +537,17 @@ NSPoint roundPt(NSPoint pt)
     NSUInteger numCtls = [[type settings] count];
     if (numCtls > size) size = numCtls;
     controls = [NSMutableArray arrayWithCapacity:size];
+    
+    NSString *wTitle;
+    if (editMode) {
+        wTitle = NSLocalizedString(@"Convention Card Template \u2014 %@",
+                                   @"Title template for style editing (\u2014 is mdash)");
+        wTitle = [NSString stringWithFormat:wTitle, cardType.cardName];
+    } else {
+        wTitle = NSLocalizedString(@"Convention Card for %@", @"title template for partnership");
+        wTitle = [NSString stringWithFormat:wTitle, partnership.partnershipName];
+    }
+    [window setTitle:wTitle];
     
         // target rect
     wholeFrame = NSMakeRect(0.0, 0.0, type.width.doubleValue, type.height.doubleValue);
@@ -472,6 +572,8 @@ NSPoint roundPt(NSPoint pt)
     
     [self visualSelect:aControl index:index];
     self.selectedControl = aControl;
+    [window makeFirstResponder:aControl];
+    
     [self selectControlObject:[self modelledControlFor:aControl] selIndex:index];
     
         // if object is under test, note that
@@ -519,7 +621,12 @@ NSPoint roundPt(NSPoint pt)
     }
     NSInteger code = [[sender selectedCell] tag];
     
-    [controlColorWell setColor:[(AppDelegate *)[NSApp delegate] colorForCode:code]];
+    NSColor *color = [(AppDelegate *)[NSApp delegate] colorForCode:code];
+    if (color) {
+        [controlColorWell setColor:color];
+    } else {
+        NSLog(@"No color for code %ld", code);
+    }
 }
 
 - (void)selectControlObject:(CCEModelledControl *)object
@@ -1029,6 +1136,23 @@ NSPoint roundPt(NSPoint pt)
     [controller activateEditorWindow:self];
 }
 
+- (IBAction)editControlName:(id)sender
+{
+    [infoPanel makeKeyAndOrderFront:sender];
+    [infoPanel makeFirstResponder:nameField];
+}
+
+- (IBAction)editControlPosition:(id)sender
+{
+    [infoPanel makeKeyAndOrderFront:sender];
+    [infoPanel makeFirstResponder:xField];
+}
+
+- (IBAction)editControlColor:(id)sender
+{
+    [infoPanel makeKeyAndOrderFront:sender];
+    [infoPanel makeFirstResponder:controlColorWell];
+}
 
 
 #pragma mark FINDING CONTROL OBJECTS
@@ -1045,19 +1169,6 @@ NSPoint roundPt(NSPoint pt)
     }
     NSRect rect = [view convertRect:[ctl bounds] fromView:ctl];
     control = [[CCEEntityFetcher instance] modelledControlAt:rect.origin];
-//    if (control == nil) {
-//            // kluge: find it the old-fashioned way
-//        NSArray *ctls = [[CCEEntityFetcher instance] allModelledControls];
-//        
-//        __block CCEModelledControl *found = nil;
-//        [ctls enumerateObjectsUsingBlock:^(CCEModelledControl *obj, NSUInteger idx, BOOL *stop) {
-//            if ([obj controlInView] == ctl) {
-//                found = obj;
-//                *stop = YES;
-//            }
-//        }];
-//        control = found;
-//    }
     
     return control;
 }
@@ -1077,8 +1188,7 @@ NSPoint roundPt(NSPoint pt)
 
 - (CCEControlTest *)testerForSelected
 {
-    NSString *name = selectedControl.modelledControl.name;
-    return [CCEControlTest testerForName:name];
+    return [CCEControlTest testerForControl:selectedControl];
 }
 
 - (IBAction)cancelTestControl:(id)sender
@@ -1105,7 +1215,7 @@ NSPoint roundPt(NSPoint pt)
 
 - (IBAction)stopAllControlTesters:(id)sender
 {
-    [CCEControlTest stopAllTesters];
+    [CCEControlTest stopAllTestersInWindow:window];
 }
 
 #pragma mark VALIDATION
@@ -1113,17 +1223,9 @@ NSPoint roundPt(NSPoint pt)
 - (BOOL)validateUserInterfaceItem:(NSObject <NSValidatedUserInterfaceItem> *)anItem
 {
     if ([anItem action] == @selector(testControl:)) {
-        if ([anItem isKindOfClass:[NSMenuItem class]]) {
-            NSMenuItem *menuItem = (NSMenuItem *)anItem;
-            [menuItem setHidden:isTesterForSelected.boolValue];
-            return ![testControlButton isHidden] && [testControlButton isEnabled];
-        }
+        return ![testControlButton isHidden] && [testControlButton isEnabled];
     } else if ([anItem action] == @selector(cancelTestControl:)) {
-        if ([anItem isKindOfClass:[NSMenuItem class]]) {
-            NSMenuItem *menuItem = (NSMenuItem *)anItem;
-            [menuItem setHidden:!isTesterForSelected.boolValue];
-            return ![stopTestControlButton isHidden];
-        }
+        return ![stopTestControlButton isHidden];
     } else if ([anItem action] == @selector(stopAllControlTesters:)) {
         return [CCEControlTest testerCount] > 0;
     } else if ([anItem action] == @selector(scaleLarger:)) {
@@ -1139,6 +1241,10 @@ NSPoint roundPt(NSPoint pt)
             [menuItem setState:gridState ? NSOnState : NSOffState];
         }
         return YES;
+    } else if ([anItem action] == @selector(editControlColor:) ||
+               [anItem action] == @selector(editControlName:) ||
+               [anItem action] == @selector(editControlPosition:)) {
+        return editMode && selectedControl != nil;
     }
 
     
@@ -1180,6 +1286,7 @@ NSPoint roundPt(NSPoint pt)
         [infoPanel close];
         [toolsPaletteController.toolsPalette close];
         [controller editorWindowClosing:self];
+        [self stopAllControlTesters:sender];
     }
     
     return YES;
@@ -1254,15 +1361,34 @@ NSPoint roundPt(NSPoint pt)
     
     for (NSView *aview = selected; aview != nil; aview = [aview superview]) {
         NSLog(@"view %@ (%p): frame %@ zoom %g", NSStringFromClass([aview class]), aview,
-              NSStringFromRect([aview frame]), [view scale].width);
+              NSStringFromRect([aview frame]), [view scale]);
     }
     
     NSLog(@"sub views (frame inside view):");
     
     [[selected subviews] enumerateObjectsUsingBlock:^(NSView *aview, NSUInteger idx, BOOL *stop) {
         NSLog(@"view %@ (%p): frame %@ zoom %g", NSStringFromClass([aview class]), aview,
-              NSStringFromRect([aview convertRect:[aview frame] toView:selected]), [view scale].width);
+              NSStringFromRect([aview convertRect:[aview frame] toView:selected]), [view scale]);
     }];
+}
+
+- (IBAction)showResponderChain:(id)sender
+{
+    NSResponder *firstResponder = window.firstResponder;
+    
+    while (firstResponder != nil) {
+        NSString *title = nil;
+        NSString *value = nil;
+        
+        if ([firstResponder isKindOfClass:CCEModelledControl.class]) {
+            title = [(CCEModelledControl *)firstResponder name];
+        } else if ([firstResponder respondsToSelector:@selector(title)])
+            title = [(id)firstResponder title];
+        if ([firstResponder respondsToSelector:@selector(stringValue)])
+            value = [(id)firstResponder stringValue];
+        NSLog(@"NSResponder: %@ (%p) %@  %@", firstResponder.class, firstResponder, title, value);
+        firstResponder = firstResponder.nextResponder;
+    }
 }
 
 @end

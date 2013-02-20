@@ -61,7 +61,7 @@
 }
 
 - (id) initWithFrame:(NSRect)frameR color:(NSColor *)aColor {
-    if ([super initWithFrame:frameR]) {
+    if (self = [super initWithFrame:frameR]) {
         frameRect = frameR;
         [self setColor:aColor];
     }
@@ -69,7 +69,7 @@
 }
 
 - (id) initWithFrame:(NSRect)frameR colorKey:(NSString *)aColorKey {
-    if ([super initWithFrame:frameR]) {
+    if (self = [super initWithFrame:frameR]) {
         frameRect = frameR;
         colorKey = aColorKey;
         [[self cell] setColorKey:aColorKey];

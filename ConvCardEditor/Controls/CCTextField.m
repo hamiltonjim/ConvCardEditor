@@ -195,6 +195,18 @@ static NSFont *defaultFont;
     }
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if (colorKey != nil && [keyPath isEqualToString:colorKey]) {
+        [self setTextColor:[[CCTextField appDel] valueForKey:colorKey]];
+    } else if (fontKey != nil && [keyPath isEqualToString:fontKey]) {
+            // TODO set font
+    }
+}
+
 - (void) dealloc {
     [self unwatchColor];
     [self unwatchFont];

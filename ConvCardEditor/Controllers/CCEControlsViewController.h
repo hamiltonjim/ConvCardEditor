@@ -28,6 +28,7 @@
 @property IBOutlet CCEControlsSuperView *view;
 @property (weak) IBOutlet NSView *observedView;
 @property (weak) NSManagedObject *cardType;
+@property (weak) NSManagedObject *partnership;
 @property NSMutableArray *controls;
 @property (weak, readonly, nonatomic) NSControl <CCDebuggableControl> *selectedControl;
 @property (weak) CCECardTypeEditorController *controller;
@@ -45,6 +46,7 @@
 @property IBOutlet NSColorWell *controlColorWell;
 @property IBOutlet NSMatrix *stdControlColorGroup;
 
+@property IBOutlet NSTextField *nameField;
 @property IBOutlet NSTextField *xField;
 @property IBOutlet NSTextField *yField;
 @property IBOutlet NSTextField *widthField;
@@ -68,7 +70,7 @@
 
 - (void)resignFront;
 
-- (void)load:(NSManagedObject *)type;
+- (void)load:(NSManagedObject *)type for:(NSManagedObject *)partnership;
 - (void)load:(NSManagedObject *)type editMode:(BOOL)editing;
 
 - (void)viewMouseDown:(NSEvent *)theEvent;
@@ -109,7 +111,23 @@
 
 - (IBAction)scaleToWindow:(id)sender;
 
+    // arrow key handling
+- (void)nudgeLeft:(CGFloat)multiplier;
+- (void)nudgeRight:(CGFloat)multiplier;
+- (void)nudgeUp:(CGFloat)multiplier;
+- (void)nudgeDown:(CGFloat)multiplier;
+
+- (void)growH:(CGFloat)multiplier;
+- (void)growV:(CGFloat)multiplier;
+- (void)shrinkH:(CGFloat)multiplier;
+- (void)shrinkV:(CGFloat)multiplier;
+
+
 - (IBAction)controlInfo:(id)sender;
+
+- (IBAction)editControlName:(id)sender;
+- (IBAction)editControlPosition:(id)sender;
+- (IBAction)editControlColor:(id)sender;
 
 - (IBAction)showWindow:(id)sender;
 
@@ -130,5 +148,6 @@
 
     // debug
 - (IBAction)showSelectedControlInfo:(id)sender;
+- (IBAction)showResponderChain:(id)sender;
 
 @end

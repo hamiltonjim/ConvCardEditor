@@ -10,6 +10,7 @@
 #import "CCCheckboxCell.h"
 #import "CCEConstants.h"
 #import "AppDelegate.h"
+#import "NSUserDefaults+CCEColorOps.h"
 
 static AppDelegate *appDel() {
     static AppDelegate *del = nil;
@@ -214,6 +215,7 @@ static NSColor *selectedOtherColor;
     
     if ([keyPath isEqualToString:colorKey]) {
         [self setColor:[appDel() valueForKey:colorKey]];
+        [[self controlView] setNeedsDisplay:YES];
     } else if ([keyPath isEqualToString:ccCheckboxDrawStyle]) {
         [[self controlView] setNeedsDisplay:YES];
     }

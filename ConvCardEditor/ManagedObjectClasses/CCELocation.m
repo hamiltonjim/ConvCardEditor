@@ -76,6 +76,9 @@
 
 - (void)setColor:(NSColor *)aColor
 {
+    if ([aColor isEqual:self.color])
+        return;
+    
         // change color code
     [self setColor:aColor clearColorCode:YES];
 }

@@ -39,5 +39,4 @@
 
 - (void)editorWindowClosing:(CCEControlsViewController *)controller;
 
-
 @end
