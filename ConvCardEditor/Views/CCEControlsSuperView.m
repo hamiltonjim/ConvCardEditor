@@ -17,6 +17,13 @@
 #import "FixedNSImageView.h"
 #import "CCESizableTextField.h"
 
+enum EArrowKeyMultipliers {
+    kMove = 0,
+    kMoveWord,
+    kMoveToEndOfLine,
+    
+    };
+
 @interface CCEControlsSuperView ()
 
     // dragging rectangle
@@ -194,5 +201,66 @@
     NSRect unionRect = NSUnionRect(oldRect, lastDragRect);
     [self setNeedsDisplayInRect:unionRect];
 }
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+        // Arrow keys are associated with the numeric keypad
+    if ([theEvent modifierFlags] & NSNumericPadKeyMask) {
+        NSString *arrowKey = theEvent.charactersIgnoringModifiers;
+        
+        if (arrowKey.length == 0)
+            return;     // ignore dead keys
+        unichar theArrow = [arrowKey characterAtIndex:0];
+        
+        CGFloat multiplier = 1.0;
+        NSUInteger modifierFlags = theEvent.modifierFlags;
+        if (modifierFlags & NSAlternateKeyMask)
+            multiplier = 0.1;
+        else if (modifierFlags & NSCommandKeyMask)
+            multiplier = 10.0;
+        
+        BOOL shifted = 0 != (modifierFlags & NSShiftKeyMask);
+        switch (theArrow) {
+            case NSLeftArrowFunctionKey:
+                if (shifted) {
+                    [viewController shrinkH:multiplier];
+                } else {
+                    [viewController nudgeLeft:multiplier];
+                }
+                break;
+                
+            case NSRightArrowFunctionKey:
+                if (shifted) {
+                    [viewController growH:multiplier];
+                } else {
+                    [viewController nudgeRight:multiplier];
+                }
+                break;
+                
+            case NSUpArrowFunctionKey:
+                if (shifted) {
+                    [viewController growV:multiplier];
+                } else {
+                    [viewController nudgeUp:multiplier];
+                }
+                break;
+                
+            case NSDownArrowFunctionKey:
+                if (shifted) {
+                    [viewController shrinkV:multiplier];
+                } else {
+                    [viewController nudgeDown:multiplier];
+                }
+                break;
+                
+            default:
+                [super keyDown:theEvent];
+                break;
+        }
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
 
 @end

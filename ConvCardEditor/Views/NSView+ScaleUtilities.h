@@ -10,21 +10,24 @@
 
 @interface NSView (ScaleUtilities)
 
-@property (assign) NSSize scale;
+@property (assign) CGFloat scale;
 
 - (void)resetScaling;
 
 /*
- When the scale is known to be "square" (that is, relative scaling is
- the same), it might be more convenient at times to just get one of
- the dimensions.
- */
-- (double)wScale;
-- (double)hScale;
-
-/*
  Set the scale to both height and width (i.e., squarely).
  */
-- (void)scaleTo:(double)linearScale;
+- (void)scaleTo:(CGFloat)linearScale;
+
+/*
+    Change scale by the given ratio.
+ */
+- (void)scaleBy:(CGFloat)ratio;     // self only
+- (void)deepScaleBy:(CGFloat)ratio; // self and subviews
+
++ (NSRect)scaleRect:(NSRect)rect by:(CGFloat)ratio;
+
++ (CGFloat)defaultScale;
++ (NSRect)defaultScaleRect:(NSRect)rect;
 
 @end

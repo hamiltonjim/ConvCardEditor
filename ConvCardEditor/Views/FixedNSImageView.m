@@ -103,8 +103,7 @@
     
     [[NSUserDefaults standardUserDefaults] setDouble:zoomFactor forKey:ccDefaultScale];
     
-    NSSize size = NSMakeSize(zoomTo, zoomTo);
-    [self setScale:size];
+    [self setScale:zoomTo];
     [self setFrame:NSZeroRect];
 }
 
