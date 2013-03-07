@@ -63,21 +63,34 @@ NSString *ccModelMultiLocations = @"locations";
 
 const double SCALE_MULT = 1.0;
 
+    // scale
+NSString *cceMaximumScale = @"MaximumScale";
+NSString *cceMinimumScale = @"MinimumScale";
+
+    // scale changing
+NSString *cceZoomFactorChanging = @"ZoomFactorChanging";
+NSString *cceZoomFactorChanged = @"ZoomFactorChanged";
+NSString *cceZoomFactor = @"ZoomFactor";
+
 NSString *kControlLocationX = @"locX";
 NSString *kControlLocationY = @"locY";
 NSString *kControlWidth = @"width";
 NSString *kControlHeight = @"height";
 
-NSString *cceGridState = @"gridState";
-
 NSString *cceLocationColor = @"color";
 NSString *cceLocationColorCode = @"colorCode";
+
+NSString *cceLocationIndex = @"index";
+
+NSString *cceGridState = @"gridState";
 
 NSString *cceStepTransformer = @"CCEStepIncrementTransformer";
 NSString *cceStepIncrement = @"stepIncrement";
 NSString *cceStepIncrementIndex = @"stepIncrementIndex";
 
 NSString *applicationDomain = @"com.shokwave.ConvCardEditor";
+
+NSString *errorNotify = @"errorNotify";
 
 @implementation CommonStrings
 

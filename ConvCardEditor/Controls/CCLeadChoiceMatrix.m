@@ -22,7 +22,7 @@
 
 @synthesize selected;
 
-- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect
+- (NSControl <CCDebuggableControl> *)createChildInRect:(NSRect)theRect
 {
     return [[CCLeadChoice alloc] initWithFrame:theRect];
 }
@@ -132,11 +132,14 @@
     [self placeChildInRect:rect withColor:nil];
 }
 
-//- (void)setDebugMode:(int)newDebugMode
-//{
-//    for (NSControl <CCDebuggableControl> *ctrl in self.controls) {
-//        [ctrl setDebugMode:newDebugMode];
-//    }
-//}
-//
+    // name for display purpose
+- (NSString *)shapeName:(NSInteger)nounCase
+{
+    if (kPossessive == nounCase) {
+        return NSLocalizedString(@"oval's", @"display name of a lead choice oval, possessive case");
+    } else {
+        return NSLocalizedString(@"oval", @"display name of a lead choice oval, nominative case");
+    }
+}
+
 @end

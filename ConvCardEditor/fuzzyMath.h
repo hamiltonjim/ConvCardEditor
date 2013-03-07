@@ -23,4 +23,15 @@ int fuzzyZero(double num);
     // possible for all values
 int count1bits(unsigned long bits);
 
+    // rounding with a twist:
+    //  position: round at any decimal position, with -1 meaning the
+    //      nearest tenth, and 1 meaning the tens column; i.e., multiply
+    //      by pow(10, position), round, divide by pow(10, position)
+    //  boundary: from here up, round away from zero; from here down,
+    //      round toward zero.  boundary MUST be between 0.0 and 1.0,
+    //      exclusive.
+double fuzzyRound(double value, int position, double boundary);
+    // version where position is always zero (ones column)
+double fuzzyRoundInt(double value, double boundary);
+
 #endif

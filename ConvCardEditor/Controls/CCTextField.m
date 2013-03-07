@@ -18,6 +18,10 @@
 #import "CCELocation.h"
 #import "NSControl+CCESetColorCode.h"
 #import "CCELocationController.h"
+#import "NSView+ScaleUtilities.h"
+#import "fuzzyMath.h"
+
+static NSInteger s_count;
 
 static NSNumberFormatter *myNumFormatter = nil;
 
@@ -57,25 +61,41 @@ static const char *kSpadeCharUTF8 = "\xe2\x99\xa0";
 
 @interface CCTextField()
 
+@property (readwrite) double scale;
 @property double baseSize;
 @property double baseFontSize;
 
 @property NSString *fontKey;
 @property NSString *fontName;
 
+@property (readwrite) CGFloat lineHeight;
+@property (readwrite) NSUInteger lineCount;
+
 @property NSRect frameRect;
 
 @property NSUInteger debugMode;
 
-- (void) watchColor:(NSString *)aColorKey;
-- (void) unwatchColor;
+@property NSString *fieldName;
+@property NSOperationQueue *opQ;
 
-- (void) watchFont:(NSString *)aFontKey;
-- (void) unwatchFont;
++ (AppDelegate *)appDelegate;
++ (NSFont *)defaultFont;
+
+- (void)watchColor:(NSString *)aColorKey;
+- (void)unwatchColor;
+
+- (void)watchFont:(NSString *)aFontKey;
+- (void)unwatchFont;
+
+- (void)setFont;
+
+- (void)observeScaling;
+- (void)stopObservingScaling;
 
 @end
 
 static NSFont *defaultFont;
+static CGFloat defaultLineHeight;
 
 @implementation CCTextField
 
@@ -84,6 +104,7 @@ static NSFont *defaultFont;
 @synthesize modelledControl;
 @synthesize locationController;
 
+@synthesize scale;
 @synthesize baseSize;
 @synthesize baseFontSize;
 @synthesize fontName;
@@ -97,7 +118,37 @@ static NSFont *defaultFont;
 
 @synthesize debugMode;
 
-+ (void) initialize {
+@synthesize isScaling;
+@synthesize fieldName;
+@synthesize opQ;
+
+@synthesize font;
+@synthesize lineHeight;
+@synthesize lineCount;
+
++ (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[NSApp delegate];
+}
+
++ (NSFont *)defaultFont
+{
+    if (defaultFont == nil) {
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        defaultFont = [NSFont fontWithName:[ud stringForKey:ccDefaultFontName]
+                                      size:[ud doubleForKey:ccDefaultFontSize]];
+        defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+    }
+    
+    return defaultFont;
+}
++ (void)setDefaultFont:(NSFont *)font
+{
+    defaultFont = font;
+    defaultLineHeight = [defaultFont ascender] - [defaultFont descender] + [defaultFont leading];
+}
+
++ (void)initialize {
     [self readMagic];
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -105,21 +156,23 @@ static NSFont *defaultFont;
                                   size:[ud doubleForKey:ccDefaultFontSize]];
 }
 
-+ (void) readMagic {
++ (void)readMagic
+{
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     
     typeMagicSuitSymbols = [ud boolForKey:ccTypeMagicSuitSymbolsKey];
     magicSuitCode = [ud integerForKey:ccMagicSuitSymbolCodeKey];
 }
 
-+ (NSNumberFormatter *) numFormatter {
++ (NSNumberFormatter *)numFormatter
+{
     if (nil == myNumFormatter) {
         myNumFormatter = [[NSNumberFormatter alloc] init];
     }
     return myNumFormatter;
 }
 
-+ (AppDelegate *) appDel {
++ (AppDelegate *)appDel {
     return (AppDelegate *)[NSApp delegate];
 }
 
@@ -139,6 +192,15 @@ static NSFont *defaultFont;
     return locationController;
 }
 
+- (void)stopMonitoring
+{
+    if (locationController != nil &&
+        [locationController respondsToSelector:@selector(stopMonitoringLocation)]) {
+        [locationController stopMonitoringLocation];
+    }
+    locationController = nil;
+}
+
 - (void)setColorKey:(NSString *)aColorKey
 {
     [self watchColor:aColorKey];
@@ -155,7 +217,7 @@ static NSFont *defaultFont;
         [self setTextColor:[[CCTextField appDel] valueForKey:colorKey]];
     }
 }
-- (void) unwatchColor {
+- (void)unwatchColor {
     if (colorKey) {
         [[CCTextField appDel] removeObserver:self forKeyPath:colorKey];
         
@@ -170,7 +232,7 @@ static NSFont *defaultFont;
     [self setTextColor:aColor];
 }
 
-- (void) watchFont:(NSString *)aFontKey {
+- (void)watchFont:(NSString *)aFontKey {
     [self unwatchFont];
     if (aFontKey) {
         fontKey = aFontKey;
@@ -187,7 +249,7 @@ static NSFont *defaultFont;
         [self setFont:defaultFont];
     }
 }
-- (void) unwatchFont {
+- (void)unwatchFont {
     if (fontKey) {
         [[CCTextField appDel] removeObserver:self forKeyPath:fontKey];
         
@@ -202,33 +264,40 @@ static NSFont *defaultFont;
 {
     if (colorKey != nil && [keyPath isEqualToString:colorKey]) {
         [self setTextColor:[[CCTextField appDel] valueForKey:colorKey]];
-    } else if (fontKey != nil && [keyPath isEqualToString:fontKey]) {
-            // TODO set font
     }
 }
 
-- (void) dealloc {
+- (void)dealloc {
     [self unwatchColor];
     [self unwatchFont];
+    
+    [self stopObservingScaling];
+    --s_count;
 }
 
-- (id) initWithFrame:(NSRect)frameR font:(NSString *)aFont {
-    return [self initWithFrame:frameR font:aFont color:nil isNumber:NO];
++ (NSInteger)count
+{
+    return s_count;
 }
-- (id) initWithFrame:(NSRect)frameR font:(NSString *)aFont colorKey:(NSString *) aColor {
-    return [self initWithFrame:frameR font:aFont colorKey:aColor isNumber:NO];
+
+- (id)initWithFrame:(NSRect)frameR font:(NSString *)aFont fontSize:(CGFloat)fontSize {
+    return [self initWithFrame:frameR font:aFont fontSize:(CGFloat)fontSize color:nil isNumber:NO];
 }
-- (id) initWithFrame:(NSRect)frameR font:(NSString *)aFont isNumber:(BOOL)isNum {
-    return [self initWithFrame:frameR font:aFont color:nil isNumber:isNum];
+- (id)initWithFrame:(NSRect)frameR font:(NSString *)aFont fontSize:(CGFloat)fontSize colorKey:(NSString *) aColor {
+    return [self initWithFrame:frameR font:aFont fontSize:fontSize colorKey:aColor isNumber:NO];
 }
-- (id) initWithFrame:(NSRect)frameR font:(NSString *)aFont color:(NSColor *)aColor {
-    return [self initWithFrame:frameR font:aFont color:aColor isNumber:NO];
+- (id)initWithFrame:(NSRect)frameR font:(NSString *)aFont fontSize:(CGFloat)fontSize isNumber:(BOOL)isNum {
+    return [self initWithFrame:frameR font:aFont fontSize:fontSize color:nil isNumber:isNum];
 }
-- (id) initWithFrame:(NSRect)frameR
-                font:(NSString *)aFont 
-               color:(NSColor *)aColor
-            isNumber:(BOOL)isNum {
-    if (self = [self initWithFrame:frameR font:aFont colorKey:nil isNumber:isNum]) {
+- (id)initWithFrame:(NSRect)frameR font:(NSString *)aFont fontSize:(CGFloat)fontSize color:(NSColor *)aColor {
+    return [self initWithFrame:frameR font:aFont  fontSize:fontSize color:aColor isNumber:NO];
+}
+- (id)initWithFrame:(NSRect)frameR
+               font:(NSString *)aFont
+           fontSize:(CGFloat)fontSize
+              color:(NSColor *)aColor
+           isNumber:(BOOL)isNum {
+    if (self = [self initWithFrame:frameR font:aFont fontSize:fontSize colorKey:nil isNumber:isNum]) {
         if (aColor) {
             [self setTextColor:aColor];
             color = aColor;
@@ -238,16 +307,22 @@ static NSFont *defaultFont;
     return self;
 }
     
-- (id) initWithFrame:(NSRect)frameR
-                font:(NSString *)aFontKey 
-            colorKey:(NSString *)aColor
-            isNumber:(BOOL)isNum {
-        
+- (id)initWithFrame:(NSRect)frameR
+               font:(NSString *)aFontName
+           fontSize:(CGFloat)fontSize
+           colorKey:(NSString *)aColor
+           isNumber:(BOOL)isNum {
+    scale = [NSView defaultScale];
+    
+    frameR = [NSView scaleRect:frameR by:scale];
     if (self = [super initWithFrame:frameR]) {
         frameRect = frameR;
-        baseSize = frameRect.size.width;
+        baseSize = frameRect.size.width / scale;
         
-        [self watchFont:aFontKey];
+        fontName = aFontName == nil ? defaultFont.fontName : aFontName;
+        baseFontSize = fuzzyZero(fontSize) ? defaultFont.pointSize : fontSize;
+        [self setFont];
+        
         [self watchColor:aColor];
         [self setBackgroundColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.0]];
         
@@ -265,7 +340,17 @@ static NSFont *defaultFont;
         } else {
             [self setDelegate:self];    // allowing text manip while typing
         }
+        
+        [self setLineMetrics];
 
+            // scaling
+        opQ = [NSOperationQueue new];
+        if (fieldName != nil) {
+            [opQ setName:fieldName];
+        }
+        isScaling = NO;
+        [self observeScaling];
+        ++s_count;
     }
     return self;
 }
@@ -288,6 +373,7 @@ static NSFont *defaultFont;
     
     return [self initWithFrame:frameR
                           font:nil
+                      fontSize:0
                       colorKey:[[CCTextField appDel] colorKeyForCode:colorCode]
                       isNumber:isNum];
 }
@@ -298,7 +384,7 @@ static NSFont *defaultFont;
     NSSize howBig = NSMakeSize([location.width doubleValue], [location.height doubleValue]);
     NSRect frameR = {where, howBig};
     
-    return [self initWithFrame:frameR font:nil color:aColor isNumber:isNum];
+    return [self initWithFrame:frameR font:nil fontSize:0 color:aColor isNumber:isNum];
 }
 
 - (id)initWithTextModel:(CCETextModel *)model
@@ -313,10 +399,12 @@ static NSFont *defaultFont;
     
     BOOL isNum = [model.numeric boolValue];
     
+    fieldName = model.name;
+    
     NSNumber *colorKeyObject = location.colorCode;
     if (colorKeyObject != nil) {
         NSString *myColorKey = [[CCTextField appDel] colorKeyForCode:[colorKeyObject integerValue]];
-        self = [self initWithFrame:frameR font:fontName colorKey:myColorKey isNumber:isNum];
+        self = [self initWithFrame:frameR font:fontName fontSize:fontSize colorKey:myColorKey isNumber:isNum];
     } else {
             // any nil (except alpha) kills color
         NSColor *myColor = nil;
@@ -325,32 +413,92 @@ static NSFont *defaultFont;
             if (location.colorAlpha)
                 alpha = [location.colorAlpha doubleValue];
             myColor = [NSColor colorWithCalibratedRed:[location.colorRed doubleValue]
-                                              green:[location.colorGreen doubleValue]
-                                               blue:[location.colorBlue doubleValue]
-                                              alpha:alpha];
+                                                green:[location.colorGreen doubleValue]
+                                                 blue:[location.colorBlue doubleValue]
+                                                alpha:alpha];
         }
-        self = [self initWithFrame:frameR font:fontName color:color isNumber:isNum];
+        self = [self initWithFrame:frameR font:fontName fontSize:fontSize color:color isNumber:isNum];
     }
     
-    self.baseFontSize = fontSize;
     [self monitorModel:model];
     
     return self;
 }
 
-- (void) setFont:(NSFont *)fontObj {
+- (void)observeScaling
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cceZoomFactorChanging object:nil queue:opQ usingBlock:^(NSNotification *note) {
+        if (note.object == self.window) {
+            isScaling = YES;
+        }
+    }];
+    [center addObserverForName:cceZoomFactorChanged object:nil queue:opQ usingBlock:^(NSNotification *note) {
+        if (note.object == self.window) {
+            isScaling = NO;
+        }
+    }];
+}
+
+- (void)stopObservingScaling
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (NSUInteger)linesForHeight:(CGFloat)height
+{
+        // allow the next line if 4/5 or more is visible
+    return MAX(fuzzyRound(height / lineHeight, 0, 0.8), 1.0);
+}
+
++ (NSUInteger)linesForHeight:(CGFloat)height
+{
+    (void)[self defaultFont];
+    return MAX(round(height / defaultLineHeight), 1.0);
+}
+
+
+- (void)setLineMetrics
+{
+    lineHeight = ([font ascender] - [font descender] + [font leading]) * scale;
+    NSRect frame = self.frame;
+    lineCount = [self linesForHeight:frame.size.height];
+    if (lineCount < 1) {
+        lineCount = 1;
+    }
+    [[self cell] setWraps:(lineCount > 1)];
+}
+
+- (void)setFont:(NSFont *)fontObj {
+    font = fontObj;
     fontName = [fontObj fontName];
-    [super setFont:[NSFont fontWithName:fontName size:baseFontSize]];
+    [super setFont:[NSFont fontWithName:fontName size:baseFontSize * scale]];
+    [self setLineMetrics];
 }
 
 - (void)setFontSize:(CGFloat)size
 {
     baseFontSize = size;
-    [super setFont:[NSFont fontWithName:fontName size:baseFontSize]];
+    [self setFont];
 }
 
-- (void) setFrame:(NSRect)frameR {
+- (void)setFont
+{
+    [self setFont:[NSFont fontWithName:fontName size:baseFontSize]];
+}
+
+- (void)setFrame:(NSRect)frameR
+{
+    [self setFrame:frameR forRescaling:isScaling];
+}
+- (void)setFrame:(NSRect)frameR forRescaling:(BOOL)rescaling
+{
     frameRect = frameR;
+    if (rescaling) {
+        scale = frameRect.size.width / baseSize;
+    } else {
+        baseSize = frameRect.size.width / scale;
+    }
     [super setFrame:frameRect];
     NSString *temp = [self stringValue];
     [self setStringValue:@""];
@@ -358,7 +506,7 @@ static NSFont *defaultFont;
     [self setStringValue:temp];
 }
 
-- (void) setTextColor:(NSColor *)newColor {
+- (void)setTextColor:(NSColor *)newColor {
     if (nil == newColor)
         newColor = [[CCTextField appDel] normalColor];
     
@@ -366,7 +514,7 @@ static NSFont *defaultFont;
     [super setTextColor:color];
 }
 
-- (void) setColorByCode:(NSInteger)code {
+- (void)setColorByCode:(NSInteger)code {
     NSColor *newColor = [[CCTextField appDel] colorForCode:code];
     
     [self setTextColor:newColor];
@@ -381,7 +529,7 @@ static NSFont *defaultFont;
     }
 }
 
-- (void) suitSubstitution:(NSTextView *)editor {
+- (void)suitSubstitution:(NSTextView *)editor {
     switch (magicSuitCode) {
         case kMagicSuitsByInit:
         {
@@ -502,12 +650,35 @@ static NSFont *defaultFont;
     return;
 }
 
-- (BOOL) becomeFirstResponder {
+- (BOOL)becomeFirstResponder {
     BOOL answer = [super becomeFirstResponder];
     
     [self scrollRectToVisible:[self bounds]];
     
     return answer;
+}
+
+- (BOOL)isNumberField
+{
+    return isNumber;
+}
+- (void)setNumberField:(BOOL)numberField
+{
+    if (isNumber == numberField)
+        return;
+    
+    isNumber = numberField;
+    if (isNumber) {
+        [self setFormatter:[[self class] numFormatter]];
+        [self setAlignment:NSCenterTextAlignment];
+        [self setDelegate:nil];
+    } else {
+        [self setFormatter:nil];
+        [self setAlignment:NSLeftTextAlignment];
+        [self setDelegate:self];
+    }
+    
+    [self setStringValue:@""];
 }
 
 @end

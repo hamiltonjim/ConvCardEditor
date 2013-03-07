@@ -21,6 +21,10 @@
 @property IBOutlet NSArrayController *cardChooser;
 @property IBOutlet NSTextField *directionLabel;
 @property IBOutlet NSButton *actionButton;
+@property IBOutlet NSButton *removeButton;
+
+@property IBOutlet NSPanel *choosePartnershipPanel;
+@property IBOutlet NSArrayController *partnershipChooser;
 
 @property (readonly, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -48,9 +52,12 @@
 - (IBAction)saveAction:(id)sender;
 
 - (IBAction)newPartnership:(id)sender;
-- (IBAction)newCardType:(id)sender;
+- (IBAction)doNewPartnership:(id)sender;
 
 - (IBAction)openPartnership:(id)sender;
+- (IBAction)doOpenPartnership:(id)sender;
+
+- (IBAction)newCardType:(id)sender;
 
 - (IBAction)editCard:(id)sender;
 - (IBAction)editCardType:(id)sender;
@@ -76,5 +83,7 @@
 #pragma mark DEBUGGING
 - (IBAction)registeredObjects:(id)sender;
 - (IBAction)updatedObjects:(id)sender;
+
+- (IBAction)objectCounts:(id)sender;
 
 @end

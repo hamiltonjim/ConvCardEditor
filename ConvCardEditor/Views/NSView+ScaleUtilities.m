@@ -8,6 +8,7 @@
 
 #import "NSView+ScaleUtilities.h"
 #import "CommonStrings.h"
+#import "CCEScalableTextField.h"
 
 static void scaleSubviews(NSArray *sViews, double scaleRatio) {
     for (NSView *sv in sViews) {
@@ -55,14 +56,20 @@ static const NSSize unitSize = {1.0, 1.0};
 
 - (void)scaleBy:(CGFloat)ratio
 {
-    [self setFrame:[NSView scaleRect:self.frame by:ratio]];
+    NSRect frm = [NSView scaleRect:self.frame by:ratio];
+    
+    if ([self respondsToSelector:@selector(setFrame:forRescaling:)]) {
+        [(id)self setFrame:frm forRescaling:YES];
+    } else {
+        [self setFrame:frm];
+    }
 }
 
 - (void)deepScaleBy:(CGFloat)ratio
 {
     [self scaleBy:ratio];
     [self.subviews enumerateObjectsUsingBlock:^(NSView *view, NSUInteger idx, BOOL *stop) {
-        [view scaleBy:ratio];
+        [view deepScaleBy:ratio];
     }];
 }
 
@@ -76,6 +83,14 @@ static const NSSize unitSize = {1.0, 1.0};
     return rect;
 }
 
++ (NSPoint)scalePoint:(NSPoint)point by:(CGFloat)ratio
+{
+    point.x *= ratio;
+    point.y *= ratio;
+    
+    return point;
+}
+
 + (CGFloat)defaultScale
 {
     return [[NSUserDefaults standardUserDefaults] doubleForKey:ccDefaultScale];
@@ -84,6 +99,36 @@ static const NSSize unitSize = {1.0, 1.0};
 + (NSRect)defaultScaleRect:(NSRect)rect
 {
     return [self scaleRect:rect by:[self defaultScale]];
+}
+
++ (NSPoint)defaultScalePoint:(NSPoint)point
+{
+    return [self scalePoint:point by:[self defaultScale]];
+}
+
++ (NSRect)unscaleRect:(NSRect)rect by:(CGFloat)ratio
+{
+    return [self scaleRect:rect by:(1.0 / ratio)];
+}
+
++ (NSPoint)unscalePoint:(NSPoint)point by:(CGFloat)ratio
+{
+    return [self scalePoint:point by:(1.0 / ratio)];
+}
+
++ (CGFloat)defaultUnscale
+{
+    return 1.0 / [self defaultScale];
+}
+
++ (NSRect)defaultUnscaleRect:(NSRect)rect
+{
+    return [self scaleRect:rect by:[self defaultUnscale]];
+}
+
++ (NSPoint)defaultUnscalePoint:(NSPoint)point
+{
+    return [self scalePoint:point by:[self defaultUnscale]];
 }
 
 @end

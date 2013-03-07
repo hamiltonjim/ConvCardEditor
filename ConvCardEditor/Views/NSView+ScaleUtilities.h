@@ -10,24 +10,26 @@
 
 @interface NSView (ScaleUtilities)
 
-@property (assign) CGFloat scale;
-
-- (void)resetScaling;
-
-/*
- Set the scale to both height and width (i.e., squarely).
- */
-- (void)scaleTo:(CGFloat)linearScale;
-
 /*
     Change scale by the given ratio.
  */
 - (void)scaleBy:(CGFloat)ratio;     // self only
 - (void)deepScaleBy:(CGFloat)ratio; // self and subviews
 
+    // scaling from model to scaled view
 + (NSRect)scaleRect:(NSRect)rect by:(CGFloat)ratio;
++ (NSPoint)scalePoint:(NSPoint)point by:(CGFloat)ratio;
 
 + (CGFloat)defaultScale;
 + (NSRect)defaultScaleRect:(NSRect)rect;
++ (NSPoint)defaultScalePoint:(NSPoint)point;
+
+    // convenience: from scaled view to model must be the reciprocal
++ (NSRect)unscaleRect:(NSRect)rect by:(CGFloat)ratio;
++ (NSPoint)unscalePoint:(NSPoint)point by:(CGFloat)ratio;
+
++ (CGFloat)defaultUnscale;
++ (NSRect)defaultUnscaleRect:(NSRect)rect;
++ (NSPoint)defaultUnscalePoint:(NSPoint)point;
 
 @end

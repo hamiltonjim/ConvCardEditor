@@ -9,6 +9,7 @@
 #import "FixedNSImageView.h"
 #import "NSView+ScaleUtilities.h"
 #import "CommonStrings.h"
+#import "fuzzyMath.h"
 
 @interface FixedNSImageView ()
 
@@ -25,11 +26,28 @@
 @synthesize maxZoom;
 @synthesize minZoom;
 
+- (id)initWithFrame:(NSRect)frameRect
+{
+//    NSLog(@"%@ -initWithFrame(Rect: %@)", [self class], NSStringFromRect(frameRect));
+    
+    self = [super initWithFrame:frameRect];
+    if (self) {
+        zoomFactor = 1.0;   // MUST be initialized, or all heck breaks loose.
+    }
+    
+    return self;
+}
+
 - (void)awakeFromNib
 {
     [self setTranslatesAutoresizingMaskIntoConstraints:NO]; // compatibility with Auto Layout; without this, there could be Auto Layout error messages when we are resized (delete this line if your app does not use Auto Layout)
     if (parentView != nil) {
         [parentView setDocumentView:self];
+    }
+    
+        // init: make sure zoomFactor makes sense; it will probably be set after initialization
+    if (zoomFactor <= 0.0) {
+        zoomFactor = 1.0;
     }
 }
 
@@ -41,22 +59,35 @@
     
     [super setImage:image];
     
-    NSRect rect = NSZeroRect;   // ignored by overridden setFrame:
-    [self setFrame:rect];
+    [self setFrame:NSZeroRect];     // ignored by overridden setFrame:
 }
 
-    // FixedNSImageView must *only* be used embedded within an NSScrollView. This means that setFrame: should never be called explicitly from outside the scroll view. Instead, this method is overridden here to provide the correct behavior within a scroll view. The new implementation ignores the frameRect parameter.
+    /*
+        FixedNSImageView must *only* be used embedded within an NSScrollView. This means 
+        that setFrame: should never be called explicitly from outside the scroll view. 
+        Instead, this method is overridden here to provide the correct behavior within a 
+        scroll view. The new implementation ignores the frameRect parameter.
+     */
+
 - (void)setFrame:(NSRect)frameRect
 {
     NSSize  clipViewSize = [[self superview] frame].size;
     
-        // The content of our scroll view (which is ourselves) should stay at least as large as the scroll clip view, so we make ourselves as large as the clip view in case our (zoomed) image is smaller. However, if our image is larger than the clip view, we make ourselves as large as the image, to make the scrollbars appear and scale appropriately.
-    CGFloat newWidth = (imageSize.width * zoomFactor < clipViewSize.width)?  clipViewSize.width : imageSize.width * zoomFactor;
-    CGFloat newHeight = (imageSize.height * zoomFactor < clipViewSize.height)?  clipViewSize.height : imageSize.height * zoomFactor;
+        /*
+         * The content of our scroll view (which is ourselves) should stay at least as large 
+         * as the scroll clip view, so we make ourselves as large as the clip view in case our
+         * (zoomed) image is smaller. However, if our image is larger than the clip view, we make
+         * ourselves as large as the image, to make the scrollbars appear and scale appropriately.
+         */
+    CGFloat newWidth = MAX(imageSize.width * zoomFactor, clipViewSize.width);
+    CGFloat newHeight = MAX(imageSize.height * zoomFactor, clipViewSize.height);
     
+        /*
+         * Actually, the clip view is 1 pixel larger than the content view on each side, so
+         * we must take that into account.
+         */
     NSRect rect = NSMakeRect(0, 0, newWidth - 2, newHeight - 2);
-    [super setFrame: rect]; // actually, the clip view is 1 pixel larger than the content view on each side, so we must take that into account
-    
+    [super setFrame: rect];
 }
 
 - (BOOL)canZoomOut
@@ -99,12 +130,28 @@
 - (void)setZoomFactor:(CGFloat)zoomTo
 {
     zoomTo = [self constrainZoom:zoomTo];
+    
+    NSDictionary *notifyDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithDouble:zoomFactor]
+                                                           forKey:cceZoomFactor];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cceZoomFactorChanging
+                                                        object:self.window
+                                                      userInfo:notifyDict];
+    
+    double oldscale = zoomFactor;
     zoomFactor = zoomTo;
+    if (0 == fuzzyCompare(oldscale, zoomTo))
+        return;
+    
+    double chg = zoomTo / oldscale;
     
     [[NSUserDefaults standardUserDefaults] setDouble:zoomFactor forKey:ccDefaultScale];
     
-    [self setScale:zoomTo];
+    [self deepScaleBy:chg];
     [self setFrame:NSZeroRect];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:cceZoomFactorChanged
+                                                        object:self.window
+                                                      userInfo:notifyDict];
 }
 
 - (void)fill
@@ -151,6 +198,28 @@
     self.zoomFactor = 1.0;
 
     [self setFrame:NSZeroRect];
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+        // Drawing code here.
+    [NSGraphicsContext saveGraphicsState];
+    
+    NSAffineTransform *xform = [NSAffineTransform transform];
+    
+    [xform scaleBy:zoomFactor];
+    [xform concat];
+    
+    NSColor *white = [NSColor whiteColor];
+    [white set];
+    
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:[self frame]];
+    [path fill];
+    
+    if (self.image)
+        [self.image drawAtPoint:NSMakePoint(0.0, 0.0)
+                       fromRect:self.bounds operation:NSCompositeSourceOver fraction:1.0];
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 

@@ -19,6 +19,13 @@
 #import "CCEUnitTransformer.h"
 #include "fuzzyMath.h"
 
+enum EViewType {
+    kCardType = 0,
+    kPartnershipType
+};
+
+static NSInteger s_count;
+
 @interface CCECardTypeEditorController ()
 
 - (void)fitWindowToArtwork:(NSURL *)url;
@@ -26,14 +33,22 @@
 
 - (AppDelegate *)cceAppDelegate;
 
+- (void)loadCardImage;
+
+- (void)showHeaderType:(NSInteger)type;
+
 @end
 
 @implementation CCECardTypeEditorController
 
+@synthesize cardTypeHeaderView;
 @synthesize cardType;
-
 @synthesize artworkFileName;
 @synthesize cardTypeName;
+
+@synthesize partnershipHeaderView;
+@synthesize partnership;
+@synthesize partnershipName;
 
 @synthesize controlsView;
 
@@ -41,9 +56,16 @@
 
 @synthesize managedObjectContext;
 
+@synthesize editMode;
+
++ (NSInteger)count
+{
+    return s_count;
+}
+
 - (void)dealloc
 {
-    NSLog(@"%@ dealloc", [self class]);
+    --s_count;
 }
 
 - (AppDelegate *)cceAppDelegate
@@ -53,11 +75,17 @@
 
 - (void)awakeFromNib
 {
+    ++s_count;
     managedObjectContext = [[self cceAppDelegate] managedObjectContext];
     
     [controlsView setController:self];
     
-    [viewControllers addObject:controlsView];
+    @synchronized([self class]) {
+        if (viewControllers == nil) {
+            viewControllers = [NSMutableSet set];
+        }
+    }
+    [viewControllers addObject:self];
 }
 
 - (IBAction)editNewCardType:(id)sender
@@ -67,18 +95,49 @@
         [NSException raise:@"NoManagedObjectContext" format:@"No managed object context"];
     }
     
-    self.cardType = [NSEntityDescription insertNewObjectForEntityForName:@"CardType" inManagedObjectContext:moc];
+    self.cardType = [NSEntityDescription insertNewObjectForEntityForName:@"CardType"
+                                                  inManagedObjectContext:moc];
     
+    editMode = YES;
     [self changeArtwork:sender];
 }
 
-- (IBAction)openCard:(id)sender
+- (void)loadCardImage
 {
     NSURL *url = [NSURL fileURLWithPath:[cardType fileUrl]];
     [controlsView setImageWithURL:url];
     
     [artworkFileName setStringValue:[cardType filename]];
+}
+
+- (IBAction)openCard:(id)sender
+{
+    [self loadCardImage];
     
+    editMode = YES;
+    [self finishLoadingCard];
+}
+
+- (IBAction)createPartnership:(id)sender
+{
+    
+    NSManagedObjectContext *moc = [self managedObjectContext];
+    self.partnership = [NSEntityDescription insertNewObjectForEntityForName:@"ConventionCard"
+                                                     inManagedObjectContext:moc];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    partnership.partnershipName = [NSString stringWithFormat:@"%@-%ld", cardType.cardName, (NSInteger)now];
+    partnership.cardType = self.cardType;
+    
+    [self loadCardImage];
+    editMode = NO;
+    [self finishLoadingCard];
+}
+
+- (void)editPartnership:(id)sender
+{
+    [self loadCardImage];
+    
+    editMode = NO;
     [self finishLoadingCard];
 }
 
@@ -149,7 +208,13 @@
     [cardType setWidth:[NSNumber numberWithDouble:iSize.width]];
     [cardType setHeight:[NSNumber numberWithDouble:iSize.height]];
     
-    [controlsView load:cardType editMode:YES];
+    if (editMode) {
+        [controlsView load:cardType editMode:YES];
+        [self showHeaderType:kCardType];
+    } else {
+        [controlsView load:cardType for:partnership];
+        [self showHeaderType:kPartnershipType];
+    }
     
     [controlsView showWindow:self];
 }
@@ -164,7 +229,26 @@
 
 - (void)editorWindowClosing:(CCEControlsViewController *)controller
 {
-    [viewControllers removeObject:controller];
+    [viewControllers removeObject:self];
+    controller = nil;
+}
+
+- (void)showHeaderType:(NSInteger)type
+{
+    switch (type) {
+        case kCardType:
+            [cardTypeHeaderView setHidden:NO];
+            [partnershipHeaderView setHidden:YES];
+            break;
+            
+        case kPartnershipType:
+            [cardTypeHeaderView setHidden:YES];
+            [partnershipHeaderView setHidden:NO];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end

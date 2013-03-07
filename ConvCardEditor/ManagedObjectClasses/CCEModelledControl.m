@@ -13,12 +13,15 @@
 NSString *entityCheckbox = @"SingleCheck";
 NSString *entityMultiCheck = @"MultiCheck";
 NSString *entityText = @"Text";
+NSString *entityLocation = @"Location";
 
 @interface CCEModelledControl ()
 
 @property (readwrite) NSString *controlType;
 @property (readwrite) NSNumber *isIndexed;
 @property (readwrite) NSNumber *numParts;
+
+@property (readwrite) NSNumber *mightBeNumeric;
 
 - (void)buildTransientProperties;
 
@@ -30,13 +33,17 @@ NSString *entityText = @"Text";
 @synthesize isIndexed;
 @synthesize numParts;
 
+@synthesize mightBeNumeric;
+
 - (void)awakeFromFetch
 {
+    [super awakeFromFetch];
     [self buildTransientProperties];
 }
 
 - (void)awakeFromInsert
 {
+    [super awakeFromInsert];
     [self buildTransientProperties];
 }
 
@@ -44,6 +51,7 @@ NSString *entityText = @"Text";
 {
     BOOL indexed = NO;
     NSInteger nParts = 1;
+    mightBeNumeric = [NSNumber numberWithBool:NO];
     
     if ([[[self entity] name] isEqualToString:entityCheckbox]) {
         self.controlType = NSLocalizedString(@"Check Box", @"name for a single checkbox control");
@@ -64,10 +72,21 @@ NSString *entityText = @"Text";
         nParts = [[self valueForKey:@"locations"] count];
     } else if ([[[self entity] name] isEqualToString:entityText]) {
         self.controlType = NSLocalizedString(@"Text", @"name of an arbitrary text control");
+        mightBeNumeric = [NSNumber numberWithBool:YES];
     }
     
     self.isIndexed = [NSNumber numberWithBool:indexed];
     self.numParts = [NSNumber numberWithInteger:nParts];
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+    if ([key isEqualToString:@"numeric"]) {
+            // key valid only for the Text subclass, but bound
+        return nil;
+    }
+    
+    return [super valueForUndefinedKey:key];
 }
 
 @end

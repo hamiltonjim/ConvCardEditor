@@ -89,7 +89,7 @@ static NSString *dictKey = @"dict";
 - (BOOL)windowShouldClose:(id)sender
 {
         // ensure close occurs after we go out of scope
-    __strong CCECardStyleDocument *holder = self;
+    CCECardStyleDocument * __strong holder = self;
 
     if (window == sender) {
         if (delegate && [delegate respondsToSelector:@selector(documentWillClose:)]) {

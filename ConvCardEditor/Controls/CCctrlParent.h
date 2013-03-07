@@ -18,4 +18,9 @@
 
 - (NSControl *)childWith1Index:(NSUInteger)index;
 
+- (BOOL)isReindexing;
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex
+                      to:(NSUInteger)toIndex
+                   error:(NSError *__autoreleasing *)error;
+
 @end

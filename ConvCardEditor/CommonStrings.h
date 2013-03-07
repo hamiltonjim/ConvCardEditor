@@ -116,15 +116,26 @@ extern NSString *kControlLocationY;
 extern NSString *kControlWidth;
 extern NSString *kControlHeight;
 
-extern NSString *cceGridState;
-
 extern NSString *cceLocationColor;
 extern NSString *cceLocationColorCode;
+
+extern NSString *cceLocationIndex;
+
+extern NSString *cceGridState;
+
+extern NSString *cceZoomFactorChanging;
+extern NSString *cceZoomFactorChanged;
+extern NSString *cceZoomFactor;
+
+extern NSString *cceMaximumScale;
+extern NSString *cceMinimumScale;
 
     // preference for step value
 extern NSString *cceStepTransformer;
 extern NSString *cceStepIncrement;
 extern NSString *cceStepIncrementIndex;
+
+extern NSString *errorNotify;
 
 enum EStepRadioChoices {
     kStepRadioOne = 0,

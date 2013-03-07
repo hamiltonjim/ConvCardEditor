@@ -17,9 +17,7 @@
 
 - (void)observeTextColorFrom:(id)object keypath:(NSString *)keypath
 {
-    if (observedObject != nil && observedKeypath != nil) {
-        [observedObject removeObserver:self forKeyPath:observedKeypath];
-    }
+    [self unobserveTextColor];
     
     observedObject = object;
     observedKeypath = keypath;
@@ -29,6 +27,13 @@
                          forKeyPath:keypath
                             options:NSKeyValueObservingOptionInitial
                             context:nil];
+    }
+}
+
+- (void)unobserveTextColor
+{
+    if (observedObject != nil && observedKeypath != nil) {
+        [observedObject removeObserver:self forKeyPath:observedKeypath];
     }
 }
 

@@ -13,6 +13,8 @@
 #import "CommonStrings.h"
 
 
+static NSInteger s_count;
+
 @interface CCEToolPaletteController ()
 
 @property NSButton *selectedButton;
@@ -66,8 +68,15 @@ static NSDictionary *controlsByTag = nil;
     }
 }
 
+- (void)dealloc
+{
+    --s_count;
+}
+
 - (void)awakeFromNib
 {
+    ++s_count;
+
     [self selectControl:selectButton];
     self.selectedButton = selectButton;
     [controller chooseControlType:selectButton];
@@ -159,6 +168,7 @@ static NSDictionary *controlsByTag = nil;
     variant = YES;
     
     [self variantStickifyControl:sender];
+    selectedButton = sender;
     self.value = [NSNumber numberWithInteger:([sender tag] + kControlVariant)];
     controller.controlVariant = YES;
     [controller chooseControlType:sender];
@@ -166,7 +176,11 @@ static NSDictionary *controlsByTag = nil;
 
 - (IBAction)chooseControlByTag:(id)sender
 {
-    NSInteger tag = [sender tag];
+    [self selectControlTagValue:[sender tag]];
+}
+
+- (void)selectControlTagValue:(NSInteger)tag
+{
     NSInteger modulo = tag % kTagGap;
     
     NSNumber *tagNumber = [NSNumber numberWithInteger:tag - modulo];
@@ -204,6 +218,11 @@ static NSDictionary *controlsByTag = nil;
 - (void)show
 {
     [toolsPalette orderFront:self];
+}
+
++ (NSInteger)count
+{
+    return s_count;
 }
 
 @end

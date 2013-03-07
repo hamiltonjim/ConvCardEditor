@@ -14,12 +14,13 @@
 #import "CCBoxMatrix.h"
 #import "CCLeadChoiceMatrix.h"
 #import "CCELocationController.h"
-
-static NSString * CCMatrixValueStr = @"value";
+#import "NSView+ScaleUtilities.h"
 
 @interface CCMatrix ()
 
 @property NSUInteger debugIndex;
+
+@property (readwrite) BOOL isReindexing;
 
 @property (weak) id myTarget;
 @property SEL myAction;
@@ -39,11 +40,18 @@ static NSString * CCMatrixValueStr = @"value";
 
 @synthesize debugIndex;
 
+@synthesize isReindexing;
+
 @synthesize myTarget;
 @synthesize myAction;
 
 @synthesize locationController;
 @synthesize modelledControl;
+
+- (NSString *)valueBindingTransformerName
+{
+    return cceStringToIntegerTransformer;
+}
 
     // The matrixFromModel: and matrixFromModel:insideRect: factory methods create
     // the appropriate subclass object; note that the factory calls methods named
@@ -56,11 +64,12 @@ static NSString * CCMatrixValueStr = @"value";
 }
 + (CCMatrix *)matrixFromModel:(CCEMultiCheckModel *)model insideRect:(NSRect)rect
 {
-    NSInteger shape = model.shape.integerValue;
+    NSInteger shape;
     if (model.shape == nil) {
         NSLog(@"no shape specified; default to checkboxes");
         shape = kCheckboxes;
-    }
+    } else
+        shape = model.shape.integerValue;
     switch (shape) {
         case kCheckboxes:
             return [CCBoxMatrix matrixWithModel:model insideRect:rect];
@@ -109,7 +118,7 @@ static NSString * CCMatrixValueStr = @"value";
                                                                          control:self];
     
     if (nil == locationController) {
-        locationController = [NSMutableArray arrayWithCapacity:3];
+        locationController = [NSMutableArray array];
     }
     NSMutableArray *array = locationController;
     if (index < count) {
@@ -119,6 +128,22 @@ static NSString * CCMatrixValueStr = @"value";
     }
     
     return locationController;
+}
+
+- (void)stopMonitoring
+{
+    if (locationController == nil || ![locationController isKindOfClass:[NSMutableArray class]]) {
+        return;
+    }
+    
+    NSMutableArray *array = locationController;
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([obj respondsToSelector:@selector(stopMonitoringLocation)]) {
+            CCELocationController *ctlr = obj;
+            [ctlr stopMonitoringLocation];
+        }
+    }];
+    [array removeAllObjects];
 }
 
 - (void)setTarget:(id)anObject
@@ -145,7 +170,7 @@ mask2index(NSUInteger mask) {
 
 + (void) initialize {
     if (self == [CCMatrix class])
-        [self exposeBinding:CCMatrixValueStr];
+        [self exposeBinding:NSValueBinding];
 }
 
 + (id) cellClass {
@@ -153,7 +178,8 @@ mask2index(NSUInteger mask) {
 }
 
 - (id) initWithFrame:(NSRect)bounds name:(NSString *)matrixName {
-    if ((self = [super initWithFrame:bounds])) {
+    if ((self = [super initWithFrame:[NSView defaultScaleRect:bounds]])) {
+        isReindexing = NO;
         name = matrixName;
         selected = nil;
     }
@@ -200,23 +226,32 @@ mask2index(NSUInteger mask) {
 }
 
 - (void) updateBoundObjects {
-    NSDictionary *bdict = [self infoForBinding:CCMatrixValueStr];
+    NSDictionary *bdict = [self infoForBinding:NSValueBinding];
     if (bdict) {
         NSObject *obj = [bdict objectForKey:NSObservedObjectKey];
         NSString *path = [bdict objectForKey:NSObservedKeyPathKey];
+        id setVal = value;
+        NSValueTransformer *xformer = nil;
+        NSDictionary *options = [bdict objectForKey:NSOptionsKey];
+        if (options) {
+            xformer = [options objectForKey:NSValueTransformerBindingOption];
+        }
+        if (xformer) {
+            setVal = [xformer reverseTransformedValue:value];
+        }
         
         if (obj)
-            [obj setValue:value forKeyPath:path];
+            [obj setValue:setVal forKeyPath:path];
     }
 }
 
 - (void)setValue:(NSNumber *)aVal {
-    value = [aVal copy];
+    value = aVal;
     
     [self choose];
 }
 - (NSNumber *)value {
-    return [value copy];
+    return value;
 }
 
 -(BOOL) validateValue:(id *)ioValue error:(NSError **)outError {
@@ -231,7 +266,7 @@ mask2index(NSUInteger mask) {
     
     NSString *estr = @"invalid value";
     NSDictionary *dct = [NSDictionary dictionaryWithObject:estr forKey:NSLocalizedDescriptionKey];
-    NSError *error = [NSError errorWithDomain:@"VALUES" code:-1 userInfo:dct];
+    NSError *error = [NSError errorWithDomain:applicationDomain code:-1 userInfo:dct];
     if (outError)
         *outError = error;
     return NO;
@@ -273,6 +308,81 @@ mask2index(NSUInteger mask) {
     return [controls objectAtIndex:--index];
 }
 
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex
+                      to:(NSUInteger)toIndex
+                   error:(NSError *__autoreleasing *)error
+{
+        // ignore more reindex messages while reindexing
+    if (isReindexing)
+        return kNoError;
+    
+    NSUInteger max = [controls count];
+    if (fromIndex < 1 || fromIndex > max) {
+        return kOldIndexOutOfRange;
+    }
+
+    NSError *theErr = nil;
+    
+    @try {
+        isReindexing = YES;     // undo in "@finally" block
+        
+        if (toIndex < 1 || toIndex > max) {
+                // this is pilot error: disallow and restore
+            NSArray *locs = locationController;
+            CCELocationController *loc = [locs objectAtIndex:(fromIndex - 1)];
+            loc.watchedLocation.index = [NSNumber numberWithInteger:fromIndex];
+            
+            NSString *descrStr = NSLocalizedString(@"Index is out of range", @"Index out of range");
+            NSString *reasonFmtStr = NSLocalizedString(@"The %@ index must fall between 1 and %ld",
+                                                       @"Format string for range index");
+            NSString *reasonStr = [NSString stringWithFormat:reasonFmtStr, [self shapeName:kPossessive], max];
+            NSDictionary *dict = @{
+                                   NSLocalizedDescriptionKey: descrStr,
+                                   NSLocalizedFailureReasonErrorKey: reasonStr
+                                   };
+            
+            
+            theErr = [NSError errorWithDomain:applicationDomain code:2001 userInfo:dict];
+            
+            return kIndexOutOfRange;
+        }
+        
+            // fix base: start at zero, not 1
+        --fromIndex;
+        --toIndex;
+    
+        id <CCDebuggableControl> child = [controls objectAtIndex:fromIndex];
+        [controls removeObjectAtIndex:fromIndex];
+        [controls insertObject:child atIndex:toIndex];
+        
+        if (locationController != nil) {
+            NSMutableArray *array = locationController;
+            CCELocationController *locCtl = [array objectAtIndex:fromIndex];
+            [array removeObjectAtIndex:fromIndex];
+            [array insertObject:locCtl atIndex:toIndex];
+            
+                // reindex and retag from position in location controller
+            [array enumerateObjectsUsingBlock:^(CCELocationController *obj, NSUInteger idx, BOOL *stop) {
+                    // fix (1-based) indices
+                ++idx;
+                obj.watchedLocation.index = [NSNumber numberWithInteger:idx];
+                [obj.viewedControl setTag:idx];
+            }];
+        }
+    }
+    @catch (NSException *exception) {
+            // don't really know how to catch, so just re-throw
+        @throw exception;
+    }
+    @finally {
+        isReindexing = NO;
+        if (error != NULL) {
+            *error = theErr;
+        }
+    }
+    return (theErr == nil) ? kNoError : kUnknownError;
+}
+
 #pragma mark VALUE
 
     // pass bind to child controls, if it is a "hidden" binding
@@ -303,24 +413,32 @@ mask2index(NSUInteger mask) {
 - (void) setDoubleValue:(double)aDouble {
     [self setValue:[NSNumber numberWithDouble:aDouble]];
 }
+- (void)setStringValue:(NSString *)aString
+{
+    self.value = [NSNumber numberWithDouble:aString.doubleValue];
+}
 
 - (short) shortValue {
-    return [value shortValue];
+    return value.shortValue;
 }
 - (int) intValue {
-    return [value intValue];
+    return value.intValue;
 }
 - (NSInteger) integerValue {
-    return [value integerValue];
+    return value.integerValue;
 }
 - (float) floatValue {
-    return [value floatValue];
+    return value.floatValue;
 }
 - (double) doubleValue {
-    return [value doubleValue];
+    return value.doubleValue;
+}
+- (NSString *)stringValue
+{
+    return value.stringValue;
 }
 
-#pragma mark DELETION
+#pragma mark DELETION AND INDEXING
     // remove selected child control; removing the last child removes the parent as well
 - (BOOL)deleteChild:(id<CCDebuggableControl>)child
 {
@@ -350,7 +468,7 @@ mask2index(NSUInteger mask) {
         // remember the bias: 1-based children
     NSUInteger delIndex = index - 1;
         // we're going to delete it from its superview!  Make strong reference...
-    __strong NSControl <CCDebuggableControl> *removed = [controls objectAtIndex:delIndex];
+    NSControl <CCDebuggableControl> * __strong removed = [controls objectAtIndex:delIndex];
     
     [controls removeObjectAtIndex:delIndex];
     CCEMultiCheckModel *theModel = (CCEMultiCheckModel *)modelledControl;
@@ -407,9 +525,11 @@ mask2index(NSUInteger mask) {
     NSMutableArray *tmpArray = [NSMutableArray arrayWithCapacity:[rects count]];
     NSInteger ctr = 0;
     
+    NSPoint origin = [NSView defaultUnscalePoint:self.frame.origin];
     for (NSValue *rv in rects) {
-        NSRect theRect = [self convertRect:[rv rectValue] fromView:[self superview]];
-        NSControl <CCDebuggableControl> *cbox = [self newChildInRect:theRect];
+        NSRect theRect = NSOffsetRect([rv rectValue], -origin.x, -origin.y);
+            //was: [self convertRect:[rv rectValue] fromView:[self superview]];
+        NSControl <CCDebuggableControl> *cbox = [self createChildInRect:theRect];
         [self addSubview:cbox];
         [cbox setParent:self];
         [tmpArray addObject:cbox];
@@ -428,9 +548,9 @@ mask2index(NSUInteger mask) {
 
 }
 
-- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect
+- (NSControl <CCDebuggableControl> *)createChildInRect:(NSRect)theRect
 {
-    [self subclassResponsibility:@selector(newChildInRect:)];
+    [self subclassResponsibility:@selector(createChildInRect:)];
     return nil;
 }
 
@@ -463,6 +583,12 @@ mask2index(NSUInteger mask) {
 - (void)placeChildWithLocation:(NSManagedObject *)location withColorKey:(NSString *)colorKey
 {
     [self subclassResponsibility:@selector(placeChildWithLocation:withColorKey:)];
+}
+
+- (NSString *)shapeName:(NSInteger)nounCase
+{
+    [self subclassResponsibility:@selector(shapeName:)];
+    return @"DO NOT DISPLAY!";
 }
 
 #pragma mark EDIT / DEBUG

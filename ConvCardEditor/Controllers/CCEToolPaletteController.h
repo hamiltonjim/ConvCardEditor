@@ -31,9 +31,13 @@
 
 - (IBAction)chooseControlByTag:(id)sender;
 
+- (void)selectControlTagValue:(NSInteger)value;
+
 - (void)chooseNextControl;
 
 - (void)hide;
 - (void)show;
+
++ (NSInteger)count;
 
 @end

@@ -25,4 +25,9 @@
               index:(NSInteger)index
             control:(NSControl<CCDebuggableControl> *)ctrl;
 
+- (void)monitorLocation;
+- (void)stopMonitoringLocation;
+
++ (NSInteger)count;
+
 @end

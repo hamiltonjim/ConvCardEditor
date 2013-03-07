@@ -10,6 +10,7 @@
 #import "CCLeadChoice.h"
 #import "AppDelegate.h"
 #import "CCELocationController.h"
+#import "NSView+ScaleUtilities.h"
 
 @implementation CCLeadChoice
 
@@ -27,6 +28,15 @@
     return locationController;
 }
 
+- (void)stopMonitoring
+{
+    if (locationController != nil &&
+        [locationController respondsToSelector:@selector(stopMonitoringLocation)]) {
+        [locationController stopMonitoringLocation];
+    }
+    locationController = nil;
+}
+
 - (int) debugMode {
     return [[self cell] debugMode];
 }
@@ -39,7 +49,8 @@
 }
 
 - (id) initWithFrame:(NSRect)frameRect {
-    if ((self = [super initWithFrame:frameRect])) {
+    NSRect actualFrame = [NSView defaultScaleRect:frameRect];
+    if ((self = [super initWithFrame:actualFrame])) {
         [self setButtonType:NSOnOffButton];
     }
     return self;
@@ -57,6 +68,24 @@
     // don't take keyboard input
 - (BOOL) acceptsFirstResponder {
     return NO;
+}
+
+    // reindexing; only possible when this is a child control
+- (BOOL)isReindexing {
+    if (parent == nil) {
+        return NO;
+    }
+    
+        // if no parent, I can't even HAVE an index...
+    return [parent isReindexing];
+}
+
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex to:(NSUInteger)toIndex error:(NSError *__autoreleasing *)error
+{
+    if (parent == nil)
+        return 0;
+    
+    return [parent reindexFrom:fromIndex to:toIndex error:error];
 }
 
 @end

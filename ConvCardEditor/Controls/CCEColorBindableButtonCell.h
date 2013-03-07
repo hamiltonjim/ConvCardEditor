@@ -17,5 +17,6 @@
 @property (readonly) NSColor *color;
 
 - (void)observeTextColorFrom:(id)object keypath:(NSString *)keypath;
+- (void)unobserveTextColor;
 
 @end

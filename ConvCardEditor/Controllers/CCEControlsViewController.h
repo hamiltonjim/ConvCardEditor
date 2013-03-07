@@ -86,6 +86,7 @@
 - (void)setSelection:(NSControl <CCDebuggableControl> *)aControl;
 - (void)setSelection:(NSControl<CCDebuggableControl> *)aControl index:(NSInteger)index;
 - (IBAction)deleteSelected:(id)sender;
+- (void)deleteSelected:(id)sender forceAll:(BOOL)force;
 
     /* When a control is clicked, treat it as selecting it as an object,
         as if in a drawing layout. */
@@ -122,12 +123,17 @@
 - (void)shrinkH:(CGFloat)multiplier;
 - (void)shrinkV:(CGFloat)multiplier;
 
+    // add parts to multi-part control
+- (IBAction)addParts:(id)sender;
 
+    // control info
 - (IBAction)controlInfo:(id)sender;
 
 - (IBAction)editControlName:(id)sender;
 - (IBAction)editControlPosition:(id)sender;
 - (IBAction)editControlColor:(id)sender;
+
+- (IBAction)duplicateControl:(id)sender;
 
 - (IBAction)showWindow:(id)sender;
 
@@ -135,6 +141,9 @@
 
 - (IBAction)setControlColorCode:(id)sender;
 
+- (IBAction)numericSetting:(id)sender;
+
+    // overall control
 - (IBAction)updateUnits:(id)sender;
 
 - (IBAction)toggleGridState:(id)sender;
@@ -149,5 +158,7 @@
     // debug
 - (IBAction)showSelectedControlInfo:(id)sender;
 - (IBAction)showResponderChain:(id)sender;
+
++ (NSInteger)count;
 
 @end

@@ -15,5 +15,6 @@
 @property (readonly) NSString *observedKeypath;
 
 - (void)observeIncrementFrom:(id)object keypath:(NSString *)keypath;
+- (void)unobserveIncrement;
 
 @end

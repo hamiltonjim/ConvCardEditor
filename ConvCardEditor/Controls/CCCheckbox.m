@@ -27,6 +27,11 @@
 @synthesize modelledControl;
 @synthesize locationController;
 
+- (NSString *)valueBindingTransformerName
+{
+    return cceStringToIntegerTransformer;
+}
+
 - (id)monitorModel:(CCEModelledControl *)model
 {
     modelledControl = model;
@@ -35,6 +40,15 @@
     locationController = [[CCELocationController alloc] initWithModel:model control:self];
 
     return locationController;
+}
+
+- (void)stopMonitoring
+{
+    if (locationController != nil &&
+        [locationController respondsToSelector:@selector(stopMonitoringLocation)]) {
+        [locationController stopMonitoringLocation];
+    }
+    locationController = nil;
 }
 
 - (int) debugMode {
@@ -61,16 +75,20 @@
 }
 
 - (id) initWithFrame:(NSRect)frameR color:(NSColor *)aColor {
+    frameR = [NSView defaultScaleRect:frameR];
     if (self = [super initWithFrame:frameR]) {
         frameRect = frameR;
+        [self setButtonType:NSOnOffButton];
         [self setColor:aColor];
     }
     return self;
 }
 
 - (id) initWithFrame:(NSRect)frameR colorKey:(NSString *)aColorKey {
+    frameR = [NSView defaultScaleRect:frameR];
     if (self = [super initWithFrame:frameR]) {
         frameRect = frameR;
+        [self setButtonType:NSOnOffButton];
         colorKey = aColorKey;
         [[self cell] setColorKey:aColorKey];
         color = [[self cell] color];
@@ -124,6 +142,24 @@
     // don't take keyboard input
 - (BOOL) acceptsFirstResponder {
     return NO;
+}
+
+    // reindexing; only possible when this is a child control
+- (BOOL)isReindexing {
+    if (parent == nil) {
+        return NO;
+    }
+    
+        // if no parent, I can't even HAVE an index...
+    return [parent isReindexing];
+}
+
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex to:(NSUInteger)toIndex error:(NSError *__autoreleasing *)error
+{
+    if (parent == nil)
+        return 0;
+    
+    return [parent reindexFrom:fromIndex to:toIndex error:error];
 }
 
 @end

@@ -15,6 +15,7 @@
 extern NSString *entityCheckbox;
 extern NSString *entityMultiCheck;
 extern NSString *entityText;
+extern NSString *entityLocation;
 
 enum kMultiCheckShape {
     kCheckboxes = 0,
@@ -26,6 +27,8 @@ enum kMultiCheckShape {
 @property (readonly, nonatomic) NSString *controlType;
 @property (readonly, nonatomic) NSNumber *isIndexed;
 @property (readonly, nonatomic) NSNumber *numParts;
+
+@property (readonly, nonatomic) NSNumber *mightBeNumeric;
 
 @end
 
@@ -39,16 +42,7 @@ enum kMultiCheckShape {
     // Every control type has a property called "location", except
     // MultiCheck; it has a set property ("locations"); but defines
     // setLocation: to _add_ a location object to the set.
-@property (nonatomic) NSManagedObject *location;
-
-    // make control view listen to changes in color
-- (void)observeLocation:(NSManagedObject *)location
-             forControl:(NSControl <CCDebuggableControl> *)control;
-- (void)stopObservingLocation:(NSManagedObject *)location
-                   forControl:(NSControl <CCDebuggableControl> *)control;
-
-- (void)observeColor:(CCELocationController *)observer;
-- (void)unobserveColor:(CCELocationController *)observer;
+@property (nonatomic) CCELocation *location;
 
 @end
 

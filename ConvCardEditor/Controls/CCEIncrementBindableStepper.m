@@ -16,9 +16,7 @@
 
 - (void)observeIncrementFrom:(id)object keypath:(NSString *)keypath
 {
-    if (observedObject != nil && observedKeypath != nil) {
-        [observedObject removeObserver:self forKeyPath:observedKeypath];
-    }
+    [self unobserveIncrement];
     
     observedObject = object;
     observedKeypath = keypath;
@@ -28,6 +26,13 @@
                          forKeyPath:keypath
                             options:NSKeyValueObservingOptionInitial
                             context:nil];
+    }
+}
+
+- (void)unobserveIncrement
+{
+    if (observedObject != nil && observedKeypath != nil) {
+        [observedObject removeObserver:self forKeyPath:observedKeypath];
     }
 }
 

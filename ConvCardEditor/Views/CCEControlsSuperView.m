@@ -57,7 +57,10 @@ enum EArrowKeyMultipliers {
     // view is co-incident with its superview's image
 - (void)resizeWithOldSuperviewSize:(NSSize)oldSize
 {
-    [self setFrameSize:[superImageView imageSize]];
+    NSRect rect = superImageView.frame;
+//    NSLog(@"%@ resize from %@ to %@", [self class],
+//          NSStringFromSize(oldSize), NSStringFromSize(rect.size));
+    [self setFrame:rect];
 }
 
 - (void)placeView:(NSView <CCDebuggableControl> *)view
@@ -139,6 +142,10 @@ enum EArrowKeyMultipliers {
                             format:@"Dimension must be one of {Points, inches, centimeters"];
                 break;
         }
+        
+            // draw to scale (whatever that is right now)
+        CGFloat scale = [superImageView zoomFactor];
+        unitDivisor *= scale;
         
         for (double x = 0.0; x < isize.width; x += unitDivisor) {
             path = [NSBezierPath bezierPath];

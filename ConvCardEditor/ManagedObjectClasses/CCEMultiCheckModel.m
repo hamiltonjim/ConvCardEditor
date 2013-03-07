@@ -55,7 +55,7 @@ static NSString *locations = @"locations";
 
 - (id)location
 {
-    return nil;
+    return [self locationWithIndex:1];
 }
 
 - (CCELocation *)locationWithIndex:(NSInteger)index

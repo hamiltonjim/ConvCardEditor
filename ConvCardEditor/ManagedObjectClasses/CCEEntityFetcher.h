@@ -24,4 +24,7 @@
 
 - (NSArray *)allCardTypes;
 
+- (NSManagedObject *)settingForModel:(CCEModelledControl *)model
+                      andPartnership:(NSManagedObject *)partnership;
+
 @end

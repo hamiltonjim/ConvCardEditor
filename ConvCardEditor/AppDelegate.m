@@ -16,6 +16,15 @@
 #import "CCEEntityFetcher.h"
 #import "NSUserDefaults+CCEColorOps.h"
 #import "CCEMathTransformer.h"
+#import "CCEManagedObjectModels.h"
+
+    // for counts
+#import "CCELocationController.h"
+#import "CCEControlsViewController.h"
+#import "CCEValueBinder.h"
+#import "CCEToolPaletteController.h"
+#import "CCESizableTextField.h"
+#import "CCTextField.h"
 
 @interface AppDelegate ()
 
@@ -53,6 +62,10 @@
 @synthesize cardChooser;
 @synthesize directionLabel;
 @synthesize actionButton;
+@synthesize removeButton;
+
+@synthesize choosePartnershipPanel;
+@synthesize partnershipChooser;
 
 @synthesize myDocuments;
 
@@ -106,9 +119,12 @@
                             [NSNumber numberWithDouble:10.0], ccCircleHeight,
                             [NSNumber numberWithBool:YES], cceGridState,
                             [NSNumber numberWithDouble:1.0], cceStepIncrement,
+                            [NSNumber numberWithDouble:(1200.0/72.0)], cceMaximumScale,
+                            [NSNumber numberWithDouble:0.5], cceMinimumScale,
                             nil];
     [ud registerDefaults:regDef];
     [ud setBool:YES forKey:@"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
+    [ud setBool:YES forKey:@"NSViewRaiseOnInvalidFrames"];
 }
 
 + (AppDelegate *)instance
@@ -258,7 +274,7 @@
             
             NSMutableDictionary *dict = [NSMutableDictionary dictionary];
             [dict setValue:failureDescription forKey:NSLocalizedDescriptionKey];
-            error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:101 userInfo:dict];
+            error = [NSError errorWithDomain:applicationDomain code:101 userInfo:dict];
             
             [[NSApplication sharedApplication] presentError:error];
             return nil;
@@ -288,7 +304,7 @@
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         [dict setValue:@"Failed to initialize the store" forKey:NSLocalizedDescriptionKey];
         [dict setValue:@"There was an error building up the data file." forKey:NSLocalizedFailureReasonErrorKey];
-        NSError *error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+        NSError *error = [NSError errorWithDomain:applicationDomain code:9999 userInfo:dict];
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
@@ -354,11 +370,10 @@
         [alert setMessageText:question];
         [alert setInformativeText:info];
         [alert addButtonWithTitle:quitButton];
-        [alert addButtonWithTitle:cancelButton];
+        [alert addButtonWithTitle:cancelButton];    // 2nd button: see below...
 
         NSInteger answer = [alert runModal];
-        NSLog(@"quit answer: %ld", answer);
-        if (answer == NSAlertAlternateReturn) {
+        if (answer == NSAlertSecondButtonReturn) {
             return NSTerminateCancel;
         }
     }
@@ -372,17 +387,53 @@
 }
 
 - (IBAction)newPartnership:(id)sender {
-    NSLog(@"newPartnership not implemented yet");
+//    NSLog(@"newPartnership not implemented yet");
+    [directionLabel setStringValue:NSLocalizedString(@"Choose card style for new partnership:",
+                                                     @"prompt for new partnership")];
+    [actionButton setTitle:NSLocalizedString(@"Create", @"Create")];
+    [actionButton setAction:@selector(doNewPartnership:)];
+    
+    [removeButton setHidden:YES];
+    
+    [chooseCardTypePanel makeKeyAndOrderFront:sender];
+}
+
+- (IBAction)doNewPartnership:(id)sender
+{
+    [chooseCardTypePanel orderOut:sender];
+    
+    NSManagedObject *cardType = [[cardChooser selectedObjects] objectAtIndex:0];
+    
+    [self openCardWindowNib];
+    
+    typeEditorCtl.cardType = cardType;
+    [typeEditorCtl createPartnership:self];
+    self.typeEditorCtl = nil;
+}
+
+- (IBAction)openPartnership:(id)sender {
+    [choosePartnershipPanel makeKeyAndOrderFront:self];
+}
+
+- (IBAction)doOpenPartnership:(id)sender
+{
+    [choosePartnershipPanel orderOut:sender];
+    
+    NSManagedObject *partnership = [[partnershipChooser selectedObjects] objectAtIndex:0];
+    
+    [self openCardWindowNib];
+    
+    typeEditorCtl.partnership = partnership;
+    typeEditorCtl.cardType = partnership.cardType;
+    
+    [typeEditorCtl editPartnership:self];
+    self.typeEditorCtl = nil;
 }
 
 - (IBAction)newCardType:(id)sender {
     [self openCardWindowNib];
-    [NSApp sendAction:@selector(editNewCardType:) to:nil];
-        //    [self.typeEditorCtl showWindow:sender];
-}
-
-- (IBAction)openPartnership:(id)sender {
-    NSLog(@"openPartnership not implemented yet");
+    [typeEditorCtl editNewCardType:self];
+    self.typeEditorCtl = nil;
 }
 
 - (IBAction)editCard:(id)sender {
@@ -392,6 +443,7 @@
 
     typeEditorCtl.cardType = [[cardChooser selectedObjects] objectAtIndex:0];
     [typeEditorCtl openCard:self];
+    self.typeEditorCtl = nil;
 }
 
 - (IBAction)editCardType:(id)sender
@@ -399,6 +451,7 @@
     [directionLabel setStringValue:NSLocalizedString(@"Choose card style to edit:", @"edit card direction")];
     [actionButton setTitle:NSLocalizedString(@"Edit", @"Edit")];
     [actionButton setAction:@selector(editCard:)];
+    [removeButton setHidden:NO];
     
     [chooseCardTypePanel makeKeyAndOrderFront:sender];
 }
@@ -436,6 +489,7 @@
     [directionLabel setStringValue:NSLocalizedString(@"Choose card style to export:", @"export card direction")];
     [actionButton setTitle:NSLocalizedString(@"Export", @"Export")];
     [actionButton setAction:@selector(doExport:)];
+    [removeButton setHidden:NO];
     
     [chooseCardTypePanel makeKeyAndOrderFront:sender];
 }
@@ -538,6 +592,17 @@
 - (IBAction)updatedObjects:(id)sender
 {
     NSLog(@"Updated objects: %@", [[self managedObjectContext] updatedObjects]);
+}
+
+- (IBAction)objectCounts:(id)sender
+{
+    NSLog(@"CCECardTypeEditorControllers: %ld", [CCECardTypeEditorController count]);
+    NSLog(@"Location Controllers: %ld", [CCELocationController count]);
+    NSLog(@"CCEControlViewControllers: %ld", [CCEControlsViewController count]);
+    NSLog(@"CCEValueBinders: %ld", [CCEValueBinder count]);
+    NSLog(@"CCEToolPaletteControllers: %ld", [CCEToolPaletteController count]);
+    NSLog(@"CCESizableTextFields: %ld", [CCESizableTextField count]);
+    NSLog(@"CCTextFields: %ld", [CCTextField count]);
 }
 
 @end

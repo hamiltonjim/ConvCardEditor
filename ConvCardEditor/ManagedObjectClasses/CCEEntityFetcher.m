@@ -109,7 +109,7 @@ static const double fuzziness = 5.0;
 
         // Block updates values; nil bestObject implies minDisplacement is invalid
     __block double minDisplacement;
-    __block CCELocation *bestObject = nil;
+    __block CCELocation * __weak bestObject;
     
     [closeLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         double deltaX = pt.x - [[obj locX] doubleValue];
@@ -171,6 +171,17 @@ static const double fuzziness = 5.0;
     NSArray *result = [appContext executeFetchRequest:req error:nil];
 
     return result;
+}
+
+- (NSManagedObject *)settingForModel:(CCEModelledControl *)model
+                      andPartnership:(NSManagedObject *)partnership
+{
+    NSMutableSet *partnershipSettings = [partnership.values mutableCopy];
+    [partnershipSettings intersectSet:model.values];
+    
+    NSManagedObject *obj = (partnershipSettings == nil || partnershipSettings.count == 0) ?
+            nil : [partnershipSettings anyObject];
+    return obj;
 }
 
 @end

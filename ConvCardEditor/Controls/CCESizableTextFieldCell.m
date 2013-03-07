@@ -7,15 +7,17 @@
 //
 
 #import "CCESizableTextFieldCell.h"
+#import "CCESizableTextField.h"
 #import "CommonStrings.h"
 #import "CCDebuggableControl.h"
 #import "CCEModelledControl.h"
+#import "NSView+ScaleUtilities.h"
 
 const CGFloat kInsetPoints = 4.0;
 const NSPoint kInsetSize = {kInsetPoints, kInsetPoints};
 
-const CGFloat kHandleRadius = kInsetPoints / 2.0;
-const CGFloat kHandleDiameter = kInsetPoints;
+const CGFloat kHandleRadius = 3.0;
+const CGFloat kHandleDiameter = kHandleRadius * 2.0;
 
 
 static NSColor *selectedColor;
@@ -26,6 +28,8 @@ static NSColor *unselectedColor;
 @property BOOL inDrag;
 @property int dragIndex;
 @property NSPoint dragStartPoint;
+
+@property CGFloat scale;
 
 - (NSRect)fillOvalAt:(NSRect)ovalRect;
 
@@ -47,6 +51,8 @@ static NSColor *unselectedColor;
 @synthesize inDrag;
 @synthesize dragIndex;
 @synthesize dragStartPoint;
+
+@synthesize scale;
 
 + (void)initialize
 {
@@ -178,20 +184,17 @@ static NSColor *unselectedColor;
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
     NSPoint where = [controlView convertPoint:event.locationInWindow fromView:nil];
-    NSLog(@"hitTestForEvent: where: %@", NSStringFromPoint(where));
     
     const int kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
     
     for (int index = 0; index < kMax; ++index) {
         if (NSPointInRect(where, _dragRect[index])) {
-            NSLog(@"hitTestForEvent %d", NSCellHitTrackableArea);
             return NSCellHitTrackableArea;
         }
     }
 
     if (NSPointInRect(where, borderRect)) {
         NSUInteger value = NSCellHitContentArea;
-        NSLog(@"hitTestForEvent %ld", value);
         return value;
     }
     
@@ -206,7 +209,14 @@ static NSColor *unselectedColor;
             dragIndex = index;
             inDrag = YES;
             dragStartPoint = startPoint;
-            NSLog(@"dragIndex: %d startpoint %@", dragIndex, NSStringFromPoint(dragStartPoint));
+            
+            scale = 1.0;
+            if ([controlView isKindOfClass:[CCESizableTextField class]]) {
+                scale = [(CCESizableTextField *)controlView scale];
+            }
+
+//            NSLog(@"start at %@; area is %d; rect is %@", NSStringFromPoint(startPoint), index,
+//                  NSStringFromRect(controlView.frame));
             return YES;
         }
     }
@@ -240,16 +250,16 @@ static NSColor *unselectedColor;
         default:
             return NO;
     }
-//    NSLog(@"last: %@; new: %@", NSStringFromRect([controlView frame]), NSStringFromRect(frame));
+    
+//    NSLog(@"drag to %@, rect is %@", NSStringFromPoint(currentPoint), NSStringFromRect(frame));
     [self reFrame:controlView at:frame];
-        
+    
     return YES;
 }
 
 
 - (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:(NSView *)controlView mouseIsUp:(BOOL)flag
 {
-    NSLog(@"last: %@  stop: %@", NSStringFromPoint(lastPoint), NSStringFromPoint(stopPoint));
     if (flag) {
 //        id target = self.target;
 //        SEL action = self.action;
@@ -257,6 +267,7 @@ static NSColor *unselectedColor;
 //            [(NSControl *)controlView sendAction:action to:target];
 //        }
         NSRect frame = NSIntegralRect([controlView frame]);
+//        NSLog(@"end at %@; rect is %@", NSStringFromPoint(lastPoint), NSStringFromRect(frame));
         [self reFrame:controlView at:frame];
     }
 }
@@ -269,7 +280,10 @@ static NSColor *unselectedColor;
         CCEModelledControl *model = [(id)controlView modelledControl];
         CCELocation *location = (CCELocation *)[model location];
         if (location != nil) {
-            [location setRectValue:NSInsetRect(rect, kInsetPoints, kInsetPoints)];
+            rect = NSInsetRect(rect, kInsetPoints, kInsetPoints);
+            NSRect modelRect = [NSView scaleRect:rect by:(1.0 / scale)];
+//            NSLog(@"modelRect is %@", NSStringFromRect(modelRect));
+            [location setRectValue:modelRect];
             return;
         }
     }

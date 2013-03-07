@@ -14,6 +14,13 @@
 		BB0E5F6416965E56003F4C3E /* CCCheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F6216965E56003F4C3E /* CCCheckboxCell.m */; };
 		BB0E5F67169662AF003F4C3E /* CommonStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F66169662AF003F4C3E /* CommonStrings.m */; };
 		BB0E5F6C169664C0003F4C3E /* CCDebuggableControlEnable.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0E5F6B169664C0003F4C3E /* CCDebuggableControlEnable.m */; };
+		BB1717AB16E4395D007D7BD3 /* CCEDuplicateNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB1717AA16E4395D007D7BD3 /* CCEDuplicateNamer.m */; };
+		BB1717AE16E479B3007D7BD3 /* CCEDuplicator.m in Sources */ = {isa = PBXBuildFile; fileRef = BB1717AD16E479B3007D7BD3 /* CCEDuplicator.m */; };
+		BB1717B116E51A41007D7BD3 /* CCEDuplicatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BB1717B016E51A41007D7BD3 /* CCEDuplicatorTests.m */; };
+		BB1717B416E52751007D7BD3 /* NSString+CCEStringRangeExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = BB1717B316E52751007D7BD3 /* NSString+CCEStringRangeExtras.m */; };
+		BB1717B616E57C80007D7BD3 /* DuplicatorPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB1717B516E57C80007D7BD3 /* DuplicatorPanel.xib */; };
+		BB23124316D2033500460A59 /* CCEMathTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB23124216D2033500460A59 /* CCEMathTransformer.m */; };
+		BB23124916D2A43E00460A59 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB23124B16D2A43E00460A59 /* Localizable.strings */; };
 		BB4EF8C0168E46AF006C7819 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB4EF8BF168E46AF006C7819 /* Cocoa.framework */; };
 		BB4EF8CA168E46AF006C7819 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */; };
 		BB4EF8CC168E46AF006C7819 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8CB168E46AF006C7819 /* main.m */; };
@@ -43,6 +50,7 @@
 		BB7ADCDD16A63532002AAB32 /* CCLeadChoiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD616A63530002AAB32 /* CCLeadChoiceCell.m */; };
 		BB7ADCDE16A63532002AAB32 /* CCLeadChoiceMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */; };
 		BB7ADCDF16A63532002AAB32 /* CCMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7ADCDA16A63532002AAB32 /* CCMatrix.m */; };
+		BB9DC3BC16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9DC3BB16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.m */; };
 		BBA012E116C464C900C21930 /* CCEConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012E016C464C900C21930 /* CCEConstants.m */; };
 		BBA012E416C5D5CB00C21930 /* CardWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA012E216C5D5CA00C21930 /* CardWindow.xib */; };
 		BBA012E916CAD49D00C21930 /* CCEStepIncrementTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA012E816CAD49D00C21930 /* CCEStepIncrementTransformer.m */; };
@@ -55,6 +63,8 @@
 		BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */; };
 		BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */ = {isa = PBXBuildFile; fileRef = BBA0131416D0503700C21930 /* ACBL.cardstyle */; };
 		BBB7695216B58E3F0049662A /* Grid.gif in Resources */ = {isa = PBXBuildFile; fileRef = BBB7695116B58E3F0049662A /* Grid.gif */; };
+		BBB7AB8716DD95EF001D42AE /* CCEValueBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */; };
+		BBB7AB8D16E01E47001D42AE /* CCEValueBindingTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7AB8C16E01E47001D42AE /* CCEValueBindingTransformer.m */; };
 		BBC77FBC16B9A91F003E366D /* CCELocationController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FBB16B9A91F003E366D /* CCELocationController.m */; };
 		BBC77FBE16B9DC08003E366D /* fuzzyMath.c in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FBD16B9DC08003E366D /* fuzzyMath.c */; };
 		BBC77FC616BB1385003E366D /* CCEControlTest.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC77FC516BB1384003E366D /* CCEControlTest.m */; };
@@ -104,6 +114,18 @@
 		BB0E5F69169664C0003F4C3E /* CCDebuggableControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDebuggableControl.h; sourceTree = "<group>"; };
 		BB0E5F6A169664C0003F4C3E /* CCDebuggableControlEnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDebuggableControlEnable.h; sourceTree = "<group>"; };
 		BB0E5F6B169664C0003F4C3E /* CCDebuggableControlEnable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDebuggableControlEnable.m; sourceTree = "<group>"; };
+		BB1717A916E4395D007D7BD3 /* CCEDuplicateNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEDuplicateNamer.h; path = Utilities/CCEDuplicateNamer.h; sourceTree = "<group>"; };
+		BB1717AA16E4395D007D7BD3 /* CCEDuplicateNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEDuplicateNamer.m; path = Utilities/CCEDuplicateNamer.m; sourceTree = "<group>"; };
+		BB1717AC16E479B3007D7BD3 /* CCEDuplicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEDuplicator.h; path = Utilities/CCEDuplicator.h; sourceTree = "<group>"; };
+		BB1717AD16E479B3007D7BD3 /* CCEDuplicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEDuplicator.m; path = Utilities/CCEDuplicator.m; sourceTree = "<group>"; };
+		BB1717AF16E51A41007D7BD3 /* CCEDuplicatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEDuplicatorTests.h; sourceTree = "<group>"; };
+		BB1717B016E51A41007D7BD3 /* CCEDuplicatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEDuplicatorTests.m; sourceTree = "<group>"; };
+		BB1717B216E52751007D7BD3 /* NSString+CCEStringRangeExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+CCEStringRangeExtras.h"; path = "Utilities/NSString+CCEStringRangeExtras.h"; sourceTree = "<group>"; };
+		BB1717B316E52751007D7BD3 /* NSString+CCEStringRangeExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+CCEStringRangeExtras.m"; path = "Utilities/NSString+CCEStringRangeExtras.m"; sourceTree = "<group>"; };
+		BB1717B516E57C80007D7BD3 /* DuplicatorPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DuplicatorPanel.xib; sourceTree = "<group>"; };
+		BB23124116D2033500460A59 /* CCEMathTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEMathTransformer.h; sourceTree = "<group>"; };
+		BB23124216D2033500460A59 /* CCEMathTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEMathTransformer.m; sourceTree = "<group>"; };
+		BB23124A16D2A43E00460A59 /* en */ = {isa = PBXFileReference; fileEncoding = 2483028224; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BB4EF8BB168E46AF006C7819 /* ConvCardEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConvCardEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4EF8BF168E46AF006C7819 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		BB4EF8C2168E46AF006C7819 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -155,6 +177,9 @@
 		BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLeadChoiceMatrix.m; sourceTree = "<group>"; };
 		BB7ADCD916A63531002AAB32 /* CCMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMatrix.h; sourceTree = "<group>"; };
 		BB7ADCDA16A63532002AAB32 /* CCMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CCMatrix.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		BB9169FB16D590EA00EDCCBF /* CCEScalableTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCEScalableTextField.h; sourceTree = "<group>"; };
+		BB9DC3BA16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+CCEColorOps.h"; sourceTree = "<group>"; };
+		BB9DC3BB16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+CCEColorOps.m"; sourceTree = "<group>"; };
 		BBA012DF16C464C900C21930 /* CCEConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEConstants.h; path = Utilities/CCEConstants.h; sourceTree = "<group>"; };
 		BBA012E016C464C900C21930 /* CCEConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEConstants.m; path = Utilities/CCEConstants.m; sourceTree = "<group>"; };
 		BBA012E316C5D5CB00C21930 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CardWindow.xib; sourceTree = "<group>"; };
@@ -173,6 +198,10 @@
 		BBA0130E16D00B9800C21930 /* CCEDocumentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCEDocumentDelegate.h; path = Documents/CCEDocumentDelegate.h; sourceTree = "<group>"; };
 		BBA0131416D0503700C21930 /* ACBL.cardstyle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACBL.cardstyle; path = OtherResources/ACBL.cardstyle; sourceTree = "<group>"; };
 		BBB7695116B58E3F0049662A /* Grid.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Grid.gif; sourceTree = "<group>"; };
+		BBB7AB8516DD95EF001D42AE /* CCEValueBinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEValueBinder.h; path = Controllers/CCEValueBinder.h; sourceTree = "<group>"; };
+		BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEValueBinder.m; path = Controllers/CCEValueBinder.m; sourceTree = "<group>"; };
+		BBB7AB8B16E01E47001D42AE /* CCEValueBindingTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEValueBindingTransformer.h; sourceTree = "<group>"; };
+		BBB7AB8C16E01E47001D42AE /* CCEValueBindingTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEValueBindingTransformer.m; sourceTree = "<group>"; };
 		BBC77FBA16B9A91F003E366D /* CCELocationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCELocationController.h; path = Controllers/CCELocationController.h; sourceTree = "<group>"; };
 		BBC77FBB16B9A91F003E366D /* CCELocationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCELocationController.m; path = Controllers/CCELocationController.m; sourceTree = "<group>"; };
 		BBC77FBD16B9DC08003E366D /* fuzzyMath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fuzzyMath.c; sourceTree = "<group>"; };
@@ -249,6 +278,8 @@
 				BBFACF9D16B3723800987A7F /* CCEToolPaletteController.m */,
 				BBC77FBA16B9A91F003E366D /* CCELocationController.h */,
 				BBC77FBB16B9A91F003E366D /* CCELocationController.m */,
+				BBB7AB8516DD95EF001D42AE /* CCEValueBinder.h */,
+				BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -297,6 +328,7 @@
 				BB7ADCD816A63530002AAB32 /* CCLeadChoiceMatrix.m */,
 				BB7ADCD916A63531002AAB32 /* CCMatrix.h */,
 				BB7ADCDA16A63532002AAB32 /* CCMatrix.m */,
+				BB9169FB16D590EA00EDCCBF /* CCEScalableTextField.h */,
 				BBDC596716AF0571004A56B2 /* CCTextField.h */,
 				BBDC596816AF0572004A56B2 /* CCTextField.m */,
 				BBFACF9416B1A88400987A7F /* CCESizableTextField.h */,
@@ -397,6 +429,7 @@
 		BB4EF8C6168E46AF006C7819 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BB23124B16D2A43E00460A59 /* Localizable.strings */,
 				BBA0131416D0503700C21930 /* ACBL.cardstyle */,
 				BB7ADC9B1698AB1E002AAB32 /* Graphics */,
 				BB4EF8C7168E46AF006C7819 /* ConvCardEditor-Info.plist */,
@@ -414,6 +447,8 @@
 			children = (
 				BB4EF8EB168E46AF006C7819 /* ConvCardEditorTests.h */,
 				BB4EF8EC168E46AF006C7819 /* ConvCardEditorTests.m */,
+				BB1717AF16E51A41007D7BD3 /* CCEDuplicatorTests.h */,
+				BB1717B016E51A41007D7BD3 /* CCEDuplicatorTests.m */,
 				BB4EF8E6168E46AF006C7819 /* Supporting Files */,
 			);
 			path = ConvCardEditorTests;
@@ -455,6 +490,10 @@
 				BBFACF8816B0606B00987A7F /* CCEUnitTransformer.m */,
 				BBA012E716CAD49D00C21930 /* CCEStepIncrementTransformer.h */,
 				BBA012E816CAD49D00C21930 /* CCEStepIncrementTransformer.m */,
+				BB23124116D2033500460A59 /* CCEMathTransformer.h */,
+				BB23124216D2033500460A59 /* CCEMathTransformer.m */,
+				BBB7AB8B16E01E47001D42AE /* CCEValueBindingTransformer.h */,
+				BBB7AB8C16E01E47001D42AE /* CCEValueBindingTransformer.m */,
 			);
 			name = Transformers;
 			sourceTree = "<group>";
@@ -464,6 +503,7 @@
 			children = (
 				BB4EF8D4168E46AF006C7819 /* MainMenu.xib */,
 				BBA012E216C5D5CA00C21930 /* CardWindow.xib */,
+				BB1717B516E57C80007D7BD3 /* DuplicatorPanel.xib */,
 			);
 			name = Nibs;
 			sourceTree = "<group>";
@@ -490,6 +530,14 @@
 				BB7ADCB1169F8C8D002AAB32 /* CCEFileOps.m */,
 				BBA012F316CD9D6900C21930 /* NSManagedObject+CCESerializer.h */,
 				BBA012F416CD9D6900C21930 /* NSManagedObject+CCESerializer.m */,
+				BB9DC3BA16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.h */,
+				BB9DC3BB16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.m */,
+				BB1717AC16E479B3007D7BD3 /* CCEDuplicator.h */,
+				BB1717AD16E479B3007D7BD3 /* CCEDuplicator.m */,
+				BB1717A916E4395D007D7BD3 /* CCEDuplicateNamer.h */,
+				BB1717AA16E4395D007D7BD3 /* CCEDuplicateNamer.m */,
+				BB1717B216E52751007D7BD3 /* NSString+CCEStringRangeExtras.h */,
+				BB1717B316E52751007D7BD3 /* NSString+CCEStringRangeExtras.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -582,6 +630,8 @@
 				BBA012FF16CEBD6400C21930 /* CardStyle.icns in Resources */,
 				BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */,
 				BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */,
+				BB23124916D2A43E00460A59 /* Localizable.strings in Resources */,
+				BB1717B616E57C80007D7BD3 /* DuplicatorPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +711,13 @@
 				BBA012EF16CB091F00C21930 /* CCEIncrementBindableStepper.m in Sources */,
 				BBA012F516CD9D6900C21930 /* NSManagedObject+CCESerializer.m in Sources */,
 				BBA0130C16CEE02900C21930 /* CCECardStyleDocument.m in Sources */,
+				BB9DC3BC16D1BFAA00FFE652 /* NSUserDefaults+CCEColorOps.m in Sources */,
+				BB23124316D2033500460A59 /* CCEMathTransformer.m in Sources */,
+				BBB7AB8716DD95EF001D42AE /* CCEValueBinder.m in Sources */,
+				BBB7AB8D16E01E47001D42AE /* CCEValueBindingTransformer.m in Sources */,
+				BB1717AB16E4395D007D7BD3 /* CCEDuplicateNamer.m in Sources */,
+				BB1717AE16E479B3007D7BD3 /* CCEDuplicator.m in Sources */,
+				BB1717B416E52751007D7BD3 /* NSString+CCEStringRangeExtras.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +726,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB4EF8ED168E46AF006C7819 /* ConvCardEditorTests.m in Sources */,
+				BB1717B116E51A41007D7BD3 /* CCEDuplicatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,6 +741,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		BB23124B16D2A43E00460A59 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BB23124A16D2A43E00460A59 /* en */,
+			);
+			name = Localizable.strings;
+			path = OtherResources;
+			sourceTree = "<group>";
+		};
 		BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

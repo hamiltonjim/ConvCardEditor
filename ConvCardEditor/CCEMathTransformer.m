@@ -95,9 +95,10 @@
 
 - (id)init
 {
-    return [super initWithName:@"CCETimesTen"
+    self = [super initWithName:@"CCETimesTen"
                      operation:kMultiplication
                          value:[NSNumber numberWithDouble:10.0]];
+    return self;
 }
 
 @end
@@ -111,9 +112,10 @@
 
 - (id)init
 {
-    return [super initWithName:@"CCEOneTenth"
+    self = [super initWithName:@"CCEOneTenth"
                      operation:kMultiplication
                          value:[NSNumber numberWithDouble:0.1]];
+    return self;
 }
 
 @end

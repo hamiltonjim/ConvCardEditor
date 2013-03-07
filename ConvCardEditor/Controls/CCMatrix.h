@@ -11,6 +11,20 @@
 #import "CCctrlParent.h"
 #import "CCDebuggableControl.h"
 
+enum ENounCase {
+    kNominative = 1,
+    kObjective,
+    kPossessive
+};
+
+enum EIndexingError {
+    kNoError = 0,
+    kIndexOutOfRange = 1,
+    kOldIndexOutOfRange = 2,
+
+    kUnknownError = 100
+};
+
 @class CCEMultiCheckModel;
 
     // An aggregate control that behaves like a radio group
@@ -21,9 +35,11 @@
 @property BOOL allowsMultiSelection;
 
 @property (readonly, weak) NSControl *selected;
-@property (copy) NSNumber *value;
+@property NSNumber *value;
 
 @property NSString *name;
+
+@property (readonly) BOOL isReindexing;
 
 @property (weak, nonatomic) CCEModelledControl *modelledControl;
 
@@ -33,10 +49,15 @@
 
 - (id) initWithFrame:(NSRect)bounds name:(NSString *)name;
 
-- (void) choose;
-- (void) updateBoundObjects;
+- (void)choose;
+- (void)updateBoundObjects;
 
 - (BOOL)deleteChild:(id <CCDebuggableControl>)child;
+
+    // to change the index of a child control (others re-index to comply)
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex
+                      to:(NSUInteger)toIndex
+                   error:(NSError *__autoreleasing *)error;
 
 - (NSControl <CCDebuggableControl> *)childWith1Index:(NSUInteger)index;
 
@@ -53,7 +74,7 @@
 - (void)placeChildControlsInRects:(NSArray *)rects;
 
     // The following methods must be defined in subclasses
-- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect;
+- (NSControl <CCDebuggableControl> *)createChildInRect:(NSRect)theRect;
 
 - (void)placeChildInRect:(NSRect)rect withColor:(NSColor *)color;
 - (void)placeChildInRect:(NSRect)rect withColorCode:(NSInteger)colorCode;
@@ -62,5 +83,8 @@
 - (void)placeChildWithLocation:(NSManagedObject *)location withColor:(NSColor *)color;
 - (void)placeChildWithLocation:(NSManagedObject *)location withColorCode:(NSInteger)colorCode;
 - (void)placeChildWithLocation:(NSManagedObject *)location withColorKey:(NSString *)colorKey;
+
+    // the name of the shape, either as possessive case ("shape's") or nominative/objective ("shape")
+- (NSString *)shapeName:(NSInteger)nounCase;
 
 @end

@@ -40,7 +40,7 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 
 @implementation CCBoxMatrix
 
-- (NSControl <CCDebuggableControl> *)newChildInRect:(NSRect)theRect
+- (NSControl <CCDebuggableControl> *)createChildInRect:(NSRect)theRect
 {
     return [[CCCheckbox alloc] initWithFrame:theRect];
 }
@@ -207,6 +207,16 @@ matrixUnionRect(NSArray *exes, NSArray *wyes, double sideW, double sideH) {
 {
     CCCheckbox *cbox = [[CCCheckbox alloc] initWithFrame:rect colorKey:colorKey];
     [self addChildControl:cbox];
+}
+
+    // name for display purpose
+- (NSString *)shapeName:(NSInteger)nounCase
+{
+    if (kPossessive == nounCase) {
+        return NSLocalizedString(@"checkbox's", @"display name of a checkbox, possessive case");
+    } else {
+        return NSLocalizedString(@"checkbox", @"display name of a checkbox, nominative case");
+    }
 }
 
 @end

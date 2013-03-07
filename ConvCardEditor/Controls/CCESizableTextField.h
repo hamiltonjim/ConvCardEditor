@@ -33,6 +33,10 @@ NSRect JFH_RectFromPoints(NSPoint p1, NSPoint p2);
 @property (readonly) NSUInteger lineCount;
 @property NSColor *frameColor;
 
+@property (readonly) CGFloat scale;
+
+@property (getter = isNumberField) BOOL numberField;
+
     // Returns the whole number of lines for the given height in points.
     // Amount will be rounded to nearest.
 - (NSUInteger)linesForHeight:(CGFloat)height;
@@ -70,5 +74,7 @@ NSRect JFH_RectFromPoints(NSPoint p1, NSPoint p2);
 
 - (void)setColorKey:(NSString *)aColorKey;
 - (NSString *)colorKey;
+
++ (NSInteger)count;
 
 @end

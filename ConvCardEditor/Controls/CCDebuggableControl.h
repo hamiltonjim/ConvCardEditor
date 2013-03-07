@@ -10,6 +10,7 @@
 #import <Cocoa/Cocoa.h>
 #import "CCDebuggableControlEnable.h"
 #import "CCctrlParent.h"
+#import "CCEValueBindingTransformer.h"
 
 @class CCEModelledControl;
 
@@ -34,9 +35,12 @@ enum EDebugState {
     // observe currently edited location, and update
 - (id)monitorModel:(CCEModelledControl *)model;
 
-- (void) setDebugMode:(int)newDebugMode;
+- (void)setDebugMode:(int)newDebugMode;
 
 @optional
+
+    // name of an NSValueTransformer for converting the value binding
+- (NSString *)valueBindingTransformerName;
 
 - (id)monitorModel:(CCEModelledControl *)model index:(NSUInteger)index;
 
@@ -51,6 +55,21 @@ enum EDebugState {
 @property (nonatomic) NSColor *color;
 @property (nonatomic) NSString *colorKey;
 
+    // reindexing is delegated to parent control (if any; irrelevant if no parent)
+- (BOOL)isReindexing;
+- (NSInteger)reindexFrom:(NSUInteger)fromIndex
+                      to:(NSUInteger)toIndex
+                   error:(NSError *__autoreleasing *)error;
+
+    // Break any external monitoring of a control (as, when it's window is closed).
+    // A control only needs to implement this if it can be built from a (CoreData)
+    // model.
+- (void)stopMonitoring;
+
+
+    // "debugMode" is the way to show controls in a view that is being edited; a
+    // "debugged" control is one of Unselected, Selected or SelectedOther (see
+    // EDebugState, above).
 - (int) debugMode;
 
     // If an editable control is a different size from its fixed counterpart,

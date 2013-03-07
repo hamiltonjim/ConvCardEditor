@@ -58,3 +58,40 @@ int count1bits(unsigned long bits)
     
     return ones;
 }
+
+
+    // rounding
+double fuzzyRound(double value, int position, double boundary)
+{
+    if (boundary >= 1.0 || boundary < 0.0) {
+        return NAN;
+    }
+    
+    double multiplier = 1;
+    if (position) {
+        multiplier = pow(10.0, position);
+        value /= multiplier;
+    }
+    
+    double intPart, fracPart;
+    fracPart = modf(value, &intPart);
+    
+    if (fracPart < 0) {
+        if (fracPart < -boundary)
+            --intPart;
+    } else {
+        if (fracPart > boundary)
+            ++intPart;
+    }
+    
+    if (position) {
+        intPart *= multiplier;
+    }
+    return intPart;
+}
+
+double fuzzyRoundInt(double value, double boundary)
+{
+    return fuzzyRound(value, 0, boundary);
+}
+

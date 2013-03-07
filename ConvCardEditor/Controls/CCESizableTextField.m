@@ -14,6 +14,9 @@
 #import "NSControl+CCESetColorCode.h"
 #import "fuzzyMath.h"
 #import "CCELocationController.h"
+#import "NSView+ScaleUtilities.h"
+
+static NSInteger s_count;
 
 /*
     Creates a rect with the two given points as opposite corners.
@@ -62,7 +65,6 @@ static CGFloat defaultLineHeight;
 
     // relay the action from the subview
 - (void)relay:(id)sender;
-- (void)setLineMetrics;
 
 @end
 
@@ -72,9 +74,6 @@ static CGFloat defaultLineHeight;
 
 @synthesize borderRect;
 @synthesize useDoubleHandles;
-@synthesize font;
-@synthesize lineHeight;
-@synthesize lineCount;
 @synthesize frameColor;
 
 @synthesize modelledControl;
@@ -120,6 +119,16 @@ static CGFloat defaultLineHeight;
     return [[CCESizableTextField alloc] initWithTextModel:model];
 }
 
+- (void)dealloc
+{
+    --s_count;
+}
+
++ (NSInteger)count
+{
+    return s_count;
+}
+
 - (id)monitorModel:(CCEModelledControl *)model
 {
     modelledControl = model;
@@ -128,6 +137,15 @@ static CGFloat defaultLineHeight;
     locationController = [[CCELocationController alloc] initWithModel:model control:self];
     
     return locationController;
+}
+
+- (void)stopMonitoring
+{
+    if (locationController != nil &&
+        [locationController respondsToSelector:@selector(stopMonitoringLocation)]) {
+        [locationController stopMonitoringLocation];
+    }
+    locationController = nil;
 }
 
     // the sizable version is larger by 4 points in each dimension
@@ -151,11 +169,6 @@ static CGFloat defaultLineHeight;
     [[self cell] sendActionOn:NSLeftMouseUpMask];
     
     [self setFont:[[self class] defaultFont]];
-     
-     if (lineCount > 1) {
-         [[insideTextField cell] setWraps:YES];
-     }
-
 }
 
 - (void)setStringValue:(NSString *)aString
@@ -182,6 +195,11 @@ static CGFloat defaultLineHeight;
 
 - (void)resizeSubviewsWithOldSize:(NSSize)oldSize
 {
+        // deep scaling is done recursively, no need to handle subviews here
+    if (insideTextField.isScaling) {
+        return;
+    }
+    
     const NSUInteger xbits = NSViewMinXMargin | NSViewWidthSizable | NSViewMaxXMargin;
     const NSUInteger ybits = NSViewMinYMargin | NSViewHeightSizable | NSViewMaxYMargin;
     
@@ -234,6 +252,12 @@ static CGFloat defaultLineHeight;
         // frRect is the frame of the inside text field; actual control is outside...
     NSPoint inset = [self insetModelledRect];
     NSRect outsideRect = NSInsetRect(frRect, -inset.x, -inset.y);
+    
+        // inside rect relative to outside rect:
+    NSRect insideRect = NSMakeRect(inset.x, inset.y, frRect.size.width, frRect.size.height);
+    
+    outsideRect = [NSView defaultScaleRect:outsideRect];
+        // super init with scaled rect
     if ((self = [super initWithFrame:outsideRect]) != nil) {
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         if (fontSize < 0.5) {
@@ -244,21 +268,20 @@ static CGFloat defaultLineHeight;
             colorName = ccNormalColor;
         }
         
-            // re-specify inside control's frame in view coordinates
-        NSRect insideRect = [self convertRect:frRect fromView:nil];
         if (colorName == nil) {
             insideTextField = [[CCTextField alloc] initWithFrame:insideRect
                                                             font:fontName
+                                                        fontSize:fontSize
                                                            color:color
                                                         isNumber:isNum];
         } else {
             insideTextField = [[CCTextField alloc] initWithFrame:insideRect
                                                             font:fontName
+                                                        fontSize:fontSize
                                                         colorKey:colorName
                                                         isNumber:isNum];
         }
         
-        [insideTextField setFontSize:fontSize];
         [insideTextField setRefusesFirstResponder:YES];
         [[insideTextField cell] setFocusRingType:NSFocusRingTypeNone];
         [insideTextField setEnabled:NO];
@@ -278,6 +301,8 @@ static CGFloat defaultLineHeight;
         [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         
         [self contentInit];
+        
+        ++s_count;
     }
     
     return self;
@@ -356,6 +381,11 @@ static CGFloat defaultLineHeight;
     return self;
 }
 
+- (CGFloat)scale
+{
+    return [insideTextField scale];
+}
+
 - (void)setDebugMode:(int)debugMode
 {
     CCESizableTextFieldCell *cell = [self cell];
@@ -366,13 +396,12 @@ static CGFloat defaultLineHeight;
 
 - (NSUInteger)linesForHeight:(CGFloat)height
 {
-    return MAX(round(height / lineHeight), 1.0);
+    return [insideTextField linesForHeight:height];
 }
 
 + (NSUInteger)linesForHeight:(CGFloat)height
 {
-    (void)[self defaultFont];
-    return MAX(round(height / defaultLineHeight), 1.0);
+    return [CCTextField linesForHeight:height];
 }
 
     // no focus ring!
@@ -401,23 +430,26 @@ static CGFloat defaultLineHeight;
     return [insideTextField colorKey];
 }
 
+#pragma mark NUMERIC or ANY TEXT
+
+    // just pass thru to inner control...
+- (BOOL)isNumberField
+{
+    return insideTextField.isNumber;
+}
+- (void)setNumberField:(BOOL)numberField
+{
+    [insideTextField setNumberField:numberField];
+}
 
 #pragma mark FONTS
 
 - (void)setFont:(NSFont *)aFont
 {
-    font = aFont;
-    [self setLineMetrics];
+    [insideTextField setFont:aFont];
 }
 
-- (void)setLineMetrics
-{
-    lineHeight = [font ascender] - [font descender] + [font leading];
-    NSRect frame = [insideTextField frame];
-    lineCount = round(frame.size.height / lineHeight);
-    if (lineCount < 1)
-        lineCount = 1;
-}
+#pragma mark TESTING
 
 - (void)advanceTest
 {
@@ -427,11 +459,20 @@ static CGFloat defaultLineHeight;
             val = -1;
         [insideTextField setIntegerValue:++val];
     } else {
-        static NSString *strings[] = {@"This is a test!", @"Testing too", @"Why not try", @"Something new", @"Burma Shave"};
+        static NSString *strings[] = {
+            @"",
+            @"This is a test!",
+            @"Testing too",
+            @"Why not try",
+            @"Something new",
+            @"Burma Shave",
+            @"Plus, one really really really really really really long string, to test whether the control wraps or truncates"
+        };
+        static const int kNumStrs = sizeof strings / sizeof strings[0];
         static int index = 0;
         
         [insideTextField setStringValue:strings[index]];
-        if (++index >= 5) index = 0;
+        if (++index >= kNumStrs) index = 0;
     }
 }
 
