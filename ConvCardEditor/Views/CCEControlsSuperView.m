@@ -16,6 +16,7 @@
 #import "CCMatrix.h"
 #import "FixedNSImageView.h"
 #import "CCESizableTextField.h"
+#import "CCDebuggableControlEnable.h"
 
 enum EArrowKeyMultipliers {
     kMove = 0,
@@ -178,6 +179,7 @@ enum EArrowKeyMultipliers {
     mouseDownPoint = [self convertPoint:theEvent.locationInWindow fromView:nil];
     [viewController viewMouseDown:theEvent];
     lastDragRect = NSZeroRect;
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
@@ -188,6 +190,7 @@ enum EArrowKeyMultipliers {
         lastDragRect = NSZeroRect;
     }
     
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
     [viewController viewMouseUp:theEvent];
 }
 

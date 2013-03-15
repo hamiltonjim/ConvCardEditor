@@ -25,13 +25,17 @@ enum EViewType {
 };
 
 static NSInteger s_count;
+NSMutableSet *s_viewControllers;
 
 @interface CCECardTypeEditorController ()
+
+@property (weak) IBOutlet NSTextField *partnershipName;
+@property (weak) IBOutlet NSTextField *cardTypeName;
 
 - (void)fitWindowToArtwork:(NSURL *)url;
 - (void)finishLoadingCard;
 
-- (AppDelegate *)cceAppDelegate;
+- (AppDelegate *)appDelegate;
 
 - (void)loadCardImage;
 
@@ -44,15 +48,11 @@ static NSInteger s_count;
 @synthesize cardTypeHeaderView;
 @synthesize cardType;
 @synthesize artworkFileName;
-@synthesize cardTypeName;
 
 @synthesize partnershipHeaderView;
 @synthesize partnership;
-@synthesize partnershipName;
 
 @synthesize controlsView;
-
-@synthesize viewControllers;
 
 @synthesize managedObjectContext;
 
@@ -63,29 +63,36 @@ static NSInteger s_count;
     return s_count;
 }
 
+- (id)init
+{
+    self = [super init];
+    ++s_count;
+    return self;
+}
+
 - (void)dealloc
 {
+//    NSLog(@"%@ dealloc", [self class]);
     --s_count;
 }
 
-- (AppDelegate *)cceAppDelegate
+- (AppDelegate *)appDelegate
 {
     return (AppDelegate *) [NSApp delegate];
 }
 
 - (void)awakeFromNib
 {
-    ++s_count;
-    managedObjectContext = [[self cceAppDelegate] managedObjectContext];
+    managedObjectContext = [[self appDelegate] managedObjectContext];
     
     [controlsView setController:self];
     
     @synchronized([self class]) {
-        if (viewControllers == nil) {
-            viewControllers = [NSMutableSet set];
+        if (s_viewControllers == nil) {
+            s_viewControllers = [NSMutableSet set];
         }
     }
-    [viewControllers addObject:self];
+    [s_viewControllers addObject:self];
 }
 
 - (IBAction)editNewCardType:(id)sender
@@ -229,8 +236,9 @@ static NSInteger s_count;
 
 - (void)editorWindowClosing:(CCEControlsViewController *)controller
 {
-    [viewControllers removeObject:self];
-    controller = nil;
+    [s_viewControllers removeObject:self];
+    [[self appDelegate] cleanupNibObjects:self.topObjects];
+    self.topObjects = nil;
 }
 
 - (void)showHeaderType:(NSInteger)type

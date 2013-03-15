@@ -35,6 +35,9 @@ NSString *entityLocation = @"Location";
 
 @synthesize mightBeNumeric;
 
+@dynamic tabToNext;
+@dynamic tabToPrevious;
+
 - (void)awakeFromFetch
 {
     [super awakeFromFetch];

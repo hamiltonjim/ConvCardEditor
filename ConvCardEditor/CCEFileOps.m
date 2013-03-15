@@ -70,7 +70,7 @@ static CCEFileOps *theInstance = nil;
     NSError *error = nil;
     
     NSURL *tempDir = [NSURL fileURLWithPath:NSTemporaryDirectory()];
-    NSLog(@"tempDir is %@", tempDir);
+//    NSLog(@"tempDir is %@", tempDir);
     
     NSString *origFileName = [file lastPathComponent];
     NSURL *tempFile = [tempDir URLByAppendingPathComponent:origFileName];
@@ -110,6 +110,10 @@ static CCEFileOps *theInstance = nil;
 
 - (NSError *)undoSafeRemoveFile:(NSURL *)trashFile backTo:(NSURL *)originalFile
 {
+    if (trashFile == nil || originalFile == nil) {
+        return nil;
+    }
+    
     NSError *error = nil;
     [[self fileManager] moveItemAtURL:trashFile toURL:originalFile error:&error];
     

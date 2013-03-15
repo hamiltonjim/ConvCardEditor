@@ -30,6 +30,9 @@ enum kMultiCheckShape {
 
 @property (readonly, nonatomic) NSNumber *mightBeNumeric;
 
+@property (nonatomic) CCEModelledControl *tabToNext;
+@property (nonatomic) CCEModelledControl *tabToPrevious;
+
 @end
 
 @interface CCEModelledControl (Control)

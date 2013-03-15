@@ -25,7 +25,9 @@ enum EDebugState {
     kOff,
     kShowUnselected,    // shade
     kShowSelected,      // shade & highlight
-    kShowSelectedOther  // shade & highlight, but as part of a larger control
+    kShowSelectedOther, // shade & highlight, but as part of a larger control
+    
+    kShowHighlight = 0x40   // mask: in addition to above
     };
 
 @protocol CCDebuggableControl

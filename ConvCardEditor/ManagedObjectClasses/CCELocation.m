@@ -41,6 +41,8 @@
 
 - (void)awakeFromFetch
 {
+    [super awakeFromFetch];
+    
     NSNumber *code = self.colorCode;
     if (code != nil) {
         AppDelegate *del = [NSApp delegate];
@@ -52,6 +54,15 @@
         CGFloat alpha = self.colorAlpha ? [self.colorAlpha doubleValue] : ONE;
         self.color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
     }
+}
+
+- (void)awakeFromInsert
+{
+    [super awakeFromInsert];
+    
+        // without this, rgba would all be zero (black/transparent)
+        // default to black/opaque
+    self.color = [NSColor blackColor];
 }
 
 - (void)setColorCode:(NSNumber *)code

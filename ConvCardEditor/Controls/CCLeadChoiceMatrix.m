@@ -26,22 +26,6 @@
 {
     return [[CCLeadChoice alloc] initWithFrame:theRect];
 }
-//- (void)placeChildControlsInRects:(NSArray *)cRects
-//{
-//    NSMutableArray *tmpArray = [NSMutableArray arrayWithCapacity:[cRects count]];
-//    NSInteger ctr = 0;
-//    
-//    for (NSValue *rv in cRects) {
-//        NSRect frm = [self convertRect:[rv rectValue] fromView:[self superview]];
-//        CCLeadChoice *cbox =
-//        [self addSubview:cbox];
-//        [cbox setParent:self];
-//        [tmpArray addObject:cbox];
-//        [cbox setTag:++ctr];
-//    }
-//    
-//    self.controls = tmpArray;
-//}
 
     // Pass an array of just one color to use the same color for all
     // Pass rectangles containing individual ovals
@@ -62,6 +46,10 @@
     for (NSValue *ct in rects) {
         bounds = NSUnionRect(bounds, [ct rectValue]);
     }
+    
+        // When adding component rects, there is a possibility that rounding can truncate
+        // the rightmost choice circle.  Just add 1.0 to the bounds width to prevent this...
+    ++bounds.size.width;
     
     if (self = [super initWithFrame:bounds name:matrixName]) {
         [self placeChildControlsInRects:rects];

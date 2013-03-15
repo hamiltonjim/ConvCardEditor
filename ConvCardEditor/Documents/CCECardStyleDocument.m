@@ -133,7 +133,7 @@ static NSString *dictKey = @"dict";
     [archiver setOutputFormat:NSPropertyListXMLFormat_v1_0];
     [archiver encodeObject:representation forKey:dictKey];
     [archiver finishEncoding];
-//    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:representation];
+    
     NSFileWrapper *dataFile = [[NSFileWrapper alloc] initRegularFileWithContents:data];
     [dataFile setPreferredFilename:cceCardData];
     
@@ -263,16 +263,26 @@ static NSString *dictKey = @"dict";
     [savePanel setTitle:NSLocalizedString(@"Export Card Definition", @"Export Card Definition")];
     [savePanel setTreatsFilePackagesAsDirectories:NO];
 
-    __block NSError *error = nil;
     [savePanel beginWithCompletionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
-            [self writeToURL:[savePanel URL] ofType:cceStyledocType error:&error];
+            NSError *error;
+            NSURL *dest = [savePanel URL];
+            NSURL *temp = nil;
+            CCEFileOps *fileOps = [CCEFileOps instance];
+            if ([fileOps fileExistsAtURL:dest]) {
+                temp = [fileOps safeRemoveFile:dest];
+            }
+            
+            BOOL did = [self writeToURL:dest ofType:cceStyledocType error:&error];
+            
+            if (!did) {
+                NSLog(@"Error %@", error);
+                [fileOps undoSafeRemoveFile:temp backTo:dest];
+            } else {
+                [fileOps finalizeRemoveFile:temp];
+            }
         }
     }];
-    
-    if (error != nil) {
-        NSLog(@"Error %@", error);
-    }
 }
 
 - (IBAction)importButton:(id)sender

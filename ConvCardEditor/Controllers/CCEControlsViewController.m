@@ -35,6 +35,7 @@
 #import "CCEIncrementBindableStepper.h"
 #import "CCEValueBinder.h"
 #import "CCEDuplicator.h"
+#import "CCETabConnector.h"
 
 #import "math.h"
 #include "fuzzyMath.h"
@@ -47,6 +48,9 @@ static NSString *hideGrid;
 static NSArray *defaultsList;
 
 @interface CCEControlsViewController ()
+
+    // Bindings to self are wierd, use proxy instead.  "Manually" connect self to the proxy.
+@property IBOutlet NSObjectController *proxyController;
 
 @property (weak, readwrite, nonatomic) NSControl <CCDebuggableControl> *selectedControl;
 @property (nonatomic) NSMutableSet *cardSettings;
@@ -68,6 +72,12 @@ static NSArray *defaultsList;
 
 @property BOOL duplicatingObjectsState;
 @property NSSize duplicatingDiffLocation;
+
+@property (weak) IBOutlet CCETabConnector *tabConnector;
+
+@property NSMutableDictionary *controlIds;
+
+@property (weak) NSView *my1stResponder;
 
 - (void)observeDefaults;
 - (void)unobserveDefaults;
@@ -119,6 +129,9 @@ static NSArray *defaultsList;
 
 - (void)infoPanelInit;
 
+- (void)innerSetCtlColorCode:(NSInteger)code;
+- (void)innerSetColorCodeInSelectedLocation:(NSInteger)colorCode;
+
 - (void)offsetObjectLocationX:(CGFloat)xOffset andY:(CGFloat)yOffset;
 - (void)growObjectWidth:(CGFloat)deltaW andHeight:(CGFloat)deltaH;
 
@@ -128,6 +141,10 @@ static NSArray *defaultsList;
 - (void)sheetEnded:(NSWindow *)sheet
         returnCode:(int)returnCode
        contextInfo:(void  *)contextInfo;
+
+- (void)setupNextKeyViewChain;
+
+- (NSControl <CCDebuggableControl> *)controlFromObjectId:(NSManagedObjectID *)objId;
 
 @end
 
@@ -189,7 +206,6 @@ NSPoint roundPt(NSPoint pt)
 
 @synthesize wholeFrame;
 
-@synthesize observedView;
 @synthesize controls;
 @synthesize selectedControl;
 
@@ -239,11 +255,21 @@ NSPoint roundPt(NSPoint pt)
 @synthesize duplicatingObjectsState;
 @synthesize duplicatingDiffLocation;
 
+@synthesize tabConnector;
+@synthesize controlIds;
+
+@synthesize my1stResponder;
+
 - (void)dealloc
 {
-    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:cceStepIncrement];
-    
     --s_count;
+}
+
+- (id)init
+{
+    self = [super init];
+    ++s_count;
+    return self;
 }
 
 #pragma mark INITIALIZATION
@@ -263,8 +289,6 @@ NSPoint roundPt(NSPoint pt)
 
 - (void)awakeFromNib
 {
-    ++s_count;
-    
     [cardImageView setImageAlignment:NSImageAlignBottomLeft];
     [cardImageView setZoomFactor:[NSView defaultScale]];
     [cardImageView setMaxZoom:[[NSUserDefaults standardUserDefaults] valueForKey:cceMaximumScale]];
@@ -302,6 +326,10 @@ NSPoint roundPt(NSPoint pt)
     [self showWindow:self];
     
     bindings = [NSMutableSet set];
+    controlIds = [NSMutableDictionary dictionary];
+    
+        // Bindings to self are wierd, use proxy instead.  Connect here.
+    [self.proxyController setContent:self];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(errorDisplay:)
@@ -311,7 +339,7 @@ NSPoint roundPt(NSPoint pt)
 
 - (IBAction)showWindow:(id)sender
 {
-    [window makeKeyAndOrderFront:sender];
+    [window makeKeyAndOrderFront:self];
     [window setNextResponder:toolsPaletteController.toolsPalette];
 }
 
@@ -580,7 +608,7 @@ NSPoint roundPt(NSPoint pt)
 
 - (void)load:(NSManagedObject *)type for:(NSManagedObject *)partnershipObj
 {
-    partnership = partnershipObj;
+    self.partnership = partnershipObj;
     [self load:type editMode:NO];
 }
 - (void)load:(NSManagedObject *)type editMode:(BOOL)editing
@@ -598,6 +626,7 @@ NSPoint roundPt(NSPoint pt)
         wTitle = [NSString stringWithFormat:wTitle, cardType.cardName];
         
         [toolsPaletteController show];
+        [CCDebuggableControlEnable setEnabled:YES];
     } else {
         wTitle = NSLocalizedString(@"Convention Card for %@", @"title template for partnership");
         wTitle = [NSString stringWithFormat:wTitle, partnership.partnershipName];
@@ -611,8 +640,52 @@ NSPoint roundPt(NSPoint pt)
     
         // load existing controls
     [cardSettings enumerateObjectsUsingBlock:^(CCEModelledControl *obj, BOOL *stop) {
-        [self controlFromModel:obj];
+        NSControl <CCDebuggableControl> *ctl = [self controlFromModel:obj];
+        [controlIds setObject:ctl forKey:obj.objectID];
     }];
+    
+    if (!editMode) {
+            // once all controls have been created, link them with nextResponder
+        [self setupNextKeyViewChain];
+    }
+}
+
+- (NSControl <CCDebuggableControl> *)controlFromObjectId:(NSManagedObjectID *)objId
+{
+    return [controlIds objectForKey:objId];
+}
+
+- (void)setupNextKeyViewChain
+{
+    NSPoint mostTopLeft = NSZeroPoint;
+    NSControl <CCDebuggableControl> *bestFirst;
+    
+    for (NSControl <CCDebuggableControl> *ctl in controls) {
+        if (!ctl.acceptsFirstResponder)
+            continue;
+        CCEModelledControl *model = ctl.modelledControl;
+        if (model == nil)
+            continue;
+        
+        NSPoint org = ctl.frame.origin;
+        if (fuzzyTopLefter(org.x, org.y, mostTopLeft.x, mostTopLeft.y) < 0) {
+            mostTopLeft = ctl.frame.origin;
+            bestFirst = ctl;
+        }
+        
+        
+        NSControl <CCDebuggableControl> *next;
+        next = [self controlFromObjectId:model.tabToNext.objectID];
+        if (next != nil) {
+            [ctl setNextKeyView:next];
+        }
+    }
+
+    if (bestFirst != nil) {
+        [window setInitialFirstResponder:bestFirst];
+    }
+    
+//    [window recalculateKeyViewLoop];
 }
 
 - (void)setSelection:(NSControl<CCDebuggableControl> *)aControl
@@ -678,6 +751,16 @@ NSPoint roundPt(NSPoint pt)
     [[model managedObjectContext] deleteObject:model];
 }
 
+- (void)innerSetCtlColorCode:(NSInteger)code
+{
+    NSColor *color = [(AppDelegate *)[NSApp delegate] colorForCode:code];
+    if (color) {
+        [controlColorWell setColor:color];
+    } else {
+        NSLog(@"No color for code %ld", code);
+    }
+}
+
 - (IBAction)setControlColorCode:(id)sender
 {
     if (![sender respondsToSelector:@selector(selectedCell)]) {
@@ -685,12 +768,31 @@ NSPoint roundPt(NSPoint pt)
     }
     NSInteger code = [[sender selectedCell] tag];
     
-    NSColor *color = [(AppDelegate *)[NSApp delegate] colorForCode:code];
-    if (color) {
-        [controlColorWell setColor:color];
-    } else {
-        NSLog(@"No color for code %ld", code);
+    [self innerSetCtlColorCode:code];
+}
+
+- (void)innerSetColorCodeInSelectedLocation:(NSInteger)colorCode
+{
+    CCELocation *location = locationObject.content;
+    if (location != nil) {
+        location.colorCode = [NSNumber numberWithInteger:colorCode];
     }
+}
+
+- (IBAction)setNormalColor:(id)sender
+{
+    [self innerSetCtlColorCode:kNormalColor];
+    [self innerSetColorCodeInSelectedLocation:kNormalColor];
+}
+- (IBAction)setAlertColor:(id)sender
+{
+    [self innerSetCtlColorCode:kAlertColor];
+    [self innerSetColorCodeInSelectedLocation:kAlertColor];
+}
+- (IBAction)setAnnounceColor:(id)sender
+{
+    [self innerSetCtlColorCode:kAnnounceColor];
+    [self innerSetColorCodeInSelectedLocation:kAnnounceColor];
 }
 
 - (void)selectControlObject:(CCEModelledControl *)object
@@ -759,6 +861,17 @@ NSPoint roundPt(NSPoint pt)
 {
     if (editMode) {
         NSInteger index = 0;
+        
+        if (tabConnector.inSetMode.boolValue) {
+            if ([sender isKindOfClass:[CCESizableTextField class]]) {
+                [tabConnector chooseTarget:sender];
+                return;
+            } else {
+                [tabConnector cancel:sender];
+            }
+        } else if (tabConnector.connectorPanel.isVisible) {
+            [tabConnector finishConnection:sender];
+        }
         
         if ([sender isKindOfClass:[NSButton class]]) {
             [sender setIntegerValue:0]; // always off
@@ -949,7 +1062,6 @@ NSPoint roundPt(NSPoint pt)
         
         matrix = [CCMatrix matrixFromModel:model insideRect:wholeFrame];
         [self targetSelf:matrix];
-        [matrix monitorModel:model];
         [matrix setDebugMode:kShowUnselected];
     } else {
             // establish control rect from union of child rects
@@ -1266,17 +1378,6 @@ NSPoint roundPt(NSPoint pt)
     }
 }
 
-    // enable the "controls visible" mode when template window (or infoPanel) is key
-- (void)windowDidBecomeKey:(NSNotification *)notification
-{
-    NSWindow *keyWindow = (NSWindow *)[notification object];
-    if (keyWindow == window || keyWindow == infoPanel) {
-        [CCDebuggableControlEnable setEnabled:YES];
-    }
-    
-    [controller activateEditorWindow:self];
-}
-
 - (IBAction)editControlName:(id)sender
 {
     [infoPanel makeKeyAndOrderFront:sender];
@@ -1307,6 +1408,14 @@ NSPoint roundPt(NSPoint pt)
     
     if ([selectedControl respondsToSelector:@selector(setNumberField:)]) {
         [(id)selectedControl setNumberField:value];
+    }
+}
+
+- (IBAction)doSetNext:(id)sender
+{
+    if ([selectedControl isKindOfClass:[CCESizableTextField class]]) {
+        CCESizableTextField *theSel = (CCESizableTextField *)selectedControl;
+        [tabConnector doOpen:theSel];
     }
 }
 
@@ -1346,6 +1455,13 @@ NSPoint roundPt(NSPoint pt)
     return [CCEControlTest testerForControl:selectedControl];
 }
 
+- (IBAction)testAllControls:(id)sender
+{
+    [controls enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [CCEControlTest newTesterForControl:obj notify:self];
+    }];
+}
+
 - (IBAction)cancelTestControl:(id)sender
 {
     NSControl <CCDebuggableControl> *control = selectedControl;
@@ -1382,6 +1498,8 @@ NSPoint roundPt(NSPoint pt)
         return ![testControlButton isHidden] && [testControlButton isEnabled];
     } else if (action == @selector(cancelTestControl:)) {
         return ![stopTestControlButton isHidden];
+    } else if (action == @selector(testAllControls:)) {
+        return [CCEControlTest testerCount] == 0;
     } else if (action == @selector(stopAllControlTesters:)) {
         return [CCEControlTest testerCount] > 0;
     } else if (action == @selector(scaleLarger:)) {
@@ -1436,7 +1554,13 @@ NSPoint roundPt(NSPoint pt)
                 return YES;
         }
     } else if (action == @selector(duplicateControl:)) {
-        return selectedControl /*&& [selectedControl.modelledControl.entity.name isEqualToString:entityText]*/;
+        return selectedControl != nil;
+    } else if (action == @selector(highlightControls:)) {
+        if ([anItem respondsToSelector:@selector(setState:)]) {
+            [(id)anItem setState:[CCDebuggableControlEnable enabled]];
+        }
+            // in edit mode, controls are ALWAYS highlighted, so don't undo it...
+        return !editMode;
     }
 
     
@@ -1511,15 +1635,29 @@ NSPoint roundPt(NSPoint pt)
     [controller activateEditorWindow:self];
 }
 
+    // enable the "controls visible" mode when template window (or infoPanel) is key
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSWindow *keyWindow = (NSWindow *)[notification object];
+    if (editMode && (keyWindow == window || keyWindow == infoPanel)) {
+        [CCDebuggableControlEnable setEnabled:YES];
+    }
+    
+    [controller activateEditorWindow:self];
+}
+
 - (BOOL)windowShouldClose:(id)sender {
     if (sender == window) {
 //        [sender orderOut:self];
         [self stopMonitoringLocations];
         
         [self infoPanelUninit];
-        [infoPanel setReleasedWhenClosed:YES];
+        [infoPanel setDelegate:nil];
         [infoPanel close];
+        
+        [toolsPaletteController.toolsPalette setDelegate:nil];
         [toolsPaletteController.toolsPalette close];
+        
         [controller editorWindowClosing:self];
         [self stopAllControlTesters:sender];
         
@@ -1535,7 +1673,14 @@ NSPoint roundPt(NSPoint pt)
         
         bindings = nil;
         
+        controls = nil;
+        
         [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
+        [controlIds removeAllObjects];
+        
+            // and finally: to release bindings, release the proxy controller
+        [self.proxyController setContent:nil];
     }
     
     return YES;
@@ -1545,6 +1690,18 @@ NSPoint roundPt(NSPoint pt)
 {
     NSWindow* theWin = [notification object];
     [theWin setDelegate:nil];
+}
+
+    // the following are not strictly window-delegate methods, but that's how they're called...
+- (void)registerFirstResponder:(NSView *)responder
+{
+    my1stResponder = responder;
+}
+- (void)unregisterFirstResponder:(NSView *)responder
+{
+    if (my1stResponder == responder) {
+        my1stResponder = nil;
+    }
 }
 
 #pragma mark WINDOW_INITIALIZATION
@@ -1597,6 +1754,18 @@ NSPoint roundPt(NSPoint pt)
 }
 
 #pragma mark DEBUGGING
+
+- (IBAction)highlightControls:(id)sender
+{
+    [CCDebuggableControlEnable toggleEnabled];
+    if ([CCDebuggableControlEnable enabled]) {
+        [controls enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([obj conformsToProtocol:@protocol(CCDebuggableControl)]) {
+                [obj setDebugMode:kShowUnselected];
+            }
+        }];
+    }
+}
 
 - (IBAction)showSelectedControlInfo:(id)sender
 {
@@ -1664,5 +1833,22 @@ NSPoint roundPt(NSPoint pt)
 {
     return s_count;
 }
+
+- (IBAction)keyViewLoop:(id)sender
+{
+    NSView *aKeyView = my1stResponder;
+    NSLog(@"Starting key view: %@", aKeyView);
+    NSView *nextView = aKeyView;
+    while (nextView) {
+        nextView = nextView.nextKeyView;
+        if (nextView == aKeyView) {
+            NSLog(@"Loop complete");
+            break;
+        }
+        NSLog(@"Keyview: %@", nextView);
+    }
+}
+
+
 
 @end

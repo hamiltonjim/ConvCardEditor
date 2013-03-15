@@ -15,11 +15,11 @@
 
 @property NSNumber *value;
 
-@property IBOutlet NSButton *selectButton;
-@property IBOutlet NSButton *textButton;
-@property IBOutlet NSButton *singleCheckButton;
-@property IBOutlet CCEToolWithVariantButton *multiCheckButton;
-@property IBOutlet CCEToolWithVariantButton *leadChoiceButton;
+@property (weak) IBOutlet NSButton *selectButton;
+@property (weak) IBOutlet NSButton *textButton;
+@property (weak) IBOutlet NSButton *singleCheckButton;
+@property (weak) IBOutlet CCEToolWithVariantButton *multiCheckButton;
+@property (weak) IBOutlet CCEToolWithVariantButton *leadChoiceButton;
 
 @property (weak) IBOutlet CCEControlsViewController *controller;
 @property IBOutlet NSPanel *toolsPalette;

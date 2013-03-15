@@ -76,7 +76,10 @@ static const char *kSpadeCharUTF8 = "\xe2\x99\xa0";
 @property NSUInteger debugMode;
 
 @property NSString *fieldName;
+
 @property NSOperationQueue *opQ;
+@property BOOL observesScaling;
+@property NSMutableSet *scalingObservers;
 
 + (AppDelegate *)appDelegate;
 + (NSFont *)defaultFont;
@@ -125,6 +128,17 @@ static CGFloat defaultLineHeight;
 @synthesize font;
 @synthesize lineHeight;
 @synthesize lineCount;
+
+@synthesize observesScaling;
+@synthesize scalingObservers;
+
+    // The data store always stores values as strings; NSTextField (this class' parent) will allow
+    // a numeric value to be bound as an NSNumber value, which is a problem.  Adding the following
+    // will force the value to be NSString, even for numeric values.
+- (NSString *)valueBindingTransformerName
+{
+    return cceIntegerToStringTransformer;
+}
 
 + (AppDelegate *)appDelegate
 {
@@ -349,10 +363,19 @@ static CGFloat defaultLineHeight;
             [opQ setName:fieldName];
         }
         isScaling = NO;
-        [self observeScaling];
+        observesScaling = NO;
         ++s_count;
     }
     return self;
+}
+
+- (void)viewWillMoveToSuperview:(NSView *)newSuperview
+{
+    if (newSuperview && !observesScaling) {
+        [self observeScaling];
+    } else {
+        [self stopObservingScaling];
+    }
 }
 
 - (id)initWithLocation:(CCELocation *)location
@@ -427,22 +450,41 @@ static CGFloat defaultLineHeight;
 
 - (void)observeScaling
 {
+    observesScaling = YES;
+    if (scalingObservers == nil) {
+        scalingObservers = [NSMutableSet set];
+    }
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:cceZoomFactorChanging object:nil queue:opQ usingBlock:^(NSNotification *note) {
+    id observer;
+    observer = [center addObserverForName:cceZoomFactorChanging
+                                   object:nil
+                                    queue:opQ
+                               usingBlock:^(NSNotification *note) {
         if (note.object == self.window) {
             isScaling = YES;
         }
     }];
-    [center addObserverForName:cceZoomFactorChanged object:nil queue:opQ usingBlock:^(NSNotification *note) {
+    [scalingObservers addObject:observer];
+    
+    observer = [center addObserverForName:cceZoomFactorChanged
+                                   object:nil
+                                    queue:opQ
+                               usingBlock:^(NSNotification *note) {
         if (note.object == self.window) {
             isScaling = NO;
         }
     }];
+    [scalingObservers addObject:observer];
 }
 
 - (void)stopObservingScaling
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [scalingObservers enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+        [center removeObserver:obj];
+    }];
+    [scalingObservers removeAllObjects];
+    observesScaling = NO;
 }
 
 - (NSUInteger)linesForHeight:(CGFloat)height
@@ -655,6 +697,23 @@ static CGFloat defaultLineHeight;
     
     [self scrollRectToVisible:[self bounds]];
     
+    id myWin = [self window].delegate;
+    if ([myWin respondsToSelector:@selector(registerFirstResponder:)]) {
+        [myWin performSelector:@selector(registerFirstResponder:)withObject:self];
+    }
+    
+    return answer;
+}
+
+- (BOOL)resignFirstResponder
+{
+    BOOL answer = [super resignFirstResponder];
+    
+    id myWin = [self window].delegate;
+    if ([myWin respondsToSelector:@selector(unregisterFirstResponder:)]) {
+        [myWin performSelector:@selector(unregisterFirstResponder:) withObject:self];
+    }
+    
     return answer;
 }
 
@@ -679,6 +738,27 @@ static CGFloat defaultLineHeight;
     }
     
     [self setStringValue:@""];
+}
+
+- (NSString *)description
+{
+    NSString *start = [NSString stringWithFormat:@"%@ value '%@' \n\tframe: %@\n\tbounds: %@",
+                       self.class, self.stringValue,
+                       NSStringFromRect(self.frame), NSStringFromRect(self.bounds)];
+    return start;
+}
+
+#pragma mark DEBUGGING
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseDown:theEvent];
+}
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseUp:theEvent];
 }
 
 @end

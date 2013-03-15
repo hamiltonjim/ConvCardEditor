@@ -27,9 +27,12 @@ static NSInteger s_count;
 
 @property (atomic) BOOL monitorActive;
 
-- (void)checkInsetsRect;
+@property id zoomObserver;
+@property NSOperationQueue *opQ;
 
-- (void)notifyZoom:(NSNotification *)notification;
+@property NSControl *parentCtl;
+
+- (void)checkInsetsRect;
 
 - (void)setControlFrame;
 - (void)doReindex:(NSDictionary *)change;
@@ -52,6 +55,11 @@ static NSArray *kMonitorKeypaths;
 @synthesize frameRect;
 @synthesize insetsRect;
 @synthesize insetValue;
+
+@synthesize zoomObserver;
+@synthesize opQ;
+
+@synthesize parentCtl;
 
 + (NSArray *)monitorKeypaths
 {
@@ -100,10 +108,15 @@ static NSArray *kMonitorKeypaths;
                                  context:nil];
         }];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(notifyZoom:)
-                                                     name:cceZoomFactorChanged
-                                                   object:viewedControl.window];
+        if (opQ == nil) {
+            opQ = [NSOperationQueue new];
+        }
+        zoomObserver = [[NSNotificationCenter defaultCenter] addObserverForName:cceZoomFactorChanged
+                                                                         object:nil
+                                                                          queue:opQ
+                                                                     usingBlock:^(NSNotification *note) {
+            [self setControlFrame];
+        }];
         monitorActive = YES;
     }
 }
@@ -120,9 +133,8 @@ static NSArray *kMonitorKeypaths;
         frameRect = NSZeroRect;
     }
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:cceZoomFactorChanged
-                                                  object:viewedControl.window];
+    [[NSNotificationCenter defaultCenter] removeObserver:zoomObserver];
+    zoomObserver = nil;
     self.monitorActive = NO;
 }
 
@@ -137,8 +149,13 @@ static NSArray *kMonitorKeypaths;
 - (void)setControlFrame
 {
     NSRect drawRect = [NSView defaultScaleRect:frameRect];
+    NSRect visibleRect;
     if (insetsRect) {
-        NSRect visibleRect = NSInsetRect(drawRect, -insetValue.x, -insetValue.y);
+        visibleRect = NSInsetRect(drawRect, -insetValue.x, -insetValue.y);
+        [viewedControl setFrame:visibleRect];
+    } else if (parentCtl != nil) {
+        NSPoint parentOrigin = parentCtl.frame.origin;
+        visibleRect = NSOffsetRect(drawRect, -parentOrigin.x, -parentOrigin.y);
         [viewedControl setFrame:visibleRect];
     } else {
         [viewedControl setFrame:drawRect];
@@ -149,6 +166,11 @@ static NSArray *kMonitorKeypaths;
 - (void)doReindex:(NSDictionary *)change
 {
     if ([viewedControl respondsToSelector:@selector(isReindexing)] && [viewedControl isReindexing]) {
+        return;
+    }
+    
+        // this can happen when a non-indexed control is deleted, as the index changes from 0 to null.
+    if (![viewedControl respondsToSelector:@selector(parent)]) {
         return;
     }
     
@@ -228,13 +250,6 @@ static NSArray *kMonitorKeypaths;
     }
 }
 
-- (void)notifyZoom:(NSNotification *)notification
-{
-    if ([notification.name isEqualToString:cceZoomFactorChanged]) {
-        [self setControlFrame];
-    }
-}
-
 - (id)initWithModel:(CCEModelledControl *)model
             control:(NSControl<CCDebuggableControl> *)ctrl
 {
@@ -263,6 +278,7 @@ static NSArray *kMonitorKeypaths;
         modelledControl = model;
         NSArray *indexedControls = ctrl.controls;
         viewedControl = [indexedControls objectAtIndex:index - 1];
+        parentCtl = ctrl;
         
         if ([model respondsToSelector:@selector(locationWithIndex:)]) {
             watchedLocation = [(id)model locationWithIndex:index];

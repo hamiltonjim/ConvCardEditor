@@ -20,14 +20,12 @@ static NSString *locations = @"locations";
 @property (nonatomic, readwrite) NSNumber *numParts;
 
 - (void)reindexLocationAt:(NSUInteger)oldIndex to:(NSUInteger)newIndex;
-
 @end
 
 @implementation CCEMultiCheckModel
 
 @dynamic locations;
 @dynamic shape;
-
 
 - (void)setLocation:(CCELocation *)location
 {
@@ -92,6 +90,11 @@ static NSString *locations = @"locations";
 {
     CCELocation *loc = [self locationWithIndex:oldIndex];
     [loc setIndex:[NSNumber numberWithInteger:newIndex]];
+}
+
+- (void)validateParts
+{
+    self.numParts = [NSNumber numberWithInteger:self.locations.count];
 }
 
 @end

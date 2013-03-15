@@ -92,6 +92,8 @@ NSString *applicationDomain = @"com.shokwave.ConvCardEditor";
 
 NSString *errorNotify = @"errorNotify";
 
+NSString *cceEnableDebugging = @"enableDebugging";
+
 @implementation CommonStrings
 
 + (void)initialize

@@ -28,6 +28,8 @@
 
 @interface AppDelegate ()
 
+@property (weak) IBOutlet NSMenuItem *debugMenu;
+
 - (void)flushColors;
 - (void)flushFonts;
 
@@ -38,6 +40,8 @@
 + (NSColor *)stdNormalColor;
 
 - (void)ensureMyDocumentsExists;
+- (void)watchCheckboxStyle;
+- (void)watchEnableDebug;
 
 @end
 
@@ -68,6 +72,8 @@
 @synthesize partnershipChooser;
 
 @synthesize myDocuments;
+
+@synthesize debugMenu;
 
 - (void) flushColors {
     self.alertColor = nil;
@@ -161,12 +167,21 @@
     
         // if there are no card definitions (i.e., first-run or reset), load defaults
     [self initialImport];
+    
+    [self watchCheckboxStyle];
+    [self watchEnableDebug];
 }
 
 - (id)openCardWindowNib
 {
     id nib = [[NSNib alloc] initWithNibNamed:@"CardWindow" bundle:nil];
-    [nib instantiateNibWithOwner:self topLevelObjects:nil];
+    
+        // I am responsible for cleaning up retain-counts on top-level objects; see below.
+    NSArray *topObjs;
+    [nib instantiateNibWithOwner:self topLevelObjects:&topObjs];
+    
+    typeEditorCtl.topObjects = topObjs;
+    
     return nib;
 }
 
@@ -387,7 +402,6 @@
 }
 
 - (IBAction)newPartnership:(id)sender {
-//    NSLog(@"newPartnership not implemented yet");
     [directionLabel setStringValue:NSLocalizedString(@"Choose card style for new partnership:",
                                                      @"prompt for new partnership")];
     [actionButton setTitle:NSLocalizedString(@"Create", @"Create")];
@@ -436,16 +450,7 @@
     self.typeEditorCtl = nil;
 }
 
-- (IBAction)editCard:(id)sender {
-    [chooseCardTypePanel orderOut:sender];
-    
-    [self openCardWindowNib];
-
-    typeEditorCtl.cardType = [[cardChooser selectedObjects] objectAtIndex:0];
-    [typeEditorCtl openCard:self];
-    self.typeEditorCtl = nil;
-}
-
+    // Edit menu action.  Opens card chooser, completed below
 - (IBAction)editCardType:(id)sender
 {
     [directionLabel setStringValue:NSLocalizedString(@"Choose card style to edit:", @"edit card direction")];
@@ -454,6 +459,18 @@
     [removeButton setHidden:NO];
     
     [chooseCardTypePanel makeKeyAndOrderFront:sender];
+}
+
+    // completion from card chooser
+- (IBAction)editCard:(id)sender {
+    [chooseCardTypePanel orderOut:sender];
+    
+    [self openCardWindowNib];
+        // opening the nib set typeEditorCtl
+
+    typeEditorCtl.cardType = [[cardChooser selectedObjects] objectAtIndex:0];
+    [typeEditorCtl openCard:self];
+    self.typeEditorCtl = nil;
 }
 
 - (void)ensureMyDocumentsExists
@@ -496,7 +513,6 @@
 
 - (void)doExport:(id)sender
 {
-//    NSLog(@"exportCardType not implemented yet");
     [chooseCardTypePanel orderOut:sender];
     
     NSManagedObject *cardType = [[cardChooser selectedObjects] objectAtIndex:0];
@@ -522,6 +538,15 @@
                                                context:nil];
 }
 
+- (void)watchEnableDebug
+{
+    NSKeyValueObservingOptions opts = NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew;
+    [[NSUserDefaults standardUserDefaults] addObserver:self
+                                            forKeyPath:cceEnableDebugging
+                                               options:opts
+                                               context:NULL];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -535,6 +560,10 @@
         self.announceColor = [object colorForKey:keyPath];
     } else if ([ccNormalColor isEqualToString:keyPath]) {
         self.normalColor = [object colorForKey:keyPath];
+    } else if ([cceEnableDebugging isEqualToString:keyPath]) {
+        NSNumber *val = [change valueForKey:NSKeyValueChangeNewKey];
+        BOOL state = !val.boolValue;
+        [debugMenu setHidden:state];
     }
     
 }
@@ -571,6 +600,25 @@
     [prefCtl showWindow:sender];
 }
 
+#pragma mark NIB CLEANUP
+
+- (void)cleanupNibObjects:(NSArray *)topLevelObjects
+{
+        // Kluge--clean up the extra retains in top-level objects.
+    [topLevelObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        BOOL doit = YES;
+        if ([obj isKindOfClass:[NSWindow class]]) {
+            NSWindow *win = obj;
+            doit = !win.isReleasedWhenClosed;
+        }
+//        NSLog(@"Release %@? %@", [obj class], doit ? @"yes" : @"no");
+        if (doit) {
+                // release it manually, then
+            CFRelease((__bridge CFTypeRef)obj);
+        }
+    }];
+}
+
 #pragma mark UNDO/REDO
 
 - (IBAction)undo:(id)sender
@@ -603,6 +651,36 @@
     NSLog(@"CCEToolPaletteControllers: %ld", [CCEToolPaletteController count]);
     NSLog(@"CCESizableTextFields: %ld", [CCESizableTextField count]);
     NSLog(@"CCTextFields: %ld", [CCTextField count]);
+}
+
+- (IBAction)logClicks:(id)sender
+{
+    [CCDebuggableControlEnable toggleLogClicks];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    if ([menuItem action] == @selector(logClicks:)) {
+        [menuItem setState:[CCDebuggableControlEnable logClicks]];
+        return YES;
+    }
+    
+    return YES;
+}
+
+- (IBAction)keyViewLoop:(id)sender
+{
+    NSView *aKeyView = [NSView focusView];
+    NSLog(@"Starting key view: %@", aKeyView);
+    NSView *nextView = aKeyView;
+    while (nextView) {
+        nextView = nextView.nextKeyView;
+        if (nextView == aKeyView) {
+            NSLog(@"Loop complete");
+            break;
+        }
+        NSLog(@"Keyview: %@", nextView);
+    }
 }
 
 @end

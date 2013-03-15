@@ -22,6 +22,7 @@ const CGFloat kHandleDiameter = kHandleRadius * 2.0;
 
 static NSColor *selectedColor;
 static NSColor *unselectedColor;
+static NSColor *highlightColor;
 
 @interface CCESizableTextFieldCell ()
 
@@ -59,6 +60,10 @@ static NSColor *unselectedColor;
     if (self == [CCESizableTextFieldCell class]) {
         selectedColor = [NSColor blackColor];
         unselectedColor = [NSColor colorWithCalibratedWhite:0.6 alpha:0.8];
+        highlightColor = [NSColor colorWithCalibratedRed:HIGHLIGHT_COLOR_R
+                                                   green:HIGHLIGHT_COLOR_G
+                                                    blue:HIGHLIGHT_COLOR_B
+                                                   alpha:HIGHLIGHT_COLOR_A];
     }
 }
 
@@ -142,7 +147,16 @@ static NSColor *unselectedColor;
 
 - (void)drawWithFrame:(NSRect)origCellFrame inView:(NSView *)controlView
 {
-    switch (debugMode) {
+    NSInteger highlight = debugMode & kShowHighlight;
+    NSInteger dMode = debugMode & ~kShowHighlight;
+    
+    if (highlight) {
+        [highlightColor set];
+        NSBezierPath *hpath = [NSBezierPath bezierPathWithRect:borderRect];
+        [hpath fill];
+    }
+    
+    switch (dMode) {
         case kShowSelected:
             [selectedColor set];
             break;

@@ -19,6 +19,7 @@
 @interface CCMatrix ()
 
 @property NSUInteger debugIndex;
+@property (nonatomic) int debugMode;
 
 @property (readwrite) BOOL isReindexing;
 
@@ -28,6 +29,11 @@
 @end
 
 @implementation CCMatrix
+{
+    NSRect trueBounds;
+    BOOL needTrueBounds;
+
+}
 
 @synthesize controls;
 @synthesize allowsEmptySelection;
@@ -38,6 +44,7 @@
 
 @synthesize name;
 
+@synthesize debugMode;
 @synthesize debugIndex;
 
 @synthesize isReindexing;
@@ -70,19 +77,27 @@
         shape = kCheckboxes;
     } else
         shape = model.shape.integerValue;
+    
+    CCMatrix *control = nil;
     switch (shape) {
         case kCheckboxes:
-            return [CCBoxMatrix matrixWithModel:model insideRect:rect];
+            control = [CCBoxMatrix matrixWithModel:model insideRect:rect];
+            break;
             
         case kOvals:
-            return [CCLeadChoiceMatrix matrixWithModel:model insideRect:rect];
+            control = [CCLeadChoiceMatrix matrixWithModel:model insideRect:rect];
+            break;
             
         default:
             [NSException raise:@"unknownMatrixType"
                         format:@"%@ unknown matrix type %ld", self, (long)shape];
             break;
     }
-    return nil;
+    if (control != nil) {
+        [control monitorModel:model];
+    }
+    
+    return control;
 }
 
 - (id)monitorModel:(CCEModelledControl *)model
@@ -182,6 +197,7 @@ mask2index(NSUInteger mask) {
         isReindexing = NO;
         name = matrixName;
         selected = nil;
+        needTrueBounds = YES;
     }
     return self;
 }
@@ -274,6 +290,8 @@ mask2index(NSUInteger mask) {
 
 #pragma mark PROTOCOL CCctrlParent
 - (void)notify:(NSControl *)sender {
+    [CCDebuggableControlEnable logIfWanted:sender.tag inMatrix:self];
+    
     if (allowsMultiSelection) {
         NSInteger ival = 0;
         NSInteger mask = 1;
@@ -539,6 +557,25 @@ mask2index(NSUInteger mask) {
     self.controls = tmpArray;
 }
 
+- (NSString *)description
+{
+    NSString *start = [NSString stringWithFormat:@"%@ name '%@' value %ld \n\tframe: %@\n\tbounds: %@",
+                       self.class, self.name, self.integerValue,
+                       NSStringFromRect(self.frame), NSStringFromRect(self.bounds)];
+    NSMutableString *subviewStrs = [NSMutableString string];
+    NSUInteger svCount = self.subviews.count;
+    NSString *svClass = svCount ? NSStringFromClass([[self.subviews objectAtIndex:0] class]) : @"<none>";
+    [subviewStrs appendFormat:@"\n%ld subviews (%@): {", svCount, svClass];
+    NSInteger ctr = 0;
+    for (NSControl *sv in self.subviews) {
+        [subviewStrs appendFormat:@"\n\t%ld: value: %ld frame: %@",
+         ++ctr, sv.integerValue, NSStringFromRect(sv.frame)];
+    }
+    if (svCount) [subviewStrs appendString:@"\n"];
+    [subviewStrs appendString:@"}"];
+    return [start stringByAppendingString:subviewStrs];
+}
+
 #pragma mark SUBCLASS RESPONSIBILITIES
 - (void)subclassResponsibility:(SEL)sel
 {
@@ -604,6 +641,8 @@ mask2index(NSUInteger mask) {
     // zero leaves the selection unchanged
 - (void)setDebugMode:(int)newDebugMode index:(NSInteger)index
 {
+    debugMode = newDebugMode;
+    
     if (index > 0)
         debugIndex = index;
     

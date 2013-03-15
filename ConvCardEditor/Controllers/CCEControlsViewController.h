@@ -20,15 +20,14 @@
 @class CCEIncrementBindableStepper;
 
 @interface CCEControlsViewController : NSResponder {
-    IBOutlet NSButton *testControlButton;
-    IBOutlet NSButton *stopTestControlButton;
+    IBOutlet __weak NSButton *testControlButton;
+    IBOutlet __weak NSButton *stopTestControlButton;
 }
 
 @property IBOutlet NSWindow *window;
-@property IBOutlet CCEControlsSuperView *view;
-@property (weak) IBOutlet NSView *observedView;
-@property (weak) NSManagedObject *cardType;
-@property (weak) NSManagedObject *partnership;
+@property (weak) IBOutlet CCEControlsSuperView *view;
+@property NSManagedObject *cardType;
+@property NSManagedObject *partnership;
 @property NSMutableArray *controls;
 @property (weak, readonly, nonatomic) NSControl <CCDebuggableControl> *selectedControl;
 @property (weak) CCECardTypeEditorController *controller;
@@ -39,31 +38,31 @@
 @property BOOL editMode;
 @property (readonly) NSNumber *isTesterForSelected;
 
-@property IBOutlet FixedNSImageView *cardImageView;
+@property (weak) IBOutlet FixedNSImageView *cardImageView;
 
     // info panel
 @property IBOutlet NSPanel *infoPanel;
-@property IBOutlet NSColorWell *controlColorWell;
-@property IBOutlet NSMatrix *stdControlColorGroup;
+@property (weak) IBOutlet NSColorWell *controlColorWell;
+@property (weak) IBOutlet NSMatrix *stdControlColorGroup;
 
-@property IBOutlet NSTextField *nameField;
-@property IBOutlet NSTextField *xField;
-@property IBOutlet NSTextField *yField;
-@property IBOutlet NSTextField *widthField;
-@property IBOutlet NSTextField *heightField;
+@property (weak) IBOutlet NSTextField *nameField;
+@property (weak) IBOutlet NSTextField *xField;
+@property (weak) IBOutlet NSTextField *yField;
+@property (weak) IBOutlet NSTextField *widthField;
+@property (weak) IBOutlet NSTextField *heightField;
 
-@property IBOutlet CCEIncrementBindableStepper *xPosStepper;
-@property IBOutlet CCEIncrementBindableStepper *yPosStepper;
-@property IBOutlet CCEIncrementBindableStepper *widthStepper;
-@property IBOutlet CCEIncrementBindableStepper *heightStepper;
+@property (weak) IBOutlet CCEIncrementBindableStepper *xPosStepper;
+@property (weak) IBOutlet CCEIncrementBindableStepper *yPosStepper;
+@property (weak) IBOutlet CCEIncrementBindableStepper *widthStepper;
+@property (weak) IBOutlet CCEIncrementBindableStepper *heightStepper;
 
-@property IBOutlet NSObjectController *selectedObject;
-@property IBOutlet NSObjectController *locationObject;
+@property (weak) IBOutlet NSObjectController *selectedObject;
+@property (weak) IBOutlet NSObjectController *locationObject;
 
 @property (nonatomic) NSNumber *canSquare;
 @property (nonatomic) NSNumber *square;
 
-@property IBOutlet CCEToolPaletteController *toolsPaletteController;
+@property (weak) IBOutlet CCEToolPaletteController *toolsPaletteController;
 
 @property (nonatomic) BOOL gridState;
 @property (readonly) NSString *gridStateLabel;
@@ -98,6 +97,7 @@
 - (IBAction)cancelTestControl:(id)sender;
 - (CCEControlTest *)testerForSelected;
 
+- (IBAction)testAllControls:(id)sender;
 - (IBAction)stopAllControlTesters:(id)sender;
 
 - (void)setImageWithURL:(NSURL *)url;
@@ -140,8 +140,13 @@
 - (IBAction)squareKeeper:(id)sender;
 
 - (IBAction)setControlColorCode:(id)sender;
+- (IBAction)setNormalColor:(id)sender;
+- (IBAction)setAlertColor:(id)sender;
+- (IBAction)setAnnounceColor:(id)sender;
 
 - (IBAction)numericSetting:(id)sender;
+
+- (IBAction)doSetNext:(id)sender;
 
     // overall control
 - (IBAction)updateUnits:(id)sender;
@@ -152,13 +157,19 @@
 
 - (void)chooseNextControl;
 
+- (void)registerFirstResponder:(NSView *)responder;
+- (void)unregisterFirstResponder:(NSView *)responder;
+
     // tools palette
 - (IBAction)chooseControlByTag:(id)sender;
 
     // debug
+- (IBAction)highlightControls:(id)sender;
 - (IBAction)showSelectedControlInfo:(id)sender;
 - (IBAction)showResponderChain:(id)sender;
 
 + (NSInteger)count;
+
+- (IBAction)keyViewLoop:(id)sender;
 
 @end

@@ -34,4 +34,43 @@ double fuzzyRound(double value, int position, double boundary);
     // version where position is always zero (ones column)
 double fuzzyRoundInt(double value, double boundary);
 
+    // comparing points -- which is closer to the given corner?
+    // The first direction has priority over the second
+enum EPointComparisonCorners {
+    kMoreTopLeft = 1,
+    kMoreTopRight,
+    kMoreBottomLeft,
+    kMoreBottomRight,
+    kMoreLeftTop,
+    kMoreLeftBottom,
+    kMoreRightTop,
+    kMoreRightBottom
+};
+
+struct CGPoint;
+typedef struct CGPoint CGPoint;
+
+    // returns -1 if first is closer to given corner, +1 if right
+    // is closer, 0 if points are equal.
+int fuzzyPointCompare(double leftx, double lefty, double rightx, double righty, int corner);
+
+#define fuzzyTopLefter(leftx, lefty, rightx, righty) \
+    fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreTopLeft)
+#define fuzzyTopRighter(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreTopRight)
+#define fuzzyBottomLefter(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreBottomLeft)
+#define fuzzyBottomRighter(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreBottomRight)
+
+#define fuzzyLeftTopper(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreLeftTop)
+#define fuzzyLeftBottomer(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreLeftBottom)
+#define fuzzyRightTopper(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreRightTop)
+#define fuzzyRightBottomer(leftx, lefty, rightx, righty) \
+ fuzzyPointCompare((leftx), (lefty), (rightx), (righty), kMoreRightBottom)
+
+
 #endif

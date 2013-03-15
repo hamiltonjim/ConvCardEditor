@@ -13,22 +13,6 @@
 
 @interface CCEDuplicator : NSObject
 
-@property IBOutlet NSPanel *panel;
-
-@property IBOutlet NSTextField *leftRight;
-@property IBOutlet NSTextField *updown;
-
-@property IBOutlet NSTextField *deltaX;
-@property IBOutlet NSTextField *deltaY;
-
-@property IBOutlet NSTextField *absX;
-@property IBOutlet NSTextField *absY;
-
-@property IBOutlet NSObjectController *location1;
-
-@property (nonatomic) NSNumber *numDeltaX;
-@property (nonatomic) NSNumber *numDeltaY;
-
 @property (readonly) NSString *relX;
 @property (readonly) NSString *relY;
 
@@ -43,6 +27,8 @@
 - (IBAction)cancelButton:(id)sender;
 
 - (IBAction)valueChange:(id)sender;
+
+- (IBAction)moveBy:(id)sender;
 
 - (void)askConfirm:(CCEModelledControl *)newModel
               from:(CCEModelledControl *)original

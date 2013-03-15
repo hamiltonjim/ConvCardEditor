@@ -33,6 +33,11 @@
 #define SELECTED_OTHER_CL_B 0.8
 #define SELECTED_OTHER_CL_A 0.4
 
+#define HIGHLIGHT_COLOR_R   1.0
+#define HIGHLIGHT_COLOR_G   1.0
+#define HIGHLIGHT_COLOR_B   0.1
+#define HIGHLIGHT_COLOR_A   0.5
+
 enum kAlertingColor {
     kStandardColorsLowerBound,
     
@@ -136,6 +141,8 @@ extern NSString *cceStepIncrement;
 extern NSString *cceStepIncrementIndex;
 
 extern NSString *errorNotify;
+
+extern NSString *cceEnableDebugging;
 
 enum EStepRadioChoices {
     kStepRadioOne = 0,

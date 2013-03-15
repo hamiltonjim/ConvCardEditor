@@ -481,4 +481,17 @@ static CGFloat defaultLineHeight;
     [insideTextField setStringValue:@""];
 }
 
+#pragma mark DEBUGGING
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseDown:theEvent];
+}
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseUp:theEvent];
+}
+
 @end

@@ -19,6 +19,8 @@
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="numParts" transient="YES" syncable="YES"/>
         <relationship name="cardType" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CardType" inverseName="settings" inverseEntity="CardType" syncable="YES"/>
+        <relationship name="tabToNext" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Control" inverseName="tabToPrevious" inverseEntity="Control" syncable="YES"/>
+        <relationship name="tabToPrevious" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Control" inverseName="tabToNext" inverseEntity="Control" syncable="YES"/>
         <relationship name="values" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Setting" inverseName="controls" inverseEntity="Setting" syncable="YES"/>
     </entity>
     <entity name="ConventionCard" syncable="YES">
@@ -60,18 +62,16 @@
         <attribute name="lines" attributeType="Integer 16" minValueString="1" defaultValueString="1" syncable="YES"/>
         <attribute name="numeric" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="location" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="textControl" inverseEntity="Location" syncable="YES"/>
-        <relationship name="tabToNext" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Text" inverseName="tabToPrevious" inverseEntity="Text" syncable="YES"/>
-        <relationship name="tabToPrevious" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Text" inverseName="tabToNext" inverseEntity="Text" syncable="YES"/>
     </entity>
     <elements>
         <element name="CardType" positionX="-144" positionY="-18" width="128" height="148"/>
         <element name="Checkbox" positionX="43" positionY="-75" width="128" height="75"/>
-        <element name="Control" positionX="27" positionY="54" width="128" height="133"/>
+        <element name="Control" positionX="27" positionY="54" width="128" height="163"/>
         <element name="ConventionCard" positionX="-315" positionY="81" width="128" height="103"/>
         <element name="Location" positionX="376" positionY="-147" width="128" height="253"/>
         <element name="MultiCheck" positionX="198" positionY="-3" width="128" height="73"/>
         <element name="Setting" positionX="-144" positionY="162" width="128" height="88"/>
         <element name="SingleCheck" positionX="207" positionY="-150" width="128" height="60"/>
-        <element name="Text" positionX="207" positionY="119" width="128" height="133"/>
+        <element name="Text" positionX="207" positionY="119" width="128" height="103"/>
     </elements>
 </model>

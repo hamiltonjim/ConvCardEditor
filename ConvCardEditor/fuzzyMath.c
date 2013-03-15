@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 Jim Hamilton. All rights reserved.
 //
 
-#include "math.h"
+#include "fuzzyMath.h"
+#include <math.h>
 
 static const double kEpsilon = 1e-6;
 
@@ -95,3 +96,55 @@ double fuzzyRoundInt(double value, double boundary)
     return fuzzyRound(value, 0, boundary);
 }
 
+
+int fuzzyPointCompare(double leftx, double lefty, double rightx, double righty, int corner)
+{
+    int result = 0;
+    switch (corner) {
+        case kMoreTopLeft:
+        case kMoreTopRight:
+            result = fuzzyCompare(righty, lefty);
+            break;
+            
+        case kMoreBottomLeft:
+        case kMoreBottomRight:
+            result = fuzzyCompare(lefty, righty);
+            break;
+            
+        case kMoreLeftBottom:
+        case kMoreLeftTop:
+            result = fuzzyCompare(leftx, rightx);
+            break;
+            
+        case kMoreRightBottom:
+        case kMoreRightTop:
+            result = fuzzyCompare(rightx, rightx);
+            break;
+    }
+    
+    if (result == 0) {
+        switch (corner) {
+            case kMoreTopLeft:
+            case kMoreTopRight:
+                result = fuzzyCompare(leftx, rightx);
+                break;
+                
+            case kMoreBottomLeft:
+            case kMoreBottomRight:
+                result = fuzzyCompare(rightx, leftx);
+                break;
+                
+            case kMoreLeftBottom:
+            case kMoreRightBottom:
+                result = fuzzyCompare(lefty, righty);
+                break;
+                
+            case kMoreLeftTop:
+            case kMoreRightTop:
+                result = fuzzyCompare(righty, lefty);
+                break;
+        }
+    }
+    
+    return result;
+}

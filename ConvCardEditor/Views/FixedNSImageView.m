@@ -26,6 +26,7 @@
 @synthesize maxZoom;
 @synthesize minZoom;
 
+
 - (id)initWithFrame:(NSRect)frameRect
 {
 //    NSLog(@"%@ -initWithFrame(Rect: %@)", [self class], NSStringFromRect(frameRect));

@@ -20,4 +20,8 @@
     // convenience method:
 - (void)removeLocationWithIndex:(NSUInteger)index;
 
+    // (Especially after duplication) Make sure the numParts value
+    // is correct.
+- (void)validateParts;
+
 @end

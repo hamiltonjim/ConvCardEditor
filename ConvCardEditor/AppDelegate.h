@@ -80,10 +80,16 @@
 
 - (IBAction)runPreferences:(id)sender;
 
+- (void)cleanupNibObjects:(NSArray *)topLevelObjects;
+
 #pragma mark DEBUGGING
 - (IBAction)registeredObjects:(id)sender;
 - (IBAction)updatedObjects:(id)sender;
 
 - (IBAction)objectCounts:(id)sender;
+
+- (IBAction)logClicks:(id)sender;
+- (IBAction)keyViewLoop:(id)sender;
+
 
 @end

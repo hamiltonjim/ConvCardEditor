@@ -162,4 +162,25 @@
     return [parent reindexFrom:fromIndex to:toIndex error:error];
 }
 
+- (NSString *)description
+{
+    NSString *start = [NSString stringWithFormat:@"%@ value %ld \n\tframe: %@\n\tbounds: %@",
+                       self.class, self.integerValue,
+                       NSStringFromRect(self.frame), NSStringFromRect(self.bounds)];
+    return start;
+}
+
+#pragma mark DEBUGGING
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseDown:theEvent];
+}
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
+    [super mouseUp:theEvent];
+}
+
 @end

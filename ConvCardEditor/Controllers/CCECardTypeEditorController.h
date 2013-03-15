@@ -15,20 +15,19 @@
 
 @interface CCECardTypeEditorController : NSResponder <NSWindowDelegate>
 
-@property IBOutlet NSView *cardTypeHeaderView;
-@property NSManagedObject *cardType;
-@property IBOutlet NSTextField *artworkFileName;
-@property IBOutlet NSTextField *cardTypeName;
+    // Top objects in the nib; these need to be cleaned up manually.
+@property NSArray *topObjects;
 
-@property IBOutlet NSView *partnershipHeaderView;
+@property (weak) IBOutlet NSView *cardTypeHeaderView;
+@property NSManagedObject *cardType;
+@property (weak) IBOutlet NSTextField *artworkFileName;
+
+@property (weak) IBOutlet NSView *partnershipHeaderView;
 @property NSManagedObject *partnership;
-@property IBOutlet NSTextField *partnershipName;
 
 @property IBOutlet CCEControlsViewController *controlsView;
 
 @property (weak, readonly) NSManagedObjectContext *managedObjectContext;
-
-@property NSMutableSet *viewControllers;
 
     // editMode is YES to edit the card itself, NO to edit the partnership agreements
 @property BOOL editMode;

@@ -113,7 +113,7 @@ static NSColor *selectedOtherColor;
     
     if ([CCDebuggableControlEnable enabled] || debugMode) {
         NSColor *dColor;
-        switch (debugMode) {
+        switch (debugMode & ~kShowHighlight) {
             case kOff:
                 return;
                 
