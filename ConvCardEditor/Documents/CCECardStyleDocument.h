@@ -7,21 +7,22 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "CCEDocument.h"
 
 @class FixedNSImageView;
 @class AppDelegate;
 
 extern NSString *cceStyledocType;
 
-@interface CCECardStyleDocument : NSDocument
+@interface CCECardStyleDocument : CCEDocument
 
 - (IBAction)importButton:(id)sender;
 - (IBAction)cancel:(id)sender;
 
-- (void)doImport;
-
 + (void)exportCardStyle:(NSManagedObject *)card;
 
-+ (void)importCardStyleTo:(AppDelegate *)delegate;
++ (void)importCardStyle;
+
+- (void)doImport;
 
 @end

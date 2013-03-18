@@ -32,7 +32,6 @@
 @property NSFileWrapper *artworkFile;
 
 - (void)buildRepresentationFrom:(NSManagedObject *)cardStyle;
-- (void)doSave;
 
 - (void)showImport;
 
@@ -73,8 +72,6 @@ static NSString *dictKey = @"dict";
 
 - (NSString *)windowNibName
 {
-    // Override returning the nib file name of the document
-    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
     return @"CCECardStyleDocument";
 }
 
@@ -117,8 +114,17 @@ static NSString *dictKey = @"dict";
     [window makeKeyAndOrderFront:self];
 }
 
++ (NSArray *)allowedFileTypes
+{
+    return @[cceStyledocType];
+}
+
 - (NSFileWrapper *)fileWrapperOfType:(NSString *)typeName error:(NSError **)outError
 {
+    if (![self validateType:typeName error:outError]) {
+        return nil;
+    }
+    
         // artwork
     NSString *dictUrl = [representation valueForKey:@"fileUrl"];
     NSURL *artworkUrl = [NSURL fileURLWithPath:dictUrl];
@@ -152,7 +158,10 @@ static NSString *dictKey = @"dict";
     // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
     NSError *error = nil;
     @try {
-        if (![fileWrapper isDirectory] || ![cceStyledocType isEqualToString:typeName]) {
+        if (![self validateType:typeName error:&error]) {
+            return NO;
+        }
+        if (![fileWrapper isDirectory]) {
             error = [NSError errorWithDomain:applicationDomain code:100 userInfo:@{@"BadFileType": [NSNull null]}];
             return NO;
         }
@@ -190,11 +199,6 @@ static NSString *dictKey = @"dict";
     return error == nil;
 }
 
-+ (BOOL)autosavesInPlace
-{
-    return YES;
-}
-
 
 + (void)exportCardStyle:(NSManagedObject *)card
 {
@@ -205,43 +209,37 @@ static NSString *dictKey = @"dict";
 
 }
 
-+ (void)importCardStyleTo:(AppDelegate *)delegate
++ (void)customizeOpenPanel:(NSOpenPanel *)panel
 {
-    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
-    
-    [openPanel setMessage:NSLocalizedString(@"Import from:", @"Import from:")];
-    [openPanel setAllowedFileTypes:[self readableTypes]];
-    [openPanel setExtensionHidden:YES];
-    [openPanel setPrompt:NSLocalizedString(@"Import", @"Import")];
-    [openPanel setTitle:NSLocalizedString(@"Import Card Definition", @"Import Card Definition")];
-    [openPanel setTreatsFilePackagesAsDirectories:NO];
-    
-    
-    [openPanel beginWithCompletionHandler:^(NSInteger result) {
-        if (result == NSFileHandlingPanelOKButton) {
-            NSURL *url = [[openPanel URLs] objectAtIndex:0];
-            CCECardStyleDocument *doc = [[CCECardStyleDocument alloc] initWithContentsOfURL:url
-                                                                                     ofType:[url pathExtension]
-                                                                                      error:NULL];
-            if (!result) {
-                NSBeep();
-            } else {
-                [doc makeWindowControllers];
-                [doc showWindows];
-                [doc setDelegate:delegate];
-                [delegate documentHasOpened:doc];
-            }
-        }
-    }];
+    [panel setMessage:NSLocalizedString(@"Import from:", @"Import from:")];
+    [panel setPrompt:NSLocalizedString(@"Import", @"Import")];
+    [panel setTitle:NSLocalizedString(@"Import Card Definition", @"Import Card Definition")];
 }
 
-+ (NSArray *)writableTypes
++ (void)importCardStyle
 {
-    return @[cceStyledocType];
+    [self doOpen];
 }
-+ (NSArray *)readableTypes
+
++ (void)completeOpen:(NSOpenPanel *)panel
+          withResult:(NSInteger)result
 {
-    return @[cceStyledocType];
+    if (result == NSFileHandlingPanelOKButton) {
+        NSURL *url = [[panel URLs] objectAtIndex:0];
+        CCECardStyleDocument *doc =
+        [[CCECardStyleDocument alloc] initWithContentsOfURL:url
+                                                     ofType:[url pathExtension]
+                                                      error:NULL];
+        if (!result) {
+            NSBeep();
+        } else {
+            AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
+            [doc makeWindowControllers];
+            [doc showWindows];
+            [doc setDelegate:delegate];
+            [delegate documentHasOpened:doc];
+        }
+    }
 }
 
     // Turn the card object into a dictionary; exclude _instances_ of the card.
@@ -251,38 +249,12 @@ static NSString *dictKey = @"dict";
     representation = [cardStyle toDictionaryExcludingKeys:excludeSet excludeLevels:2];
 }
 
-- (void)doSave
+- (void)customizeSavePanel:(NSSavePanel *)panel
 {
-    NSSavePanel *savePanel = [NSSavePanel savePanel];
-    [savePanel setMessage:NSLocalizedString(@"Export to:", @"Export to:")];
-    [savePanel setAllowedFileTypes:[[self class] writableTypes]];
-    [savePanel setCanSelectHiddenExtension:YES];
-    [savePanel setExtensionHidden:YES];
-    [savePanel setPrompt:NSLocalizedString(@"Export", @"Export")];
-    [savePanel setNameFieldStringValue:[representation valueForKey:@"cardName"]];
-    [savePanel setTitle:NSLocalizedString(@"Export Card Definition", @"Export Card Definition")];
-    [savePanel setTreatsFilePackagesAsDirectories:NO];
+    [panel setPrompt:NSLocalizedString(@"Export", @"Export")];
+    [panel setNameFieldStringValue:[representation valueForKey:@"cardName"]];
+    [panel setTitle:NSLocalizedString(@"Export Card Definition", @"Export Card Definition")];
 
-    [savePanel beginWithCompletionHandler:^(NSInteger result) {
-        if (result == NSFileHandlingPanelOKButton) {
-            NSError *error;
-            NSURL *dest = [savePanel URL];
-            NSURL *temp = nil;
-            CCEFileOps *fileOps = [CCEFileOps instance];
-            if ([fileOps fileExistsAtURL:dest]) {
-                temp = [fileOps safeRemoveFile:dest];
-            }
-            
-            BOOL did = [self writeToURL:dest ofType:cceStyledocType error:&error];
-            
-            if (!did) {
-                NSLog(@"Error %@", error);
-                [fileOps undoSafeRemoveFile:temp backTo:dest];
-            } else {
-                [fileOps finalizeRemoveFile:temp];
-            }
-        }
-    }];
 }
 
 - (IBAction)importButton:(id)sender
