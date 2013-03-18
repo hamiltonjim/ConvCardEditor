@@ -28,6 +28,7 @@
 
 @interface AppDelegate ()
 
+@property (weak) IBOutlet NSMenu *mainMenu;
 @property (weak) IBOutlet NSMenuItem *debugMenu;
 
 - (void)flushColors;
@@ -73,6 +74,7 @@
 
 @synthesize myDocuments;
 
+@synthesize mainMenu;
 @synthesize debugMenu;
 
 - (void) flushColors {
@@ -498,7 +500,7 @@
 
 - (IBAction)importCardType:(id)sender
 {
-    [CCECardStyleDocument importCardStyleTo:self];
+    [CCECardStyleDocument importCardStyle];
 }
 
 - (IBAction)exportCardType:(id)sender
@@ -562,8 +564,13 @@
         self.normalColor = [object colorForKey:keyPath];
     } else if ([cceEnableDebugging isEqualToString:keyPath]) {
         NSNumber *val = [change valueForKey:NSKeyValueChangeNewKey];
-        BOOL state = !val.boolValue;
-        [debugMenu setHidden:state];
+        BOOL state = val.boolValue;
+        if (state) {
+            [mainMenu addItem:debugMenu];
+        } else {
+            if ([mainMenu indexOfItem:debugMenu] >= 0)
+                [mainMenu removeItem:debugMenu];
+        }
     }
     
 }
@@ -666,21 +673,6 @@
     }
     
     return YES;
-}
-
-- (IBAction)keyViewLoop:(id)sender
-{
-    NSView *aKeyView = [NSView focusView];
-    NSLog(@"Starting key view: %@", aKeyView);
-    NSView *nextView = aKeyView;
-    while (nextView) {
-        nextView = nextView.nextKeyView;
-        if (nextView == aKeyView) {
-            NSLog(@"Loop complete");
-            break;
-        }
-        NSLog(@"Keyview: %@", nextView);
-    }
 }
 
 @end

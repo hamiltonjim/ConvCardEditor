@@ -89,7 +89,6 @@
 - (IBAction)objectCounts:(id)sender;
 
 - (IBAction)logClicks:(id)sender;
-- (IBAction)keyViewLoop:(id)sender;
 
 
 @end
