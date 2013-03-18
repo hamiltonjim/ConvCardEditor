@@ -57,6 +57,9 @@ enum EDebugState {
 @property (nonatomic) NSColor *color;
 @property (nonatomic) NSString *colorKey;
 
+    // clickCount MAY be monitored
+@property (readonly) NSUInteger clickCount;
+
     // reindexing is delegated to parent control (if any; irrelevant if no parent)
 - (BOOL)isReindexing;
 - (NSInteger)reindexFrom:(NSUInteger)fromIndex
@@ -86,5 +89,7 @@ enum EDebugState {
     // as selected, and the other parts as "selected-other"
 - (void)setDebugMode:(int)newDebugMode index:(NSInteger)index;
 
+    // a control with multiple cells should implement -unionCellRects
+- (NSRect)unionCellRects;
 
 @end

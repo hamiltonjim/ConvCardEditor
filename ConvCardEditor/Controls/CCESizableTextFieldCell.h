@@ -39,7 +39,9 @@ enum ETextControlSizerHandle {
 
 @property (weak, nonatomic) id target;
 @property (nonatomic) SEL action;
+@property (nonatomic) SEL doubleAction;
 
 + (NSPoint)insetSize;
+
 
 @end

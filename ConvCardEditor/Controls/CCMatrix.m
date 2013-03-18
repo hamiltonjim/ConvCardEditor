@@ -654,6 +654,21 @@ mask2index(NSUInteger mask) {
     }];
 }
 
+    // return the union of all cell rects (not including self's rect)
+- (NSRect)unionCellRects
+{
+    NSRect unionRect = NSZeroRect;
+    
+    NSView *targetView = self.superview;
+    
+    for (NSControl *ctl in controls) {
+        NSRect curRect = [targetView convertRect:ctl.frame fromView:self];
+        unionRect = NSUnionRect(unionRect, curRect);
+    }
+    
+    return unionRect;
+}
+
 #pragma mark TESTING
 
 - (void)advanceTest

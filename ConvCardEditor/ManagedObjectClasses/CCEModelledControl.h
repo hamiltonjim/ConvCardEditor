@@ -24,6 +24,8 @@ enum kMultiCheckShape {
 
 @interface CCEModelledControl : NSManagedObject
 
+@property (nonatomic) NSString *name;
+
 @property (readonly, nonatomic) NSString *controlType;
 @property (readonly, nonatomic) NSNumber *isIndexed;
 @property (readonly, nonatomic) NSNumber *numParts;
@@ -33,11 +35,12 @@ enum kMultiCheckShape {
 @property (nonatomic) CCEModelledControl *tabToNext;
 @property (nonatomic) CCEModelledControl *tabToPrevious;
 
+- (BOOL)validateName:(id *)ioValue
+               error:(NSError * __autoreleasing *)outError;
+
 @end
 
 @interface CCEModelledControl (Control)
-
-@property (nonatomic) NSString *name;
 
 @property (nonatomic) NSManagedObject *cardType;
 @property (nonatomic) NSSet *values;

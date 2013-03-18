@@ -69,10 +69,11 @@ static BOOL CCDebuggableControl_logClicks = NO;
             break;
             
         default:
-            return;
+            eventName = [NSString stringWithFormat:@"Event(%@)", event.description];
+            break;
     }
     
-    NSLog(@"%@ in view %@ at %@", eventName, view, NSStringFromPoint(event.locationInWindow));
+    NSLog(@"%@ (%ld) in view %@ at %@", eventName, event.clickCount, view, NSStringFromPoint(event.locationInWindow));
 }
 
 + (void)logIfWanted:(NSInteger)part inMatrix:(CCMatrix *)view

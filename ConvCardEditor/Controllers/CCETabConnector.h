@@ -16,10 +16,10 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "CCDebuggableControl.h"
 
 @class CCEControlsViewController;
 @class CCETextModel;
-@class CCESizableTextField;
 
 @interface CCETabConnector : NSObject
 
@@ -28,13 +28,15 @@
 
 @property NSNumber *inSetMode;
 
-- (void)doOpen:(CCESizableTextField *)curSelected;
+- (void)doOpen:(NSControl <CCDebuggableControl> *)curSelected;
 
 - (IBAction)startConnection:(id)sender;
-- (void)chooseTarget:(CCESizableTextField *)target;
+- (void)chooseTarget:(NSControl <CCDebuggableControl> *)target;
 - (IBAction)finishConnection:(id)sender;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)unset:(id)sender;
+
+- (BOOL)shouldOpenFor:(NSControl <CCDebuggableControl> *)object;
 
 @end

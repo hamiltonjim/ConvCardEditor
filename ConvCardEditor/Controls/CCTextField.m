@@ -137,7 +137,7 @@ static CGFloat defaultLineHeight;
     // will force the value to be NSString, even for numeric values.
 - (NSString *)valueBindingTransformerName
 {
-    return cceIntegerToStringTransformer;
+    return cceStringToStringTransformer;
 }
 
 + (AppDelegate *)appDelegate

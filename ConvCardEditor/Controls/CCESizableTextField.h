@@ -36,6 +36,7 @@ NSRect JFH_RectFromPoints(NSPoint p1, NSPoint p2);
 @property (readonly) CGFloat scale;
 
 @property (getter = isNumberField) BOOL numberField;
+//@property (readonly) NSUInteger clickCount;
 
     // Returns the whole number of lines for the given height in points.
     // Amount will be rounded to nearest.
@@ -74,6 +75,8 @@ NSRect JFH_RectFromPoints(NSPoint p1, NSPoint p2);
 
 - (void)setColorKey:(NSString *)aColorKey;
 - (NSString *)colorKey;
+
+- (BOOL)isPointInsideMe:(NSPoint)aPoint;
 
 + (NSInteger)count;
 

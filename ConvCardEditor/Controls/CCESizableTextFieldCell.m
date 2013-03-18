@@ -197,7 +197,23 @@ static NSColor *highlightColor;
 
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
+    [CCDebuggableControlEnable logIfWanted:event inView:controlView];
+    
     NSPoint where = [controlView convertPoint:event.locationInWindow fromView:nil];
+    
+    if (NSPointInRect(where, textRect)) {
+        BOOL handled = NO;
+        if (event.clickCount > 1) {
+            if (_doubleAction != nil) {
+                [(NSControl *)controlView sendAction:_doubleAction to:nil];
+                handled = YES;
+            }
+        }
+        if (!handled) {
+            
+        }
+        return NSCellHitContentArea;
+    }
     
     const int kMax = useDoubleHandles ? kDoubleHandleCount : kSimpleHandleCount;
     
@@ -213,6 +229,11 @@ static NSColor *highlightColor;
     }
     
     return NSCellHitNone;
+}
+
++ (BOOL)prefersTrackingUntilMouseUp
+{
+    return YES;
 }
 
 - (BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView *)controlView

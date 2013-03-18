@@ -58,6 +58,10 @@ static CGFloat defaultLineHeight;
 @property NSRect borderRect;
 @property (nonatomic) int debugMode;
 
+@property (readwrite) NSUInteger clickCount;
+
+@property NSUInteger testingIndex;
+
 + (AppDelegate *)appDelegate;
 + (NSFont *)defaultFont;
 
@@ -291,11 +295,11 @@ static CGFloat defaultLineHeight;
         
         [self addSubview:insideTextField];
         
-        NSButton *transparentButton = [[NSButton alloc] initWithFrame:insideRect];
-        [transparentButton setTransparent:YES];
-        [transparentButton setTarget:self];
-        [transparentButton setAction:@selector(relay:)];
-        [self addSubview:transparentButton];
+//        NSButton *transparentButton = [[NSButton alloc] initWithFrame:insideRect];
+//        [transparentButton setTransparent:YES];
+//        [transparentButton setTarget:self];
+//        [transparentButton setAction:@selector(relay:)];
+//        [self addSubview:transparentButton];
         
         [self setAutoresizesSubviews:YES];
         [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
@@ -430,6 +434,16 @@ static CGFloat defaultLineHeight;
     return [insideTextField colorKey];
 }
 
+- (BOOL)isPointInsideMe:(NSPoint)aPoint
+{
+    return NSPointInRect(aPoint, insideTextField.frame);
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
 #pragma mark NUMERIC or ANY TEXT
 
     // just pass thru to inner control...
@@ -469,10 +483,10 @@ static CGFloat defaultLineHeight;
             @"Plus, one really really really really really really long string, to test whether the control wraps or truncates"
         };
         static const int kNumStrs = sizeof strings / sizeof strings[0];
-        static int index = 0;
         
+            // note: _testingIndex is any random garbage; the only important thing is its value modulo kNumStrs
+        NSUInteger index = _testingIndex++ % kNumStrs;
         [insideTextField setStringValue:strings[index]];
-        if (++index >= kNumStrs) index = 0;
     }
 }
 
@@ -485,6 +499,7 @@ static CGFloat defaultLineHeight;
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+    _clickCount = theEvent.clickCount;
     [CCDebuggableControlEnable logIfWanted:theEvent inView:self];
     [super mouseDown:theEvent];
 }

@@ -29,6 +29,8 @@ NSString *entityLocation = @"Location";
 
 @implementation CCEModelledControl
 
+@dynamic name;
+
 @synthesize controlType;
 @synthesize isIndexed;
 @synthesize numParts;
@@ -90,6 +92,24 @@ NSString *entityLocation = @"Location";
     }
     
     return [super valueForUndefinedKey:key];
+}
+
+- (BOOL)validateName:(id *)ioValue
+               error:(NSError * __autoreleasing *)outError
+{
+    if (*ioValue == nil || [(NSString *)*ioValue length] < 2) {
+        if (outError) {
+            NSString *errStr = NSLocalizedString(@"Every object must have a name, of at least 2 characters.",
+                                                 @"Object name error, must not be nil");
+            NSDictionary *userInfoDict = @{ NSLocalizedDescriptionKey : errStr };
+            *outError = [[NSError alloc] initWithDomain:applicationDomain
+                                                   code:5000
+                                               userInfo:userInfoDict];
+        }
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end

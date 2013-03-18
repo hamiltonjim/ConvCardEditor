@@ -9,7 +9,7 @@
 #import "CCETabConnector.h"
 #import "CCEControlsViewController.h"
 #import "CCETextModel.h"
-#import "CCESizableTextField.h"
+//#import "CCESizableTextField.h"
 
 static const NSTimeInterval kInterval = 0.2;
 static const NSInteger kMaxIterations = 20;
@@ -27,8 +27,8 @@ enum ETimerSteps {
 
 @property IBOutlet NSPanel *infoPanel;
 
-@property (weak) CCESizableTextField *selected;
-@property (weak) CCESizableTextField *candNext;
+@property (weak) NSControl <CCDebuggableControl> *selected;
+@property (weak) NSControl <CCDebuggableControl> *candNext;
 
 @property (weak) CCETextModel *currentlySelected;
 @property (weak) CCEModelledControl *nextRespCandidate;
@@ -59,7 +59,15 @@ enum ETimerSteps {
 @synthesize animator;
 @synthesize iterations;
 
-- (void)doOpen:(CCESizableTextField *)curSelected
+- (BOOL)shouldOpenFor:(NSControl<CCDebuggableControl> *)object
+{
+    return
+    object.acceptsFirstResponder &&
+    [object respondsToSelector:@selector(clickCount)] &&
+    object.clickCount > 1;
+}
+
+- (void)doOpen:(NSControl<CCDebuggableControl> *)curSelected
 {
     selected = curSelected;
     if (selected == nil)
@@ -90,7 +98,7 @@ enum ETimerSteps {
 {
 }
 
-- (void)chooseTarget:(CCESizableTextField *)target
+- (void)chooseTarget:(NSControl <CCDebuggableControl> *)target
 {
     self.candNext = target;
     
@@ -170,8 +178,8 @@ enum ETimerSteps {
 {
     [self unAnimate];
     
-    candNext = nil;
-    nextRespCandidate = nil;
+    self.candNext = nil;
+    self.nextRespCandidate = nil;
 }
 
 @end

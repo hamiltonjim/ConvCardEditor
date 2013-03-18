@@ -4,6 +4,39 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>partnership</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>card.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Partnership</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>cardstyle</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>CardStyle.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Card Style</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSTypeIsPackage</key>
+			<true/>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
@@ -27,43 +60,10 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2012 Jim Hamilton. All rights reserved.</string>
+	<string>Copyright © 2013 Jim Hamilton. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Partnership</string>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>partnership</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>card.icns</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Card Style</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>cardstyle</string>
-			</array>
-			<key>LSTypeIsPackage</key>
-			<true/>
-			<key>CFBundleTypeIconFile</key>
-			<string>CardStyle.icns</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-	</array>
 </dict>
 </plist>
