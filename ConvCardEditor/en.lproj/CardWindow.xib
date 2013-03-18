@@ -1945,7 +1945,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="808746801"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="264768818"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="822028797">
@@ -1987,7 +1987,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="264768818"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="656841750"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">100</int>
 									<bool key="NSEnabled">YES</bool>
@@ -2030,7 +2030,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="656841750"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="191486171"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">200</int>
 									<bool key="NSEnabled">YES</bool>
@@ -2073,7 +2073,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<string key="NSFrame">{{8, 8}, {32, 32}}</string>
 									<reference key="NSSuperview" ref="191486171"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="279519153"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSTag">300</int>
 									<bool key="NSEnabled">YES</bool>
@@ -2694,14 +2694,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSLabel">value: selection.name</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">selection.name</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSNullPlaceholder</string>
-								<string key="NS.object.0">Field Name (required)</string>
-							</object>
+							<dictionary key="NSOptions">
+								<boolean value="YES" key="NSContinuouslyUpdatesValue"/>
+								<string key="NSNullPlaceholder">Field Name (required)</string>
+							</dictionary>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2870</int>
+					<int key="connectionID">3542</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -10142,7 +10142,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">3541</int>
+			<int key="maxID">3542</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -10417,6 +10417,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">CCEControlsSuperView</string>
 					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">validateControls:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">validateControls:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">validateControls:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="superImageView">FixedNSImageView</string>
 						<string key="viewController">CCEControlsViewController</string>
@@ -10461,7 +10472,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="scaleSmaller:">id</string>
 						<string key="scaleToWindow:">id</string>
 						<string key="scaleZero:">id</string>
+						<string key="setAlertColor:">id</string>
+						<string key="setAnnounceColor:">id</string>
 						<string key="setControlColorCode:">id</string>
+						<string key="setNormalColor:">id</string>
 						<string key="showResponderChain:">id</string>
 						<string key="showSelectedControlInfo:">id</string>
 						<string key="showWindow:">id</string>
@@ -10558,8 +10572,20 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">scaleZero:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="setAlertColor:">
+							<string key="name">setAlertColor:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setAnnounceColor:">
+							<string key="name">setAnnounceColor:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="setControlColorCode:">
 							<string key="name">setControlColorCode:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setNormalColor:">
+							<string key="name">setNormalColor:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="showResponderChain:">
