@@ -10,6 +10,7 @@ NSString *cceStringToIntegerTransformer = @"CCEStringToIntegerTransformer";
 NSString *cceStringToDoubleTransformer = @"CCEStringToDoubleTransformer";
 NSString *cceIntegerToStringTransformer = @"CCEIntegerToStringTransformer";
 NSString *cceDoubleToStringTransformer = @"CCEDoubleToStringTransformer";
+NSString *cceStringToStringTransformer = @"CCEStringToStringTransformer";
 
 #import "CCEValueBindingTransformer.h"
 
@@ -18,14 +19,15 @@ enum ENumberType {
     kInteger = 1,
     kDouble,
     kFloat,
-    kBoolean
+    kBoolean,
+    kString     // doesn't actually transform anything
 };
 
 @interface CCEValueBindingTransformer ()
 
 @property NSInteger tType;
 
-- (NSNumber *)typedNumber:(NSString *)strValue;
+- (id)typedNumber:(NSString *)strValue;
 - (NSInteger)type;
 
 @end
@@ -68,9 +70,6 @@ enum ENumberType {
 
 - (id)transformedValue:(id)value
 {
-//    if (![value isKindOfClass:[NSString class]]) {
-//        return nil;
-//    }
     return [self typedNumber:value];
 }
 
@@ -84,7 +83,7 @@ enum ENumberType {
     return [(NSNumber *)value stringValue];
 }
 
-- (NSNumber *)typedNumber:(NSString *)strValue
+- ()typedNumber:(NSString *)strValue
 {
     NSNumber *value = nil;
     switch (tType) {
@@ -103,6 +102,10 @@ enum ENumberType {
         case kBoolean:
             value = [NSNumber numberWithBool:strValue.boolValue];
             break;
+            
+        case kString:
+                // no actual transformation!
+            return strValue;
             
         default:
             [NSException raise:@"subclassResponsibility"
@@ -162,6 +165,17 @@ enum ENumberType {
 - (NSInteger)type
 {
     return kInteger;
+}
+
+@end
+
+@implementation CCEStringToStringTransformer
+
++ (Class)transformedValueClass { return [NSString class]; }
+
+- (NSInteger)type
+{
+    return kString;
 }
 
 @end
