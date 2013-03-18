@@ -48,6 +48,9 @@ enum EArrowKeyMultipliers {
 @synthesize lastDragRect;
 @synthesize inDrag;
 
+@synthesize showValidationErrors;
+@synthesize validationErrorRects;
+
 - (void)awakeFromNib
 {
     selectionDragColor = [NSColor colorWithCalibratedRed:0.4 green:0.4 blue:0.4 alpha:0.25];
@@ -172,6 +175,18 @@ enum EArrowKeyMultipliers {
     }
     
     [super drawRect:dirtyRect];
+    
+    if (showValidationErrors) {
+        NSColor *errorColor = [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:0.4];
+        [errorColor set];
+        for (NSValue *rectValue in validationErrorRects) {
+            NSRect rect = rectValue.rectValue;
+            rect = NSInsetRect(rect, -3.0, -3.0);
+            
+            NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
+            [path fill];
+        }
+    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -272,5 +287,27 @@ enum EArrowKeyMultipliers {
     }
 }
 
+- (IBAction)validateControls:(id)sender
+{
+    NSMutableArray *errRects = [NSMutableArray array];
+    NSArray *controls = viewController.controls;
+    for (NSControl <CCDebuggableControl> * ctl in controls) {
+        CCEModelledControl *model = ctl.modelledControl;
+        id name = model.name;
+        if (![model validateName:&name error:NULL]) {
+            NSRect rect;
+            if ([ctl respondsToSelector:@selector(unionCellRects)]) {
+                rect = ctl.unionCellRects;
+            } else {
+                rect = ctl.frame;
+            }
+            [errRects addObject:[NSValue valueWithRect:rect]];
+        }
+    }
+    
+    validationErrorRects = errRects;
+    showValidationErrors = errRects.count > 0;
+    [self setNeedsDisplay:YES];
+}
 
 @end

@@ -19,4 +19,9 @@
 
 @property (nonatomic) BOOL gridState;
 
+@property (nonatomic) BOOL showValidationErrors;
+@property (nonatomic) NSArray *validationErrorRects;
+
+- (IBAction)validateControls:(id)sender;
+
 @end

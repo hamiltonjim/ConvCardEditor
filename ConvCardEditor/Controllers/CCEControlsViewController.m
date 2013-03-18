@@ -863,7 +863,7 @@ NSPoint roundPt(NSPoint pt)
         NSInteger index = 0;
         
         if (tabConnector.inSetMode.boolValue) {
-            if ([sender isKindOfClass:[CCESizableTextField class]]) {
+            if ([sender acceptsFirstResponder]) {
                 [tabConnector chooseTarget:sender];
                 return;
             } else {
@@ -871,6 +871,8 @@ NSPoint roundPt(NSPoint pt)
             }
         } else if (tabConnector.connectorPanel.isVisible) {
             [tabConnector finishConnection:sender];
+        } else if ([tabConnector shouldOpenFor:sender]) {
+            [tabConnector doOpen:sender];
         }
         
         if ([sender isKindOfClass:[NSButton class]]) {
