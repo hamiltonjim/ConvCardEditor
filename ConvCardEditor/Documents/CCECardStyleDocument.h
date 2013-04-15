@@ -9,9 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #import "CCEDocument.h"
 
-@class FixedNSImageView;
-@class AppDelegate;
-
 extern NSString *cceStyledocType;
 
 @interface CCECardStyleDocument : CCEDocument

@@ -150,7 +150,7 @@ static const double fuzziness = 5.0;
     [req setPredicate:predicate];
     [req setSortDescriptors:nil];
     
-    NSArray *result = [appContext executeFetchRequest:req error:nil];
+    NSArray *result = [appContext executeFetchRequest:req error:NULL];
     if (result != nil && [result count] > 0) {
             // return ANY result
         object = [result objectAtIndex:0];
@@ -173,6 +173,26 @@ static const double fuzziness = 5.0;
     return result;
 }
 
+- (NSManagedObject *)cardTypeWithName:(NSString *)name
+{
+    NSEntityDescription *cardDesc = [NSEntityDescription entityForName:@"CardType"
+                                                inManagedObjectContext:appContext];
+    NSFetchRequest *req = [NSFetchRequest new];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"cardName like %@", name];
+    [req setEntity:cardDesc];
+    [req setPredicate:predicate];
+    [req setSortDescriptors:nil];
+    
+    NSArray *result = [appContext executeFetchRequest:req error:NULL];
+    
+    NSManagedObject *object = nil;
+    if (result != nil && [result count] > 0) {
+            // return ANY result
+        object = [result objectAtIndex:0];
+    }
+    return object;
+}
+
 - (NSManagedObject *)settingForModel:(CCEModelledControl *)model
                       andPartnership:(NSManagedObject *)partnership
 {
@@ -182,6 +202,16 @@ static const double fuzziness = 5.0;
     NSManagedObject *obj = (partnershipSettings == nil || partnershipSettings.count == 0) ?
             nil : [partnershipSettings anyObject];
     return obj;
+}
+
+- (NSSet *)modelByName:(NSString *)name
+           controlType:(NSString *)type
+               inModel:(NSManagedObject *)card
+{
+    return
+    [card.settings objectsPassingTest:^BOOL(CCEModelledControl *obj, BOOL *stop) {
+        return [name isEqualToString:obj.name] && [type isEqualToString:obj.controlType];
+    }];
 }
 
 @end

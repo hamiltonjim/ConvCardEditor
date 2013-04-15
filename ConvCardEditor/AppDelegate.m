@@ -13,6 +13,7 @@
 #import "CCEUnitNameTransformer.h"
 #import "CCEUnitTransformer.h"
 #import "CCECardStyleDocument.h"
+#import "CCEPartnershipDocument.h"
 #import "CCEEntityFetcher.h"
 #import "NSUserDefaults+CCEColorOps.h"
 #import "CCEMathTransformer.h"
@@ -71,6 +72,8 @@
 
 @synthesize choosePartnershipPanel;
 @synthesize partnershipChooser;
+@synthesize partActionButton;
+@synthesize partDirectionLabel;
 
 @synthesize myDocuments;
 
@@ -428,6 +431,11 @@
 }
 
 - (IBAction)openPartnership:(id)sender {
+    [partDirectionLabel setStringValue:NSLocalizedString(@"Choose partnership to edit",
+                                                         @"edit partnership direction")];
+    [partActionButton setStringValue:NSLocalizedString(@"Edit", @"Edit")];
+    [partActionButton setAction:@selector(doOpenPartnership:)];
+    
     [choosePartnershipPanel makeKeyAndOrderFront:self];
 }
 
@@ -520,16 +528,29 @@
     NSManagedObject *cardType = [[cardChooser selectedObjects] objectAtIndex:0];
     
     [CCECardStyleDocument exportCardStyle:cardType];
-    return;
 }
 
 - (IBAction)importPartnership:(id)sender
 {
-    NSLog(@"importPartnership not implemented yet");
+    [CCEPartnershipDocument importPartnership];
 }
 - (IBAction)exportPartnership:(id)sender
 {
-    NSLog(@"exportPartnership not implemented yet");
+    [partDirectionLabel setStringValue:NSLocalizedString(@"Choose partnership convention card to export",
+                                                         @"export partnership direction")];
+    [partActionButton setTitle:NSLocalizedString(@"Export", @"Export")];
+    [partActionButton setAction:@selector(doPartnershipExport:)];
+    
+    [choosePartnershipPanel makeKeyAndOrderFront:sender];
+}
+
+- (IBAction)doPartnershipExport:(id)sender
+{
+    [choosePartnershipPanel orderOut:sender];
+    
+    NSManagedObject *partnership = [[partnershipChooser selectedObjects] objectAtIndex:0];
+    
+    [CCEPartnershipDocument exportPartnership:partnership];
 }
 
 - (void)watchCheckboxStyle

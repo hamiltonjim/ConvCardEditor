@@ -1,0 +1,3 @@
+#!/bin/bash
+
+genstrings -o OtherResources/en.lproj/ *.m Controllers/*.m Controls/*.m Documents/*.m Utilities/*.m Views/*.m

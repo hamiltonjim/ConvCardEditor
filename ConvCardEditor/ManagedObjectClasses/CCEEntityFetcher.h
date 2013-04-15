@@ -23,8 +23,13 @@
 - (NSManagedObject *)cardUsingGraphicsFile:(NSString *)path;
 
 - (NSArray *)allCardTypes;
+- (NSManagedObject *)cardTypeWithName:(NSString *)name;
 
 - (NSManagedObject *)settingForModel:(CCEModelledControl *)model
                       andPartnership:(NSManagedObject *)partnership;
+
+- (NSSet *)modelByName:(NSString *)name
+           controlType:(NSString *)type
+               inModel:(NSManagedObject *)card;
 
 @end

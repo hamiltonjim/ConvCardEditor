@@ -1491,6 +1491,13 @@ NSPoint roundPt(NSPoint pt)
     [CCEControlTest stopAllTestersInWindow:window];
 }
 
+#pragma mark PRINTING
+
+- (IBAction)printCard:(id)sender
+{
+    [cardImageView print:sender];
+}
+
 #pragma mark VALIDATION
 
 - (BOOL)validateUserInterfaceItem:(NSObject <NSValidatedUserInterfaceItem> *)anItem
@@ -1501,9 +1508,9 @@ NSPoint roundPt(NSPoint pt)
     } else if (action == @selector(cancelTestControl:)) {
         return ![stopTestControlButton isHidden];
     } else if (action == @selector(testAllControls:)) {
-        return [CCEControlTest testerCount] == 0;
+        return editMode && [CCEControlTest testerCount] == 0;
     } else if (action == @selector(stopAllControlTesters:)) {
-        return [CCEControlTest testerCount] > 0;
+        return editMode && [CCEControlTest testerCount] > 0;
     } else if (action == @selector(scaleLarger:)) {
         return [cardImageView canZoomIn];
     } else if (action == @selector(scaleSmaller:)) {
@@ -1562,6 +1569,8 @@ NSPoint roundPt(NSPoint pt)
             [(id)anItem setState:[CCDebuggableControlEnable enabled]];
         }
             // in edit mode, controls are ALWAYS highlighted, so don't undo it...
+        return !editMode;
+    } else if (action == @selector(print:)) {
         return !editMode;
     }
 
@@ -1629,12 +1638,19 @@ NSPoint roundPt(NSPoint pt)
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
 {
+    NSWindow *aWindow = [notification object];
+    if (aWindow != window) {
+        return;
+    }
+    
     if (editMode ) {
         [toolsPaletteController.toolsPalette orderFront:self];
     } else {
         [toolsPaletteController hide];
     }
     [controller activateEditorWindow:self];
+    
+//    [window makeFirstResponder:self];
 }
 
     // enable the "controls visible" mode when template window (or infoPanel) is key

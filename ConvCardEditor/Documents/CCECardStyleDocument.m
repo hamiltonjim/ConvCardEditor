@@ -230,15 +230,13 @@ static NSString *dictKey = @"dict";
         [[CCECardStyleDocument alloc] initWithContentsOfURL:url
                                                      ofType:[url pathExtension]
                                                       error:NULL];
-        if (!result) {
-            NSBeep();
-        } else {
-            AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
-            [doc makeWindowControllers];
-            [doc showWindows];
-            [doc setDelegate:delegate];
-            [delegate documentHasOpened:doc];
-        }
+        AppDelegate *delegate = (AppDelegate *)[NSApp delegate];
+        [doc makeWindowControllers];
+        [doc showWindows];
+        [doc setDelegate:delegate];
+        [delegate documentHasOpened:doc];
+    } else {
+        NSBeep();
     }
 }
 
@@ -253,7 +251,8 @@ static NSString *dictKey = @"dict";
 {
     [panel setPrompt:NSLocalizedString(@"Export", @"Export")];
     [panel setNameFieldStringValue:[representation valueForKey:@"cardName"]];
-    [panel setTitle:NSLocalizedString(@"Export Card Definition", @"Export Card Definition")];
+    [panel setTitle:NSLocalizedString(@"Export Card Definition",
+                                      @"Export Card Definition")];
 
 }
 
@@ -311,8 +310,8 @@ static NSString *dictKey = @"dict";
         if (copiedArtwork) {
                 // TODO remove copied artwork!
         }
-            // TODO display error
-        NSLog(@"Error: %@", error);
+        
+        [self displayError:error];
     }
 }
 

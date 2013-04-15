@@ -35,4 +35,7 @@
 + (void)completeOpen:(NSOpenPanel *)panel
           withResult:(NSInteger)result;
 
+- (void)displayError:(NSError *)error;
+
+
 @end

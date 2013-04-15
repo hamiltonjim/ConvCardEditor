@@ -38,8 +38,9 @@
 
 @property (nonatomic) NSString *value;
 
+    // misnomer: "controls" should be singular -- it's a relation to a control, one for each partnership
+@property (nonatomic) CCEModelledControl *controls;
 @property (nonatomic) NSManagedObject *card;
-@property (nonatomic) NSSet *controls;
 
 @end
 

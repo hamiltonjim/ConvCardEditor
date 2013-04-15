@@ -21,13 +21,16 @@
 		BB1717B616E57C80007D7BD3 /* DuplicatorPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB1717B516E57C80007D7BD3 /* DuplicatorPanel.xib */; };
 		BB23124316D2033500460A59 /* CCEMathTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB23124216D2033500460A59 /* CCEMathTransformer.m */; };
 		BB23124916D2A43E00460A59 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB23124B16D2A43E00460A59 /* Localizable.strings */; };
+		BB38F5CC16F4E9C400D29331 /* ACBL.cardstyle in Resources */ = {isa = PBXBuildFile; fileRef = BB38F5CB16F4E9C400D29331 /* ACBL.cardstyle */; };
+		BB38F5D016F5027C00D29331 /* CCEPartnershipDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BB38F5CE16F5027B00D29331 /* CCEPartnershipDocument.m */; };
+		BB38F5D116F5027C00D29331 /* CCEPartnershipDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB38F5CF16F5027C00D29331 /* CCEPartnershipDocument.xib */; };
+		BB38F5D516F64FC900D29331 /* CCEDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BB38F5D316F64FC900D29331 /* CCEDocument.m */; };
 		BB4EF8C0168E46AF006C7819 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB4EF8BF168E46AF006C7819 /* Cocoa.framework */; };
 		BB4EF8CA168E46AF006C7819 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */; };
 		BB4EF8CC168E46AF006C7819 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8CB168E46AF006C7819 /* main.m */; };
 		BB4EF8D0168E46AF006C7819 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8CE168E46AF006C7819 /* Credits.rtf */; };
 		BB4EF8D3168E46AF006C7819 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8D2168E46AF006C7819 /* AppDelegate.m */; };
 		BB4EF8D6168E46AF006C7819 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8D4168E46AF006C7819 /* MainMenu.xib */; };
-		BB4EF8D9168E46AF006C7819 /* ConvCardEditor.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8D7168E46AF006C7819 /* ConvCardEditor.xcdatamodeld */; };
 		BB4EF8E1168E46AF006C7819 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB4EF8E0168E46AF006C7819 /* SenTestingKit.framework */; };
 		BB4EF8E2168E46AF006C7819 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB4EF8BF168E46AF006C7819 /* Cocoa.framework */; };
 		BB4EF8EA168E46AF006C7819 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB4EF8E8168E46AF006C7819 /* InfoPlist.strings */; };
@@ -61,7 +64,8 @@
 		BBA012FF16CEBD6400C21930 /* CardStyle.icns in Resources */ = {isa = PBXBuildFile; fileRef = BBA012FE16CEBD6400C21930 /* CardStyle.icns */; };
 		BBA0130C16CEE02900C21930 /* CCECardStyleDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */; };
 		BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */; };
-		BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */ = {isa = PBXBuildFile; fileRef = BBA0131416D0503700C21930 /* ACBL.cardstyle */; };
+		BBA244AD16EFD17700E820DF /* CCETabConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA244AC16EFD17700E820DF /* CCETabConnector.m */; };
+		BBA244B716F2958D00E820DF /* ConvCardEditor.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BB4EF8D7168E46AF006C7819 /* ConvCardEditor.xcdatamodeld */; };
 		BBB7695216B58E3F0049662A /* Grid.gif in Resources */ = {isa = PBXBuildFile; fileRef = BBB7695116B58E3F0049662A /* Grid.gif */; };
 		BBB7AB8716DD95EF001D42AE /* CCEValueBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */; };
 		BBB7AB8D16E01E47001D42AE /* CCEValueBindingTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7AB8C16E01E47001D42AE /* CCEValueBindingTransformer.m */; };
@@ -126,6 +130,12 @@
 		BB23124116D2033500460A59 /* CCEMathTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEMathTransformer.h; sourceTree = "<group>"; };
 		BB23124216D2033500460A59 /* CCEMathTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEMathTransformer.m; sourceTree = "<group>"; };
 		BB23124A16D2A43E00460A59 /* en */ = {isa = PBXFileReference; fileEncoding = 2483028224; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BB38F5CB16F4E9C400D29331 /* ACBL.cardstyle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACBL.cardstyle; path = OtherResources/ACBL.cardstyle; sourceTree = "<group>"; };
+		BB38F5CD16F5027B00D29331 /* CCEPartnershipDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEPartnershipDocument.h; path = Documents/CCEPartnershipDocument.h; sourceTree = "<group>"; };
+		BB38F5CE16F5027B00D29331 /* CCEPartnershipDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEPartnershipDocument.m; path = Documents/CCEPartnershipDocument.m; sourceTree = "<group>"; };
+		BB38F5CF16F5027C00D29331 /* CCEPartnershipDocument.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CCEPartnershipDocument.xib; path = Documents/CCEPartnershipDocument.xib; sourceTree = "<group>"; };
+		BB38F5D216F64FC900D29331 /* CCEDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEDocument.h; path = Documents/CCEDocument.h; sourceTree = "<group>"; };
+		BB38F5D316F64FC900D29331 /* CCEDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEDocument.m; path = Documents/CCEDocument.m; sourceTree = "<group>"; };
 		BB4EF8BB168E46AF006C7819 /* ConvCardEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConvCardEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4EF8BF168E46AF006C7819 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		BB4EF8C2168E46AF006C7819 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -139,7 +149,7 @@
 		BB4EF8D1168E46AF006C7819 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BB4EF8D2168E46AF006C7819 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BB4EF8D5168E46AF006C7819 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		BB4EF8D8168E46AF006C7819 /* ConvCardEditor.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ConvCardEditor.xcdatamodel; sourceTree = "<group>"; };
+		BB4EF8D8168E46AF006C7819 /* ConvCardEditor2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ConvCardEditor2.xcdatamodel; sourceTree = "<group>"; };
 		BB4EF8DF168E46AF006C7819 /* ConvCardEditorTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConvCardEditorTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4EF8E0168E46AF006C7819 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		BB4EF8E7168E46AF006C7819 /* ConvCardEditorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ConvCardEditorTests-Info.plist"; sourceTree = "<group>"; };
@@ -196,7 +206,10 @@
 		BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCECardStyleDocument.m; path = Documents/CCECardStyleDocument.m; sourceTree = "<group>"; };
 		BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CCECardStyleDocument.xib; path = Documents/CCECardStyleDocument.xib; sourceTree = "<group>"; };
 		BBA0130E16D00B9800C21930 /* CCEDocumentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCEDocumentDelegate.h; path = Documents/CCEDocumentDelegate.h; sourceTree = "<group>"; };
-		BBA0131416D0503700C21930 /* ACBL.cardstyle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACBL.cardstyle; path = OtherResources/ACBL.cardstyle; sourceTree = "<group>"; };
+		BBA244AB16EFD17700E820DF /* CCETabConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCETabConnector.h; path = Controllers/CCETabConnector.h; sourceTree = "<group>"; };
+		BBA244AC16EFD17700E820DF /* CCETabConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCETabConnector.m; path = Controllers/CCETabConnector.m; sourceTree = "<group>"; };
+		BBA244AE16F1175700E820DF /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		BBA244B216F23DFB00E820DF /* ConvCardEditor.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ConvCardEditor.xcdatamodel; sourceTree = "<group>"; };
 		BBB7695116B58E3F0049662A /* Grid.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Grid.gif; sourceTree = "<group>"; };
 		BBB7AB8516DD95EF001D42AE /* CCEValueBinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEValueBinder.h; path = Controllers/CCEValueBinder.h; sourceTree = "<group>"; };
 		BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCEValueBinder.m; path = Controllers/CCEValueBinder.m; sourceTree = "<group>"; };
@@ -280,6 +293,8 @@
 				BBC77FBB16B9A91F003E366D /* CCELocationController.m */,
 				BBB7AB8516DD95EF001D42AE /* CCEValueBinder.h */,
 				BBB7AB8616DD95EF001D42AE /* CCEValueBinder.m */,
+				BBA244AB16EFD17700E820DF /* CCETabConnector.h */,
+				BBA244AC16EFD17700E820DF /* CCETabConnector.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -366,6 +381,7 @@
 		BB4EF8B0168E46AF006C7819 = {
 			isa = PBXGroup;
 			children = (
+				BBA244AE16F1175700E820DF /* ApplicationServices.framework */,
 				BB4EF8C5168E46AF006C7819 /* ConvCardEditor */,
 				BB4EF8E5168E46AF006C7819 /* ConvCardEditorTests */,
 				BB4EF8BE168E46AF006C7819 /* Frameworks */,
@@ -429,8 +445,8 @@
 		BB4EF8C6168E46AF006C7819 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BB38F5CB16F4E9C400D29331 /* ACBL.cardstyle */,
 				BB23124B16D2A43E00460A59 /* Localizable.strings */,
-				BBA0131416D0503700C21930 /* ACBL.cardstyle */,
 				BB7ADC9B1698AB1E002AAB32 /* Graphics */,
 				BB4EF8C7168E46AF006C7819 /* ConvCardEditor-Info.plist */,
 				BB4EF8C8168E46AF006C7819 /* InfoPlist.strings */,
@@ -511,10 +527,15 @@
 		BBA0130816CEDFEC00C21930 /* Documents */ = {
 			isa = PBXGroup;
 			children = (
+				BB38F5D216F64FC900D29331 /* CCEDocument.h */,
+				BB38F5D316F64FC900D29331 /* CCEDocument.m */,
 				BBA0130E16D00B9800C21930 /* CCEDocumentDelegate.h */,
 				BBA0130916CEE02900C21930 /* CCECardStyleDocument.h */,
 				BBA0130A16CEE02900C21930 /* CCECardStyleDocument.m */,
 				BBA0130B16CEE02900C21930 /* CCECardStyleDocument.xib */,
+				BB38F5CD16F5027B00D29331 /* CCEPartnershipDocument.h */,
+				BB38F5CE16F5027B00D29331 /* CCEPartnershipDocument.m */,
+				BB38F5CF16F5027C00D29331 /* CCEPartnershipDocument.xib */,
 			);
 			name = Documents;
 			sourceTree = "<group>";
@@ -629,9 +650,10 @@
 				BBA012FD16CEBD1A00C21930 /* cardApp.icns in Resources */,
 				BBA012FF16CEBD6400C21930 /* CardStyle.icns in Resources */,
 				BBA0130D16CEE02900C21930 /* CCECardStyleDocument.xib in Resources */,
-				BBA0131516D0503700C21930 /* ACBL.cardstyle in Resources */,
 				BB23124916D2A43E00460A59 /* Localizable.strings in Resources */,
 				BB1717B616E57C80007D7BD3 /* DuplicatorPanel.xib in Resources */,
+				BB38F5CC16F4E9C400D29331 /* ACBL.cardstyle in Resources */,
+				BB38F5D116F5027C00D29331 /* CCEPartnershipDocument.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,7 +690,6 @@
 			files = (
 				BB4EF8CC168E46AF006C7819 /* main.m in Sources */,
 				BB4EF8D3168E46AF006C7819 /* AppDelegate.m in Sources */,
-				BB4EF8D9168E46AF006C7819 /* ConvCardEditor.xcdatamodeld in Sources */,
 				BB0E5F5416965630003F4C3E /* CCECardTypeEditorController.m in Sources */,
 				BB0E5F5A16965728003F4C3E /* CCBoxView.m in Sources */,
 				BB0E5F5D16965C58003F4C3E /* CCEPrefsController.m in Sources */,
@@ -718,6 +739,10 @@
 				BB1717AB16E4395D007D7BD3 /* CCEDuplicateNamer.m in Sources */,
 				BB1717AE16E479B3007D7BD3 /* CCEDuplicator.m in Sources */,
 				BB1717B416E52751007D7BD3 /* NSString+CCEStringRangeExtras.m in Sources */,
+				BBA244AD16EFD17700E820DF /* CCETabConnector.m in Sources */,
+				BBA244B716F2958D00E820DF /* ConvCardEditor.xcdatamodeld in Sources */,
+				BB38F5D016F5027C00D29331 /* CCEPartnershipDocument.m in Sources */,
+				BB38F5D516F64FC900D29331 /* CCEDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -860,6 +885,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ConvCardEditor/ConvCardEditor-Prefix.pch";
+				IBC_NOTICES = YES;
+				IBC_WARNINGS = YES;
 				INFOPLIST_FILE = "ConvCardEditor/ConvCardEditor-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -874,6 +901,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ConvCardEditor/ConvCardEditor-Prefix.pch";
+				IBC_NOTICES = YES;
+				IBC_WARNINGS = YES;
 				INFOPLIST_FILE = "ConvCardEditor/ConvCardEditor-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -947,9 +976,10 @@
 		BB4EF8D7168E46AF006C7819 /* ConvCardEditor.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				BB4EF8D8168E46AF006C7819 /* ConvCardEditor.xcdatamodel */,
+				BBA244B216F23DFB00E820DF /* ConvCardEditor.xcdatamodel */,
+				BB4EF8D8168E46AF006C7819 /* ConvCardEditor2.xcdatamodel */,
 			);
-			currentVersion = BB4EF8D8168E46AF006C7819 /* ConvCardEditor.xcdatamodel */;
+			currentVersion = BB4EF8D8168E46AF006C7819 /* ConvCardEditor2.xcdatamodel */;
 			path = ConvCardEditor.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

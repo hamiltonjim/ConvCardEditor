@@ -110,4 +110,11 @@
         // subclass responsibility
 }
 
+- (void)displayError:(NSError *)error
+{
+    
+        // for now
+    NSLog(@"%@ %@", self.class, error);
+}
+
 @end

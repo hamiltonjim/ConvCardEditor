@@ -11,4 +11,9 @@
 
 @interface CCEPartnershipDocument : CCEDocument
 
++ (void)exportPartnership:(NSManagedObject *)partnership;
+
++ (void)importPartnership;
+
+
 @end

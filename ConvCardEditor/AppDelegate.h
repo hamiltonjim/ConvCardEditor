@@ -25,6 +25,8 @@
 
 @property IBOutlet NSPanel *choosePartnershipPanel;
 @property IBOutlet NSArrayController *partnershipChooser;
+@property IBOutlet NSTextField *partDirectionLabel;
+@property IBOutlet NSButton *partActionButton;
 
 @property (readonly, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -65,13 +67,14 @@
     // import/export card definition
 - (IBAction)importCardType:(id)sender;
 - (IBAction)exportCardType:(id)sender;
+- (IBAction)doExport:(id)sender;
 
 - (void)initialImport;
 
     // import/export partnership
 - (IBAction)importPartnership:(id)sender;
 - (IBAction)exportPartnership:(id)sender;
-- (IBAction)doExport:(id)sender;
+- (IBAction)doPartnershipExport:(id)sender;
 
 - (void)watchCheckboxStyle;
 
